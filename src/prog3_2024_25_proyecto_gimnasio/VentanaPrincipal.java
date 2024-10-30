@@ -28,7 +28,7 @@ public class VentanaPrincipal extends JFrame {
 		
 		String[] buttonsText = {
 				"MENU",
-				"CLASES",
+				"ACTIVIDADES",
 				"SALUD",
 				"USUARIO",
 		};
@@ -41,7 +41,7 @@ public class VentanaPrincipal extends JFrame {
 				JButton btnPulsado = (JButton) e.getSource();
 				// ACCION POR IMPLEMENTAR
 				switch(text) {
-				  case "CLASES":
+				  case "ACTIVIDADES":
 					Actividad actPanel = new Actividad();
 					principal.add(actPanel.pActividad, BorderLayout.EAST);
 					
