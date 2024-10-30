@@ -8,7 +8,6 @@ import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.JLabel;
 
@@ -32,10 +31,11 @@ public class Actividad extends JFrame{
 		JPanel titulos = new JPanel(new GridLayout(4, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 		
+		
 		titulos.add(new JLabel("Intensidad:"));
 		titulos.add(new JLabel("Duración:"));
 		titulos.add(new JLabel("Monitor:"));
-		titulos.add(new JLabel("Descripción:"), SwingConstants.TOP);
+		titulos.add(new JLabel("Descripción:"));
 		
 		
 		
