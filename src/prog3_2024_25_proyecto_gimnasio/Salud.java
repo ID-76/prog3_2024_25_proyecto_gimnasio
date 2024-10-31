@@ -20,6 +20,15 @@ public class Salud extends JPanel {
 		JPanel informacion = new JPanel(new BorderLayout(10, 3));
 		informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
 		add(informacion, BorderLayout.WEST);
+		
+		// TITULOS (>>INFORMACION)
+		/*
+		 * GridBagLayout titulos = (new GridBagLayout());
+		 * 
+		 * GridBagConstraints gbc = new GridBagConstraints();
+		 */
+		JPanel titulos = new JPanel(new GridLayout(4, 1));
+		informacion.add(titulos, BorderLayout.WEST);
 
 		
 				
