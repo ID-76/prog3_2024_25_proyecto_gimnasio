@@ -27,23 +27,29 @@ public class Salud extends JPanel {
 		 * 
 		 * GridBagConstraints gbc = new GridBagConstraints();
 		 */
-		JPanel titulos = new JPanel(new GridLayout(4, 1));
+		JPanel titulos = new JPanel(new GridLayout(5, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 
 		JLabel lActividad = new JLabel("Actividad:");
 		JLabel lConstancia = new JLabel("Constancia:");
+		JLabel lRacha= new JLabel("Constancia:");
+		JLabel lMRacha = new JLabel("Mejor racha:");
 		JLabel lCalendario = new JLabel("Calendario:");
 		
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
+		titulos.add(lRacha);
+		titulos.add(lMRacha);	
 		titulos.add(lCalendario);
 		
 		// DATOS (>>INFORMACION)
-				JPanel datos = new JPanel(new GridLayout(4, 1));
+				JPanel datos = new JPanel(new GridLayout(5, 1));
 				informacion.add(datos, BorderLayout.EAST);
 
 				datos.add(new JLabel("3500/5000 kcal por semana"));
 				datos.add(new JLabel("50% clases asistidas"));
+				datos.add(new JLabel("llevas una racha de X dias"));
+				datos.add(new JLabel("Tu mejor racha ha sido X dias"));
 		
 	}
 
