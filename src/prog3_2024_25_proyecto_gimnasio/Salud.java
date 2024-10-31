@@ -30,6 +30,15 @@ public class Salud extends JPanel {
 		JPanel titulos = new JPanel(new GridLayout(4, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 
+		JLabel lActividad = new JLabel("Actividad:");
+		JLabel lConstancia = new JLabel("Constancia:");
+		JLabel lCalendario = new JLabel("Calendario:");
+		
+
+		titulos.add(lActividad);
+		titulos.add(lConstancia);
+		titulos.add(lCalendario);
+
 		
 				
 	}
