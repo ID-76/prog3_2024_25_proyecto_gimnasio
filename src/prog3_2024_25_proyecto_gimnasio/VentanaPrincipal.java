@@ -2,6 +2,7 @@ package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -17,43 +18,77 @@ public class VentanaPrincipal extends JFrame {
     private JPanel principal;
     
 	public VentanaPrincipal() {
+
 		
+		// PRINCIPAL
 		JPanel principal = new JPanel(new BorderLayout(2,3));
 
-		JPanel contenido = new JPanel();
-		contenido.setBackground(Color.red);
-		principal.add(contenido, BorderLayout.CENTER);
 		
-		
+
+
+	
 		// SIDEBAR (>> PRINCIPAL)
 		JPanel sidebar = new JPanel(new GridLayout(4, 1, 2, 2));
 		principal.add(sidebar, BorderLayout.WEST);	
 		
-
 		
-        JButton bUsuario = new JButton("USUARIO");
-        bUsuario.addActionListener(e -> switchPanel("USUARIO"));
-        sidebar.add(bUsuario);
-
-        JButton bActividades = new JButton("ACTIVIDADES");
-        bActividades.addActionListener(e -> switchPanel("ACTIVIDADES"));
-        sidebar.add(bActividades);
-
-        JButton bSalud = new JButton("SALUD");
-        bSalud.addActionListener(e -> switchPanel("SALUD"));
-        sidebar.add(bSalud);
-
-        JButton bMenu = new JButton("MENU");
-        bMenu.addActionListener(e -> switchPanel("MENU"));
-        sidebar.add(bMenu);
+		String[] clasesText = {
+				"MENU",
+				"ACTIVIDADES",
+				"SALUD",
+				"USUARIO",
+		};
 		
 		
+		JButton boton;
+		for (String text: clasesText) {
+			boton = new JButton(text);
+
+			boton.addActionListener( e -> {
+				// ACCION POR IMPLEMENTAR
+				switch(text) {
+				case "ACTIVIDADES":
+					principal.removeAll();
+					principal.add(sidebar, BorderLayout.WEST);
+					principal.add(new Actividad(), BorderLayout.CENTER);
+					principal.revalidate();
+					principal.repaint();
+					
+					break;
+				case "SALUD":
+					principal.removeAll();
+					principal.add(sidebar, BorderLayout.WEST);
+					principal.add(new Salud(), BorderLayout.CENTER);
+					principal.revalidate();
+					principal.repaint();
+					
+					break;
+				case "USUARIO":
+					principal.removeAll();
+					principal.add(sidebar, BorderLayout.WEST);
+					principal.add(new Usuario(), BorderLayout.CENTER);
+					principal.revalidate();
+					principal.repaint();
+					
+					break;
+				case "MENU":
+				default:
+					principal.removeAll();
+					principal.add(sidebar, BorderLayout.WEST);
+					principal.add(new Menu(), BorderLayout.CENTER);
+					principal.revalidate();
+					principal.repaint();
+
+				}
+			});
+			sidebar.add(boton);
+		}
+
         
 		// COMPORATMIENTO VENTANA PRINCIPAL
-		setSize(200, 350);
 		add(principal);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(500, 300));
+        setMinimumSize(new Dimension(600, 350));
         setLocationRelativeTo(null);
 
 		setTitle("HOME");
@@ -66,24 +101,4 @@ public class VentanaPrincipal extends JFrame {
 		ventana.setVisible(true);
 	}
 	
-    private void switchPanel(String panelType) {
-        principal.removeAll(); 
-        switch (panelType) {
-            case "USUARIO":
-                principal.add(new Actividad(), BorderLayout.CENTER);
-                break;
-            case "ACTIVIDADES":
-                principal.add(new Actividad());
-                break;
-            case "SALUD":
-                principal.add(new Actividad());
-                break;
-            case "MENU":
-                principal.add(new Actividad());
-                break;
-        }
-        principal.revalidate();
-        principal.repaint();
-    }
-
 }
