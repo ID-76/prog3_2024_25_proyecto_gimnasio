@@ -38,6 +38,13 @@ public class Salud extends JPanel {
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
 		titulos.add(lCalendario);
+		
+		// DATOS (>>INFORMACION)
+				JPanel datos = new JPanel(new GridLayout(4, 1));
+				informacion.add(datos, BorderLayout.EAST);
+
+				datos.add(new JLabel("3500/5000 kcal por semana"));
+				datos.add(new JLabel("50% clases asistidas"));
 
 		
 				
