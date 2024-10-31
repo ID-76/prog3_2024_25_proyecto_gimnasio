@@ -48,6 +48,8 @@ public class Salud extends JPanel {
 
 				datos.add(new JLabel("3500/5000 kcal por semana"));
 				datos.add(new JLabel("50% clases asistidas"));
+				datos.add(new JLabel("llevas una racha de X dias"));
+				datos.add(new JLabel("Tu mejor racha ha sido X dias"));
 		
 	}
 
