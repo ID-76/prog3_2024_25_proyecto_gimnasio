@@ -1,59 +1,41 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
-import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JTextField;
-import prog3_2024_25_proyecto_gimnasio.Actividad;
-
-
+import javax.swing.JPanel;
 
 public class VentanaPrincipal extends JFrame {
-    private JPanel principal;
-    
+	private JPanel principal;
+
 	public VentanaPrincipal() {
 
-		
 		// PRINCIPAL
-		JPanel principal = new JPanel(new BorderLayout(2,3));
+		JPanel principal = new JPanel(new BorderLayout(2, 3));
 
-		
-
-
-	
 		// SIDEBAR (>> PRINCIPAL)
 		JPanel sidebar = new JPanel(new GridLayout(4, 1, 2, 2));
-		principal.add(sidebar, BorderLayout.WEST);	
-		
-		
-		String[] clasesText = {
-				"MENU",
-				"ACTIVIDADES",
-				"SALUD",
-				"USUARIO",
-		};
-		
-		
+		principal.add(sidebar, BorderLayout.WEST);
+
+		String[] clasesText = { "MENU", "ACTIVIDADES", "SALUD", "USUARIO", };
+
 		JButton boton;
-		for (String text: clasesText) {
+		for (String text : clasesText) {
 			boton = new JButton(text);
 
-			boton.addActionListener( e -> {
+			boton.addActionListener(e -> {
 				// ACCION POR IMPLEMENTAR
-				switch(text) {
+				switch (text) {
 				case "ACTIVIDADES":
 					principal.removeAll();
 					principal.add(sidebar, BorderLayout.WEST);
 					principal.add(new Actividad(), BorderLayout.CENTER);
 					principal.revalidate();
 					principal.repaint();
-					
+
 					break;
 				case "SALUD":
 					principal.removeAll();
@@ -61,7 +43,7 @@ public class VentanaPrincipal extends JFrame {
 					principal.add(new Salud(), BorderLayout.CENTER);
 					principal.revalidate();
 					principal.repaint();
-					
+
 					break;
 				case "USUARIO":
 					principal.removeAll();
@@ -69,7 +51,7 @@ public class VentanaPrincipal extends JFrame {
 					principal.add(new Usuario(), BorderLayout.CENTER);
 					principal.revalidate();
 					principal.repaint();
-					
+
 					break;
 				case "MENU":
 				default:
@@ -84,21 +66,19 @@ public class VentanaPrincipal extends JFrame {
 			sidebar.add(boton);
 		}
 
-        
 		// COMPORATMIENTO VENTANA PRINCIPAL
 		add(principal);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(600, 350));
-        setLocationRelativeTo(null);
+		setMinimumSize(new Dimension(600, 350));
+		setLocationRelativeTo(null);
 
 		setTitle("HOME");
-		
-		
+
 	}
-	
+
 	public static void main(String[] args) {
 		VentanaPrincipal ventana = new VentanaPrincipal();
 		ventana.setVisible(true);
 	}
-	
+
 }
