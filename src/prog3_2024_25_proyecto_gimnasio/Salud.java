@@ -38,6 +38,8 @@ public class Salud extends JPanel {
 		
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
+		titulos.add(lRacha);
+		titulos.add(lMRacha);	
 		titulos.add(lCalendario);
 		
 		// DATOS (>>INFORMACION)
