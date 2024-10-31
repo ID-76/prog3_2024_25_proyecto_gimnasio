@@ -27,7 +27,7 @@ public class Salud extends JPanel {
 		 * 
 		 * GridBagConstraints gbc = new GridBagConstraints();
 		 */
-		JPanel titulos = new JPanel(new GridLayout(4, 1));
+		JPanel titulos = new JPanel(new GridLayout(5, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 
 		JLabel lActividad = new JLabel("Actividad:");
@@ -43,7 +43,7 @@ public class Salud extends JPanel {
 		titulos.add(lCalendario);
 		
 		// DATOS (>>INFORMACION)
-				JPanel datos = new JPanel(new GridLayout(4, 1));
+				JPanel datos = new JPanel(new GridLayout(5, 1));
 				informacion.add(datos, BorderLayout.EAST);
 
 				datos.add(new JLabel("3500/5000 kcal por semana"));
