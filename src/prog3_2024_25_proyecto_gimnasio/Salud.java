@@ -34,7 +34,6 @@ public class Salud extends JPanel {
 		JLabel lConstancia = new JLabel("Constancia:");
 		JLabel lCalendario = new JLabel("Calendario:");
 		
-
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
 		titulos.add(lCalendario);
@@ -45,9 +44,7 @@ public class Salud extends JPanel {
 
 				datos.add(new JLabel("3500/5000 kcal por semana"));
 				datos.add(new JLabel("50% clases asistidas"));
-
 		
-				
 	}
 
 }
