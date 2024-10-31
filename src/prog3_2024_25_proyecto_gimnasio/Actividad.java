@@ -2,6 +2,8 @@ package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
@@ -11,33 +13,39 @@ import javax.swing.JPanel;
 import javax.swing.border.Border;
 import javax.swing.JLabel;
 
-public class Actividad extends JFrame{
-	private static final long serialVersionUID = 1L;
-	public JPanel pActividad = new JPanel(new BorderLayout(3, 3));
+public class Actividad extends JPanel{
 
 	public Actividad() {
+		setLayout(new BorderLayout(3, 3));
 
 		
-		
-		// INFORMACION (>>PACTIVIDAD)
+		// INFORMACION (>>ACTIVIDAD)
 		JPanel informacion = new JPanel(new BorderLayout(10, 3));
 		informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
-		pActividad.add(informacion, BorderLayout.EAST);
+		add(informacion, BorderLayout.EAST);
 		
 
 		
 		
 		// TITULOS (>>INFORMACION)
-		JPanel titulos = new JPanel(new GridLayout(4, 1));
+		/*
+		 * GridBagLayout titulos = (new GridBagLayout());
+		 
+		GridBagConstraints gbc = new GridBagConstraints();
+		*/
+		JPanel titulos = new JPanel(new GridLayout(4,1));
 		informacion.add(titulos, BorderLayout.WEST);
 		
 		
-		titulos.add(new JLabel("Intensidad:"));
-		titulos.add(new JLabel("Duración:"));
-		titulos.add(new JLabel("Monitor:"));
-		titulos.add(new JLabel("Descripción:"));
+		JLabel lIntensidad = new JLabel("Intensidad:");
+		JLabel lDuracion = new JLabel("Duración:");
+		JLabel lMonitor = new JLabel("Monitor:");
+		JLabel lDescripcion = new JLabel("Descripción:");
 		
-		
+		titulos.add(lIntensidad);
+		titulos.add(lDescripcion);
+		titulos.add(lDuracion);
+		titulos.add(lMonitor);
 		
 		// DATOS (>>INFORMACION) 
 		JPanel datos = new JPanel(new GridLayout(4, 1));
@@ -50,17 +58,5 @@ public class Actividad extends JFrame{
 		
 		
 		
-		// COMPORTAMIENTO DE ACTIVIDAD
-		setSize(200, 350);
-		add(pActividad);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(500, 300));
-        setLocationRelativeTo(null);
-
-		setTitle("HOME");
-	}
-	public static void main(String[] args) {
-		Actividad actividad = new Actividad();
-		actividad.setVisible(true);
 	}
 }
