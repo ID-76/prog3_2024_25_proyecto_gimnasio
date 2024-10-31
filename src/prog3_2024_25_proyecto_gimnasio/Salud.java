@@ -32,6 +32,8 @@ public class Salud extends JPanel {
 
 		JLabel lActividad = new JLabel("Actividad:");
 		JLabel lConstancia = new JLabel("Constancia:");
+		JLabel lRacha= new JLabel("Constancia:");
+		JLabel lMRacha = new JLabel("Mejor racha:");
 		JLabel lCalendario = new JLabel("Calendario:");
 		
 		titulos.add(lActividad);
