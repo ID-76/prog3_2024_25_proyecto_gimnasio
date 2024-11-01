@@ -48,7 +48,7 @@ public class VentanaPrincipal extends JFrame {
 				case "USUARIO":
 					principal.removeAll();
 					principal.add(sidebar, BorderLayout.WEST);
-					principal.add(new Usuario(), BorderLayout.CENTER);
+					principal.add(new PanelUsuario(), BorderLayout.CENTER);
 					principal.revalidate();
 					principal.repaint();
 
