@@ -2,19 +2,26 @@ package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 
 public class Salud extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
+	private JProgressBar progressBar;
 
 	public Salud(){
 		setLayout(new BorderLayout(3, 3));
+		 progressBar = new JProgressBar(0, 100);
+	     progressBar.setStringPainted(true);
 
 		// INFORMACION (>>ACTIVIDAD)
 		JPanel informacion = new JPanel(new BorderLayout(10, 3));
@@ -34,7 +41,15 @@ public class Salud extends JPanel {
 		JLabel lConstancia = new JLabel("Constancia:");
 		JLabel lRacha= new JLabel("Constancia:");
 		JLabel lMRacha = new JLabel("Mejor racha:");
-		JLabel lCalendario = new JLabel("Calendario:");
+		JButton lCalendario = new JButton("Calendario");
+		
+		 lCalendario.addActionListener(new ActionListener() {
+	            @Override
+	            public void actionPerformed(ActionEvent e) {
+	                // Crear y mostrar una nueva instancia de VentanaSecundaria
+	                new Calendario();
+	            }
+	        });
 		
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
@@ -46,7 +61,7 @@ public class Salud extends JPanel {
 				JPanel datos = new JPanel(new GridLayout(5, 1));
 				informacion.add(datos, BorderLayout.EAST);
 
-				datos.add(new JLabel("3500/5000 kcal por semana"));
+				datos.add(progressBar);
 				datos.add(new JLabel("50% clases asistidas"));
 				datos.add(new JLabel("llevas una racha de X dias"));
 				datos.add(new JLabel("Tu mejor racha ha sido X dias"));
