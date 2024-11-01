@@ -27,5 +27,7 @@ public class PanelUsuario extends JPanel{
 			encabezados.add(new JLabel(encabezado));
 			encabezados.add(new JLabel(usuario.get(encabezado)));
 		}
+		
+		
 	}
 }
