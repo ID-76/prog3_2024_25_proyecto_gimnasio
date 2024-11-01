@@ -68,7 +68,7 @@ public class VentanaPrincipal extends JFrame {
 
 						break;
 					case "USUARIO":
-						principal.add(new PanelUsuario(), BorderLayout.CENTER);
+						principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
 
 						break;
 					case "MENU":
