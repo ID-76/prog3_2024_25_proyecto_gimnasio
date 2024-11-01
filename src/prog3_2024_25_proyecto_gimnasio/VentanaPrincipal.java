@@ -18,7 +18,7 @@ public class VentanaPrincipal extends JFrame {
 	
 	public void setUsuario(Usuario u) {
 		this.usuario = u;
-		this.ActualizarVision();
+		this.ActualizarVentana();
 	}
 	
 	public VentanaPrincipal(ArrayList<Usuario> usuarios) {
@@ -37,7 +37,7 @@ public class VentanaPrincipal extends JFrame {
 
 	}
 	
-	public void ActualizarVision() {
+	public void ActualizarVentana() {
 		remove(principal);
 		if (usuario == null){
 			this.principal = new InicioSesion(this);
