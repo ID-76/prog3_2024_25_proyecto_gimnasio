@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class VentanaPrincipal extends JFrame {
+	private static final long serialVersionUID = 1L;
 	private JPanel principal;
 	private List<Usuario> usuarios;
 	private Usuario usuario;
