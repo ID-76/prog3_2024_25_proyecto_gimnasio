@@ -32,7 +32,11 @@ public class VentanaPrincipal extends JFrame {
 		// COMPORATMIENTO VENTANA PRINCIPAL
 		add(principal);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+<<<<<<< HEAD
+		setMinimumSize(new Dimension(775, 350));
+=======
 		setMinimumSize(new Dimension(800, 350));
+>>>>>>> origin/master
 		setLocationRelativeTo(null);
 
 		setTitle("HOME");
