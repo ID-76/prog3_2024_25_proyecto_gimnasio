@@ -1,20 +1,29 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Insets;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 public class Actividad extends JPanel {
 
 	public Actividad() {
 		setLayout(new BorderLayout(3, 3));
-
+		
+		 try {
+			    UIManager.setLookAndFeel( UIManager.getCrossPlatformLookAndFeelClassName() );
+			 } catch (Exception e) {
+			            e.printStackTrace();
+			 }
+		 
 		// INFORMACION (>>ACTIVIDAD)
 		JPanel informacion = new JPanel(new BorderLayout(10, 3));
 		informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
@@ -53,33 +62,31 @@ public class Actividad extends JPanel {
 		 
 		 GridBagConstraints gbc = new GridBagConstraints();
 		 
+		 gbc.insets = new Insets(15, 5, 15, 5);
+		 
 		 JButton nombreActividad= new JButton("Nombre Actividad");
 		 gbc.gridx = 0;
 		 gbc.gridy = 0;
-		 gbc.gridwidth = 2;
+		 gbc.gridwidth = 1;
 		 gbc.fill = GridBagConstraints.HORIZONTAL;
 		 reserva.add(nombreActividad, gbc);
 		 
 		 JLabel icono= new JLabel("Icono");
-		 gbc.gridx = 2;
+		 gbc.gridx = 1;
 		 gbc.gridy = 0;
-		 gbc.gridwidth = 1;
+		 gbc.gridwidth = 2;
 		 gbc.gridheight = 2;
-		 gbc.fill = GridBagConstraints.VERTICAL;
+		 gbc.fill = GridBagConstraints.BOTH;
+		 icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
 		 reserva.add(icono, gbc);
 		 
-		 JButton dia = new JButton("Dia");
+		 JButton dia = new JButton("Dia y Hora");
 		 gbc.gridx = 0;
 		 gbc.gridy = 1;
 		 gbc.gridwidth = 1;
 		 gbc.gridheight = 1;
+		 gbc.fill = GridBagConstraints.HORIZONTAL;
 		 reserva.add(dia, gbc);
-		
-		 JButton horasDisp= new JButton("Horas Disponibles");
-		 gbc.gridx = 1;
-		 gbc.gridy = 1;
-		 gbc.gridwidth = 1;
-		 reserva.add(horasDisp, gbc);
 		 
 		 JButton sitiosDisp = new JButton("Sitios Disponibles");
 		 gbc.gridx = 0;
@@ -99,12 +106,16 @@ public class Actividad extends JPanel {
 		 gbc.gridx = 0;
 		 gbc.gridy = 4;
 		 gbc.gridwidth = 1;
+		 apuntarse.setBackground(Color.green);
+		 apuntarse.setOpaque(true);
+		 apuntarse.setBorderPainted(false);
+		 
 		 reserva.add(apuntarse, gbc);
 		 
 		 JButton desapuntarse= new JButton("Desapuntarse");
 		 gbc.gridx = 1;
 		 gbc.gridy = 4;
-		 gbc.gridwidth = 1;
+		 desapuntarse.setBackground(Color.RED);
 		 reserva.add(desapuntarse, gbc);
 		 
 		 
