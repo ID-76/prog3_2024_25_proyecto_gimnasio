@@ -69,7 +69,7 @@ public class VentanaPrincipal extends JFrame {
 					principal.add(sidebar, BorderLayout.WEST);
 					switch (text) {
 					case "ACTIVIDADES":
-						principal.add(new Actividad(), BorderLayout.CENTER);
+						principal.add(new PanelActividad(), BorderLayout.CENTER);
 
 						break;
 					case "SALUD":

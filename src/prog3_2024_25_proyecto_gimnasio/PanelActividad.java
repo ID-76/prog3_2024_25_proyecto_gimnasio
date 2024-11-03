@@ -18,9 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 
 
-public class Actividad extends JPanel {
+public class PanelActividad extends JPanel {
 
-	public Actividad() {
+	public PanelActividad() {
 		setLayout(new BorderLayout(3, 3));
 		
 		 try {
