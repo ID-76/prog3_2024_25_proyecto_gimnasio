@@ -5,13 +5,18 @@ import java.awt.Color;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Image;
 import java.awt.Insets;
+import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.UIManager;
+
 
 public class Actividad extends JPanel {
 
@@ -71,13 +76,17 @@ public class Actividad extends JPanel {
 		 gbc.fill = GridBagConstraints.HORIZONTAL;
 		 reserva.add(nombreActividad, gbc);
 		 
-		 JLabel icono= new JLabel("Icono");
+		 JLabel icono= new JLabel();
 		 gbc.gridx = 1;
 		 gbc.gridy = 0;
 		 gbc.gridwidth = 2;
 		 gbc.gridheight = 2;
 		 gbc.fill = GridBagConstraints.BOTH;
 		 icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
+		 ImageIcon logo = new ImageIcon("Images/Andar.png");
+		 logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
+		 icono.setIcon(logo);
+		 icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
 		 reserva.add(icono, gbc);
 		 
 		 JButton dia = new JButton("Dia y Hora");
