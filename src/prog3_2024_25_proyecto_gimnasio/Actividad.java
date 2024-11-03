@@ -1,9 +1,12 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -18,11 +21,6 @@ public class Actividad extends JPanel {
 		add(informacion, BorderLayout.EAST);
 
 		// TITULOS (>>INFORMACION)
-		/*
-		 * GridBagLayout titulos = (new GridBagLayout());
-		 * 
-		 * GridBagConstraints gbc = new GridBagConstraints();
-		 */
 		JPanel titulos = new JPanel(new GridLayout(4, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 
@@ -45,5 +43,70 @@ public class Actividad extends JPanel {
 		datos.add(new JLabel("Aitor (Test)"));
 		datos.add(new JLabel("<html>Clase de Spinning<br>donde pedalearas al<br>ritmo de la musica!<br>(Test)</html>"));
 
+		
+		
+		// RESERVA (>>ACTIVIDAD)
+		
+		 JPanel reserva = new JPanel();
+		 reserva.setLayout(new GridBagLayout());
+		 add(reserva, BorderLayout.WEST);
+		 
+		 GridBagConstraints gbc = new GridBagConstraints();
+		 
+		 JButton nombreActividad= new JButton("Nombre Actividad");
+		 gbc.gridx = 0;
+		 gbc.gridy = 0;
+		 gbc.gridwidth = 2;
+		 gbc.fill = GridBagConstraints.HORIZONTAL;
+		 reserva.add(nombreActividad, gbc);
+		 
+		 JLabel icono= new JLabel("Icono");
+		 gbc.gridx = 2;
+		 gbc.gridy = 0;
+		 gbc.gridwidth = 1;
+		 gbc.gridheight = 2;
+		 gbc.fill = GridBagConstraints.VERTICAL;
+		 reserva.add(icono, gbc);
+		 
+		 JButton dia = new JButton("Dia");
+		 gbc.gridx = 0;
+		 gbc.gridy = 1;
+		 gbc.gridwidth = 1;
+		 gbc.gridheight = 1;
+		 reserva.add(dia, gbc);
+		
+		 JButton horasDisp= new JButton("Horas Disponibles");
+		 gbc.gridx = 1;
+		 gbc.gridy = 1;
+		 gbc.gridwidth = 1;
+		 reserva.add(horasDisp, gbc);
+		 
+		 JButton sitiosDisp = new JButton("Sitios Disponibles");
+		 gbc.gridx = 0;
+		 gbc.gridy = 2;
+		 gbc.gridwidth = 2;
+		 gbc.fill = GridBagConstraints.HORIZONTAL;
+		 reserva.add(sitiosDisp, gbc);
+		 
+		 JButton sitiosDispProg = new JButton("Sitios Disponibles Progress Bar");
+		 gbc.gridx = 0;
+		 gbc.gridy = 3;
+		 gbc.gridwidth = 2;
+		 gbc.fill = GridBagConstraints.HORIZONTAL;
+		 reserva.add(sitiosDispProg, gbc);
+		 
+		 JButton apuntarse = new JButton("Apuntarse");
+		 gbc.gridx = 0;
+		 gbc.gridy = 4;
+		 gbc.gridwidth = 1;
+		 reserva.add(apuntarse, gbc);
+		 
+		 JButton desapuntarse= new JButton("Desapuntarse");
+		 gbc.gridx = 1;
+		 gbc.gridy = 4;
+		 gbc.gridwidth = 1;
+		 reserva.add(desapuntarse, gbc);
+		 
+		 
 	}
 }
