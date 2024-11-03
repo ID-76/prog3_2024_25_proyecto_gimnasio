@@ -8,6 +8,7 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
+import java.text.DateFormat;
 
 import javax.swing.BorderFactory;
 import javax.swing.Icon;
@@ -15,7 +16,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
+
+import prog3_2024_25_proyecto_gimnasio.Usuario.Sexo;
 
 
 public class PanelActividad extends JPanel {
@@ -29,38 +33,58 @@ public class PanelActividad extends JPanel {
 			            e.printStackTrace();
 			 }
 		 
+		// Datos test
+		 Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Sexo.HOMBRE);
+		 Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Sexo.HOMBRE);
+		 Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Sexo.MUJER);
+		 Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Sexo.MUJER);
+
+		 Actividad actividad1 = new Actividad("Andar", 50, null);
+		 Actividad actividad2 = new Actividad("Gimnasia", 15, null);
+		 Actividad actividad3 = new Actividad("Equilibrio", 60, null);
+		 Actividad actividad4 = new Actividad("Core Avanzado", 30, null);
+		 
+		 
 		// INFORMACION (>>ACTIVIDAD)
 		JPanel informacion = new JPanel(new BorderLayout(10, 3));
 		informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
 		add(informacion, BorderLayout.EAST);
 
+		
 		// TITULOS (>>INFORMACION)
 		JPanel titulos = new JPanel(new GridLayout(4, 1));
 		informacion.add(titulos, BorderLayout.WEST);
 
 		JLabel lIntensidad = new JLabel("Intensidad:");
 		JLabel lDuracion = new JLabel("Duración:");
-		JLabel lMonitor = new JLabel("Monitor:");
 		JLabel lDescripcion = new JLabel("Descripción:");
 
 		titulos.add(lIntensidad);
 		titulos.add(lDescripcion);
 		titulos.add(lDuracion);
-		titulos.add(lMonitor);
+
 
 		// DATOS (>>INFORMACION)
 		JPanel datos = new JPanel(new GridLayout(4, 1));
 		informacion.add(datos, BorderLayout.EAST);
 
-		datos.add(new JLabel("Alta (Test)"));
-		datos.add(new JLabel("60 minutos (Test)"));
-		datos.add(new JLabel("Aitor (Test)"));
-		datos.add(new JLabel("<html>Clase de Spinning<br>donde pedalearas al<br>ritmo de la musica!<br>(Test)</html>"));
+		datos.add(new JLabel(actividad1.getIntensidad()));
 
+		// Word wrap: https://stackoverflow.com/questions/26420428/how-to-word-wrap-text-in-jlabel
+	    JTextArea textArea = new JTextArea(2, 20);
+	    textArea.setText(actividad1.getDescripcion());
+	    textArea.setWrapStyleWord(true);
+	    textArea.setLineWrap(true);
+	    textArea.setOpaque(false);
+	    textArea.setEditable(false);
+	    textArea.setFocusable(false);
+	    textArea.setBackground(UIManager.getColor("Label.background"));
+	    textArea.setFont(UIManager.getFont("Label.font"));
+	    textArea.setBorder(UIManager.getBorder("Label.border"));
+		datos.add(textArea);
 		
 		
-		// RESERVA (>>ACTIVIDAD)
-		
+		// RESERVA (>>ACTIVIDAD)		 
 		 JPanel reserva = new JPanel();
 		 reserva.setLayout(new GridBagLayout());
 		 add(reserva, BorderLayout.WEST);
@@ -69,7 +93,7 @@ public class PanelActividad extends JPanel {
 		 
 		 gbc.insets = new Insets(15, 5, 15, 5);
 		 
-		 JButton nombreActividad= new JButton("Nombre Actividad");
+		 JLabel nombreActividad= new JLabel(actividad1.getNombre());
 		 gbc.gridx = 0;
 		 gbc.gridy = 0;
 		 gbc.gridwidth = 1;
@@ -83,13 +107,13 @@ public class PanelActividad extends JPanel {
 		 gbc.gridheight = 2;
 		 gbc.fill = GridBagConstraints.BOTH;
 		 icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
-		 ImageIcon logo = new ImageIcon("Images/Andar.png");
+		 ImageIcon logo = actividad1.getLogo();
 		 logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
 		 icono.setIcon(logo);
 		 icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
 		 reserva.add(icono, gbc);
 		 
-		 JButton dia = new JButton("Dia y Hora");
+		 JLabel dia = new JLabel("Dia");
 		 gbc.gridx = 0;
 		 gbc.gridy = 1;
 		 gbc.gridwidth = 1;
@@ -97,14 +121,14 @@ public class PanelActividad extends JPanel {
 		 gbc.fill = GridBagConstraints.HORIZONTAL;
 		 reserva.add(dia, gbc);
 		 
-		 JButton sitiosDisp = new JButton("Sitios Disponibles");
+		 JLabel sitiosDisp = new JLabel(String.valueOf(actividad1.getOcupacion()));
 		 gbc.gridx = 0;
 		 gbc.gridy = 2;
 		 gbc.gridwidth = 2;
 		 gbc.fill = GridBagConstraints.HORIZONTAL;
 		 reserva.add(sitiosDisp, gbc);
 		 
-		 JButton sitiosDispProg = new JButton("Sitios Disponibles Progress Bar");
+		 JLabel sitiosDispProg = new JLabel("Sitios Disponibles Progress Bar");
 		 gbc.gridx = 0;
 		 gbc.gridy = 3;
 		 gbc.gridwidth = 2;

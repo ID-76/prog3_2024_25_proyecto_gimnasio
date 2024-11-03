@@ -16,6 +16,7 @@ public class Actividad {
 	private int calorias;
 	private String intensidad;
 	private String descripcion;
+	private int duracion;
 	
 	
 	public Actividad(String nombre, int capacidad, Date fecha) {
@@ -26,6 +27,7 @@ public class Actividad {
 		this.ocupacion = 0;
 		this.logo = new ImageIcon("Images/"+nombre+".png");
 		this.listaUsuarios = new ArrayList<>();
+		this.duracion = (int) Math.random()*100;
 		
 		if (nombre.contains("Avanzado")|| nombre.contains("HIIT")) {
 			this.intensidad = "Alta";
@@ -79,6 +81,11 @@ public class Actividad {
 			this.descripcion = "No hay descripcion para esta actividad";
 			break;
 		}
+	}
+
+
+	public int getDuracion() {
+		return duracion;
 	}
 
 
