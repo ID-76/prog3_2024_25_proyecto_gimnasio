@@ -32,7 +32,7 @@ public class VentanaPrincipal extends JFrame {
 		// COMPORATMIENTO VENTANA PRINCIPAL
 		add(principal);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-		setMinimumSize(new Dimension(700, 350));
+		setMinimumSize(new Dimension(775, 350));
 		setLocationRelativeTo(null);
 
 		setTitle("HOME");
@@ -45,12 +45,15 @@ public class VentanaPrincipal extends JFrame {
 			this.principal = new InicioSesion(this);
 		} else {
 			this.principal = new JPanel(new BorderLayout(2, 3));
-			principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 0));
+			
+			principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
+			
+			principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
 
 
 		// SIDEBAR (>> PRINCIPAL)
 			JPanel sidebar = new JPanel(new GridLayout(4, 1, 2, 2));
-			sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 20));
+			sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
 
 			principal.add(sidebar, BorderLayout.WEST);
 
