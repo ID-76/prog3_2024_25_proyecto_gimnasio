@@ -1,7 +1,9 @@
 package prog3_2024_25_proyecto_gimnasio;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Random;
 
 import javax.swing.ImageIcon;
 
@@ -9,7 +11,7 @@ public class Actividad {
 
 	private String nombre;
 	private int capacidad;
-	private Date fecha;
+	private LocalDateTime fecha;
 	private int ocupacion;
 	private ImageIcon logo;
 	private ArrayList<Usuario> listaUsuarios;
@@ -19,15 +21,15 @@ public class Actividad {
 	private int duracion;
 	
 	
-	public Actividad(String nombre, int capacidad, Date fecha) {
+	public Actividad(String nombre, LocalDateTime fecha) {
 		super();
 		this.nombre = nombre;
-		this.capacidad = capacidad;
+		this.capacidad = 20 + (new Random()).nextInt(61);
 		this.fecha = fecha;
 		this.ocupacion = 0;
 		this.logo = new ImageIcon("Images/"+nombre+".png");
 		this.listaUsuarios = new ArrayList<>();
-		this.duracion = (int) Math.random()*100;
+		this.duracion = 20 + (new Random()).nextInt(61);
 		
 		if (nombre.contains("Avanzado")|| nombre.contains("HIIT")) {
 			this.intensidad = "Alta";
@@ -109,7 +111,7 @@ public class Actividad {
 	}
 
 
-	public Date getFecha() {
+	public LocalDateTime getFecha() {
 		return fecha;
 	}
 
@@ -152,8 +154,11 @@ public class Actividad {
 	@Override
 	public String toString() {
 		return "Actividad [nombre=" + nombre + ", capacidad=" + capacidad + ", fecha=" + fecha + ", ocupacion="
-				+ ocupacion + ", listaUsuarios=" + listaUsuarios + ", calorias=" + calorias + ", intensidad="
-				+ intensidad + ", descripcion=" + descripcion + "]";
+				+ ocupacion + ", logo=" + logo + ", listaUsuarios=" + listaUsuarios + ", calorias=" + calorias
+				+ ", intensidad=" + intensidad + ", descripcion=" + descripcion + ", duracion=" + duracion + "]";
 	}
+
+
+
 	
 }

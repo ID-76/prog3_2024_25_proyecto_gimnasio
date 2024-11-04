@@ -1,11 +1,13 @@
+
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
-import java.lang.reflect.Array;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -13,97 +15,127 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 public class VentanaPrincipal extends JFrame {
-	private static final long serialVersionUID = 1L;
-	private JPanel principal;
-	private List<Usuario> usuarios;
-	private Usuario usuario;
-	
-	public void setUsuario(Usuario u) {
-		this.usuario = u;
-		this.ActualizarVentana();
-	}
-	
-	public VentanaPrincipal(ArrayList<Usuario> usuarios) {
-		this.usuarios = usuarios;
-		this.usuario = null;
-		
-		this.principal = new InicioSesion(this);
+    private static final long serialVersionUID = 1L;
+    private JPanel principal;
+    private List<Usuario> usuarios;
+    private Usuario usuario;
+    public ArrayList<Actividad> listaActividades;
+    public ArrayList<Usuario> listaUsuarios;
 
-		// COMPORATMIENTO VENTANA PRINCIPAL
-		add(principal);
-		setDefaultCloseOperation(EXIT_ON_CLOSE);
+    public void setUsuario(Usuario u) {
+        this.usuario = u;
+        this.ActualizarVentana();
+    }
 
-		setMinimumSize(new Dimension(800, 350));
+    public VentanaPrincipal(ArrayList<Usuario> usuarios) {
+        this.usuarios = usuarios;
+        this.usuario = null;
+        this.listaActividades = new ArrayList<>(); // Initialize listaActividades
+        this.listaUsuarios = new ArrayList<>(); // Initialize listaUsuarios
 
-		setLocationRelativeTo(null);
+        this.principal = new InicioSesion(this);
 
-		setTitle("HOME");
+        // COMPORATMIENTO VENTANA PRINCIPAL
+        add(principal);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setMinimumSize(new Dimension(775, 350));
+        setMinimumSize(new Dimension(800, 350));
+        setLocationRelativeTo(null);
+        setTitle("HOME");
+    }
 
-	}
-	
-	public void ActualizarVentana() {
-		remove(principal);
-		if (usuario == null){
-			this.principal = new InicioSesion(this);
-		} else {
-			this.principal = new JPanel(new BorderLayout(2, 3));
-			
-			principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
-			
-			principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
+    public void ActualizarVentana() {
+        remove(principal);
+        if (usuario == null) {
+            this.principal = new InicioSesion(this);
+        } else {
+            this.principal = new JPanel(new BorderLayout(2, 3));
+            principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
 
+            // SIDEBAR (>> PRINCIPAL)
+            JPanel sidebar = new JPanel(new GridLayout(4, 1, 2, 2));
+            sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
+            principal.add(sidebar, BorderLayout.WEST);
 
-		// SIDEBAR (>> PRINCIPAL)
-			JPanel sidebar = new JPanel(new GridLayout(4, 1, 2, 2));
-			sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
+            String[] clasesText = { "MENU", "ACTIVIDADES", "SALUD", "USUARIO", };
 
-			principal.add(sidebar, BorderLayout.WEST);
+            for (String text : clasesText) {
+                JButton boton = new JButton(text);
+                boton.addActionListener(e -> {
+                    principal.removeAll();
+                    principal.add(sidebar, BorderLayout.WEST);
+                    switch (text) {
+                        case "ACTIVIDADES":
+                            principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
+                            break;
+                        case "SALUD":
+                            principal.add(new Salud(), BorderLayout.CENTER);
+                            break;
+                        case "USUARIO":
+                            principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
+                            break;
+                        case "MENU":
+                        default:
+                            principal.add(new Menu(), BorderLayout.CENTER);
+                    }
+                    principal.revalidate();
+                    principal.repaint();
+                    principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
+                });
+                sidebar.add(boton);
+            }
+        }
+        add(principal);
+        revalidate();
+        repaint();
+    }
 
-			String[] clasesText = { "MENU", "ACTIVIDADES", "SALUD", "USUARIO", };
+    public static void main(String[] args) {
+        ArrayList<Usuario> usuarios = new ArrayList<>();
+        ArrayList<Actividad> listaActividades = new ArrayList<>();
+        ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
-			for (String text : clasesText) {
-				JButton boton;
-				boton = new JButton(text);
+        VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
+        ventana.setVisible(true);
 
-				boton.addActionListener(e -> {
-				// ACCION POR IMPLEMENTAR
-					principal.removeAll();
-					principal.add(sidebar, BorderLayout.WEST);
-					switch (text) {
-					case "ACTIVIDADES":
-						principal.add(new PanelActividad(), BorderLayout.CENTER);
+        Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE);
+        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE);
+        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER);
+        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER);
+        Usuario usuario5 = new Usuario("Jon", "Lopez", "12345678A", 600000000, 30, Usuario.Sexo.HOMBRE);
+        Usuario usuario6 = new Usuario("Andoni", "Perez", "89326102A", 680123045, 42, Usuario.Sexo.HOMBRE);
+        Usuario usuario7 = new Usuario("Mikel", "Garcia", "03691284J", 633901881, 19, Usuario.Sexo.HOMBRE);
+        Usuario usuario8 = new Usuario("Julen", "Gonzalez", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE);
+        Usuario usuario9 = new Usuario("June", "Lopez", "67812930A", 66129273, 25, Usuario.Sexo.MUJER);
+        Usuario usuario10 = new Usuario("Malen", "Bikandi", "98126102A", 682012371, 44, Usuario.Sexo.MUJER);
+        listaUsuarios.add(usuario1);
+        listaUsuarios.add(usuario2);
+        listaUsuarios.add(usuario3);
+        listaUsuarios.add(usuario4);
+        listaUsuarios.add(usuario5);
+        listaUsuarios.add(usuario6);
+        listaUsuarios.add(usuario7);
+        listaUsuarios.add(usuario8);
+        listaUsuarios.add(usuario9);
+        listaUsuarios.add(usuario10);
 
-						break;
-					case "SALUD":
-						principal.add(new Salud(), BorderLayout.CENTER);
+        String[] nombreClases = { "Andar", "Core", "Core Avanzado", "Equilibrio", "Equilibrio Avanzado", "Gimnasia", "Gimnasia Avanzada", "HIIT", "Yoga", "Yoga Avanzado" };
 
-						break;
-					case "USUARIO":
-						principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
-
-						break;
-					case "MENU":
-					default:
-						principal.add(new Menu(), BorderLayout.CENTER);
-
-					}
-					principal.revalidate();
-					principal.repaint();
-					principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
-
-				});
-			sidebar.add(boton);
-		}
-		}
-		 add(principal);
-	     revalidate();
-	     repaint();
-	}
-
-	public static void main(String[] args) {
-		ArrayList<Usuario> usuarios = new ArrayList<>();
-		VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
-		ventana.setVisible(true);
-	}
-
+        for (String nombreClase : nombreClases) {
+            LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 10, 00);
+            for (int i = 0; i < 5; i++) {
+                for (int j = 0; j < 3; j++) {
+                    Actividad actividad = new Actividad(nombreClase, fecha1);
+                    for (int l = 0; l < (2 + (new Random()).nextInt(8)); l++) {
+                        actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
+                    }
+                    listaActividades.add(actividad);
+                    fecha1 = fecha1.plusHours(8);
+                }
+                fecha1 = fecha1.plusDays(1);
+            }
+        }
+        System.out.println(listaUsuarios);
+        System.out.println(listaActividades);
+    }
 }
