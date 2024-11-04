@@ -1,8 +1,10 @@
 	package prog3_2024_25_proyecto_gimnasio;
 	
 	import java.awt.BorderLayout;
-	
-	import javax.swing.JButton;
+
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 	import prog3_2024_25_proyecto_gimnasio.Usuario.Sexo;
@@ -45,9 +47,15 @@ import javax.swing.JPanel;
 					}
 				}
 				});
-			setLayout(new BorderLayout());
-			add(matricula, BorderLayout.WEST);
-			add(ini_ses, BorderLayout.EAST);
+			ImageIcon iconoGym = new ImageIcon("/Users/asier.gomez/GitHub/prog3_2024_25_proyecto_gimnasio/Images/gym.png");
+			JLabel icono = new JLabel(iconoGym);
+			setLayout(null);
+			icono.setBounds(30,30,250,250);
+			matricula.setBounds(500, 90, 150,50);
+			ini_ses.setBounds(500, 150, 150,50);
+			add(icono);;
+			add(matricula);
+			add(ini_ses);
 		}
 		
 		public Usuario getUsuario() {
