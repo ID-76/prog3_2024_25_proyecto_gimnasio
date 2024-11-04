@@ -1,7 +1,7 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
-
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -31,9 +31,16 @@ public class Salud extends JPanel {
 	    private Set<LocalDate> diasAsistidos;
 	    private int rachaActual = 0;
 	    private int rachaMaxima = 0;
+	    private int totalSessions = 7;
+	    private int attendedSessions = 0;  // Track attended sessions
+	    private JLabel attendanceLabel;
 
 	public Salud(){
 		setLayout(new BorderLayout(3, 3));
+		
+		//PORCENTAJE
+		attendanceLabel = new JLabel("Attendance: 0%", SwingConstants.CENTER);
+	    attendanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
 		
 		//PROGRESSBAR
 		progressBar = new JProgressBar(0, kcalObjetivo);
@@ -91,9 +98,11 @@ public class Salud extends JPanel {
                 LocalDate hoy = LocalDate.now();
                 if (diasAsistidos.add(hoy)) {
                     calcularRacha();
+                    incrementAttendance();
                 } else {
                     JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
                 }
+                
             }
         });
         
@@ -102,7 +111,7 @@ public class Salud extends JPanel {
 				informacion.add(datos, BorderLayout.EAST);
 
 				datos.add(progressBar);
-				datos.add(new JLabel("50% de clases asistidas"));
+				datos.add(attendanceLabel);
 				datos.add(lblRacha);
 				datos.add(btnRegistrarDia);
 		       
@@ -110,6 +119,18 @@ public class Salud extends JPanel {
 		       
 		
 	}
+	 private void incrementAttendance() {
+	        if (attendedSessions < totalSessions) {
+	            attendedSessions++;
+	            int attendancePercentage = (int) ((attendedSessions / (double) totalSessions) * 100);
+	            attendanceLabel.setText("Attendance: " + attendancePercentage + "%");
+
+	            // Optional: Disable button if goal is reached
+	            /**if (attendedSessions == totalSessions) {
+	                attendButton.setEnabled(false);
+	            }**/
+	        }
+	    }
 	private void calcularRacha() {
         rachaActual = 0;
         LocalDate fecha = LocalDate.now();
