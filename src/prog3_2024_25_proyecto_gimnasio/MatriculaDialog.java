@@ -1,5 +1,6 @@
 package prog3_2024_25_proyecto_gimnasio;
 
+import java.awt.Dimension;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
@@ -18,6 +19,7 @@ public class MatriculaDialog extends JDialog{
 		setTitle("Formulario para matricularse");
 		setModal(true);
 		setLayout(new GridLayout(7,2));
+		setMinimumSize(new Dimension(800, 350));
 		
 		txtNombre = new JTextField();
 		txtApellido = new JTextField();

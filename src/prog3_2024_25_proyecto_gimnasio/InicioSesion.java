@@ -15,6 +15,7 @@
 			JButton matricula = new JButton("Matricularse");
 			matricula.addActionListener(e -> {
 				MatriculaDialog matDialog = new MatriculaDialog();
+				matDialog.setVisible(true);
 				if (matDialog.isAceptado()) {
 					this.usuario = new Usuario(matDialog.getNombre(), matDialog.getApellido(), matDialog.getDni(), matDialog.getNumero(), matDialog.getEdad(), matDialog.getSexo());
 					ventana.setUsuario(usuario);
