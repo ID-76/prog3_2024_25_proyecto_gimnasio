@@ -58,6 +58,20 @@ public class PanelUsuario extends JPanel{
         dnil.setBorder(border);
 		add(dnil);
 		
-		
+		JLabel tel = new JLabel("Telefono");
+		tel.setBounds(460, 170, 90, 30);
+		add(tel);
+		JLabel tell = new JLabel(String.valueOf(usuario.getTelefono()));
+		tell.setBounds(460, 202, 150, 30);
+        tell.setBorder(border);
+		add(tell);
+
+		JLabel sex = new JLabel("Sexo");
+		sex.setBounds(390, 235, 90, 30);
+		add(sex);
+		JLabel sexl = new JLabel(usuario.getSexo().toString());
+		sexl.setBounds(390, 260, 150, 30);
+        sexl.setBorder(border);
+		add(sexl);
 	}
 }
