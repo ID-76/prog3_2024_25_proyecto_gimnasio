@@ -1,32 +1,62 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSlider;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.border.Border;
 
 public class PanelUsuario extends JPanel{
 	public PanelUsuario(Usuario usuario) {
-		setLayout(new BorderLayout());
-		JPanel encabezados = new JPanel(new GridLayout(6,2,4,4));
-		add(encabezados, BorderLayout.WEST);
 		
 		String[] encabezados_text = {"Nombre", "Apellido", "DNI", "Telefono", "Edad", "Sexo"};
-		Map<String, String> usuario_info = new HashMap<>();
-		usuario_info.put(encabezados_text[0], usuario.getNombre());
-		usuario_info.put(encabezados_text[1], usuario.getApellido());
-		usuario_info.put(encabezados_text[2], usuario.getDni());
-		usuario_info.put(encabezados_text[3], String.valueOf(usuario.getTelefono()));
-		usuario_info.put(encabezados_text[4], String.valueOf(usuario.getEdad()));
-		usuario_info.put(encabezados_text[5], usuario.getSexo().toString());
-		for (String encabezado : encabezados_text) {
-			encabezados.add(new JLabel(encabezado));
-			encabezados.add(new JLabel(usuario_info.get(encabezado)));
-		}
+		setLayout(null);
+		
+		JLabel nom = new JLabel("Nombre");
+		nom.setBounds(300, 10, 90, 30);
+		add(nom);
+		JLabel noml = new JLabel(usuario.getNombre());
+		noml.setBounds(300, 42, 150, 30);
+		Border border = BorderFactory.createLineBorder(Color.GRAY, 2);
+        noml.setBorder(border);
+		add(noml);
+		
+		JLabel ape = new JLabel("Apellido");
+		ape.setBounds(460, 10, 90, 30);
+		add(ape);
+		JLabel apel = new JLabel(usuario.getApellido());
+		apel.setBounds(460, 42, 150, 30);
+        apel.setBorder(border);
+		add(apel);
+		
+		JSlider ageSlider = new JSlider(0, 100);
+        ageSlider.setValue(usuario.getEdad()); 
+        ageSlider.setEnabled(false);
+        JLabel pointLabel = new JLabel(String.valueOf(usuario.getEdad()));
+        ageSlider.setBounds(300, 130, 300, 50);
+        pointLabel.setBounds(300 + (int)(usuario.getEdad() * 3.0), 110, 30, 20);//IA used to know how to put the point at the same level of the slider
+        add(ageSlider);
+        add(pointLabel);
+        JLabel label = new JLabel("Edad");
+        label.setBounds(300, 80, 90, 30);
+        add(label);
+        
+        JLabel dni = new JLabel("DNI");
+		dni.setBounds(300, 170, 90, 30);
+		add(dni);
+		JLabel dnil = new JLabel(usuario.getDni());
+		dnil.setBounds(300, 202, 150, 30);
+        dnil.setBorder(border);
+		add(dnil);
 		
 		
 	}
