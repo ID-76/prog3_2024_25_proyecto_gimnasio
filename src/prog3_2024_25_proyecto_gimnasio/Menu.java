@@ -5,6 +5,7 @@ import javax.swing.JPanel;
 public class Menu extends JPanel{
 	
 	public Menu() {
+		String s = new String("ggg");
 		
 	}
 }
