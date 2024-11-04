@@ -46,6 +46,7 @@ public class VentanaPrincipal extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(775, 350));
         setMinimumSize(new Dimension(800, 350));
+        setResizable(false);
         setLocationRelativeTo(null);
         setTitle("HOME");
     }
@@ -101,7 +102,7 @@ public class VentanaPrincipal extends JFrame {
         ArrayList<Actividad> listaActividades = new ArrayList<>();
         ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
-        String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio","Equilibrio Avanzado", "Gimnasia", "Gimnasia Avanzada", "HIIT", "Yoga", "Yoga Avanzado"};
+        String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
         VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
         ventana.setVisible(true);
 

@@ -10,7 +10,7 @@ import javax.swing.ImageIcon;
 public class Actividad {
 
 	public enum Tipo {
-		ANDAR, CORE, CORE_AVANZADO, EQUILIBRIO, EQUILIBRIO_AVANAZADO, GIMNASIA, GIMNASIA_AVANZADA, HIIT, YOGA, YOGA_AVANZADO
+		ANDAR, CORE, CORE_AVANZADO, EQUILIBRIO, GIMNASIA, HIIT, YOGA
 		} 
 
 	
@@ -37,7 +37,7 @@ public class Actividad {
 		this.listaUsuarios = new ArrayList<>();
 		this.duracion = 20 + (new Random()).nextInt(61);
 		
-		if (nombre.contains("Avanzad")|| nombre.contains("HIIT")) {
+		if (nombre.contains("Core")|| nombre.contains("HIIT")){
 			this.intensidad = "Alta";
 		} else {
 			this.intensidad = "Normal";
@@ -68,12 +68,10 @@ public class Actividad {
 			break;
 			
 		case "Equilibrio":
-		case "Equilibrio Avanzado": 
-			this.descripcion = "En esta clase haremos ejercicios para mejorar el equilibrio";
+			this.descripcion = "En esta clase entrenaremos el equilibrio y la flexibilidad";
 			break;
 			
 		case "Gimnasia":
-		case "Gimnasia Avanzada":
 			this.descripcion = "En esta clase practicaremos varios ejercicios gimnasticos";
 			break;
 			
@@ -82,7 +80,6 @@ public class Actividad {
 			break;
 		
 		case "Yoga":
-		case "Yoga Avanzado":
 			this.descripcion = "En esta clase haremos ejercicios de yoga y meditacion";
 			break;
 		default:
@@ -107,16 +104,8 @@ public class Actividad {
 			this.tipo = Tipo.EQUILIBRIO;
 			break;
 			
-		case "Equilibrio Avanzado": 
-			this.tipo = Tipo.EQUILIBRIO;
-			break;
-			
 		case "Gimnasia":
 			this.tipo = Tipo.GIMNASIA;
-			break;
-			
-		case "Gimnasia Avanzada":
-			this.tipo = Tipo.GIMNASIA_AVANZADA;
 			break;
 			
 		case "HIIT":
@@ -126,10 +115,7 @@ public class Actividad {
 		case "Yoga":
 			this.tipo = Tipo.YOGA;
 			break;
-			
-		case "Yoga Avanzado":
-			this.tipo = Tipo.YOGA_AVANZADO;
-			break;
+
 		default:
 			this.tipo = null;
 			break;

@@ -21,10 +21,11 @@ public class PanelActividad extends JPanel implements ActionListener {
     ArrayList<String> actividadesTipoActualFecha;
     Actividad actualActividad;
     private JLabel lIntensidad;
-    private JTextArea textArea;
+    private JTextArea lDescripcion;
     private JLabel sitiosDisp;
     private JLabel icono;
     private JLabel lDuracion;
+    private JProgressBar disponibilidadPbar;
     private ArrayList<Actividad> listaActividades;
 
     public PanelActividad(ArrayList<Actividad> listaActividades) {
@@ -34,11 +35,9 @@ public class PanelActividad extends JPanel implements ActionListener {
 
         if (!listaActividades.isEmpty()) {
             actualActividad = listaActividades.get(0);
-        }
-
-        if (!actividadesTipoActualFecha.isEmpty()) {
             actividadesTipoActualFecha.add(listaActividades.get(0).getFecha().toString());
         }
+
         setLayout(new BorderLayout(3, 3));
 
         try {
@@ -47,40 +46,59 @@ public class PanelActividad extends JPanel implements ActionListener {
             e.printStackTrace();
         }
 
-        
-        
         // INFORMACION (>>ACTIVIDAD)
-        JPanel informacion = new JPanel(new BorderLayout(10, 3));
-        informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
+        JPanel informacion = new JPanel();
+        informacion.setLayout(new GridBagLayout());
+        informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 30));
         add(informacion, BorderLayout.EAST);
+        
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 5, 15, 5);
+        gbc.anchor = GridBagConstraints.EAST;
 
+
+        JLabel tIntensidad = new JLabel("Intensidad:");
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(tIntensidad, gbc);
+        
+        JLabel tDuracion = new JLabel("Duración:");
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(tDuracion, gbc);
+        
+        JLabel tDescripcion = new JLabel("Descripción:");
+        gbc.gridx = 0;
+        gbc.gridy = 4;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(tDescripcion, gbc);
         
         
-        // TITULOS (>>INFORMACION)
-        JPanel titulos = new JPanel(new GridLayout(4, 1));
-        informacion.add(titulos, BorderLayout.WEST);
-
-        lIntensidad = new JLabel("Intensidad:");
-        lDuracion = new JLabel("Duración:");
-        JLabel lDescripcion = new JLabel("Descripción:");
-
-        titulos.add(lIntensidad);
-        titulos.add(lDuracion);
-        titulos.add(lDescripcion);
-
+        lIntensidad = new JLabel();
+        gbc.gridx = 3;
+        gbc.gridy = 0;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(lIntensidad, gbc);
+        
+        lDuracion = new JLabel();        
+        gbc.gridx = 3;
+        gbc.gridy = 2;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(lDuracion, gbc);
+        
+        lDescripcion = new JTextArea(5, 15);
+        lDescripcion.setEditable(false);
+        lDescripcion.setLineWrap(true);
+        lDescripcion.setWrapStyleWord(true);
+        gbc.gridx = 3;
+        gbc.gridy = 4;
+        gbc.gridwidth = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        informacion.add(lDescripcion, gbc);
         
         
-        // DATOS (>>INFORMACION)
-        JPanel datos = new JPanel(new GridLayout(4, 1));
-        informacion.add(datos, BorderLayout.EAST);
-
-        textArea = new JTextArea();
-        textArea.setEditable(false);
-        datos.add(new JLabel());
-        datos.add(new JLabel());
-        datos.add(new JScrollPane(textArea));
-        datos.add(new JLabel());
-
         
         
         // RESERVA (>>ACTIVIDAD)
@@ -88,11 +106,8 @@ public class PanelActividad extends JPanel implements ActionListener {
         reserva.setLayout(new GridBagLayout());
         add(reserva, BorderLayout.WEST);
 
-        GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 5, 15, 5);
 
-        
-        
         // ACTIVIDADES
         tipoActividadCombo = new JComboBox<>(Tipo.values());
         tipoActividadCombo.addActionListener(this);
@@ -102,8 +117,6 @@ public class PanelActividad extends JPanel implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         reserva.add(tipoActividadCombo, gbc);
 
-        
-        
         // DIA
         diaActividadCombo = new JComboBox<>(actividadesTipoActualFecha.toArray(new String[0]));
         diaActividadCombo.addActionListener(this);
@@ -113,9 +126,7 @@ public class PanelActividad extends JPanel implements ActionListener {
         gbc.gridheight = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         reserva.add(diaActividadCombo, gbc);
-        
-        
-        
+
         // LOGO
         icono = new JLabel();
         gbc.gridx = 1;
@@ -132,13 +143,8 @@ public class PanelActividad extends JPanel implements ActionListener {
         icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
         reserva.add(icono, gbc);
 
-        
-        
         // SITIOS DISPONIBLES
         sitiosDisp = new JLabel();
-        if (actualActividad != null) {
-            sitiosDisp.setText(String.valueOf(actualActividad.getOcupacion()));
-        }
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.gridwidth = 2;
@@ -146,17 +152,19 @@ public class PanelActividad extends JPanel implements ActionListener {
         reserva.add(sitiosDisp, gbc);
 
         // PROGRESS BAR
-        JLabel sitiosDispProg = new JLabel("Sitios Disponibles Progress Bar");
+        disponibilidadPbar = new JProgressBar(0, actualActividad.getCapacidad());
+        disponibilidadPbar.setStringPainted(true);
+        disponibilidadPbar.setForeground(Color.WHITE);
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         gbc.gridwidth = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(sitiosDispProg, gbc);
+        reserva.add(disponibilidadPbar, gbc);
 
         // APUNTARSE
         JButton apuntarse = new JButton("Apuntarse");
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 6;
         gbc.gridwidth = 1;
         apuntarse.setBackground(Color.green);
         apuntarse.setOpaque(true);
@@ -166,7 +174,7 @@ public class PanelActividad extends JPanel implements ActionListener {
         // DESAPUNTARSE
         JButton desapuntarse = new JButton("Desapuntarse");
         gbc.gridx = 1;
-        gbc.gridy = 4;
+        gbc.gridy = 6;
         desapuntarse.setBackground(Color.RED);
         reserva.add(desapuntarse, gbc);
 
@@ -204,11 +212,17 @@ public class PanelActividad extends JPanel implements ActionListener {
     }
 
     private void updateActividadInfo() {
-        lIntensidad.setText("Intensidad: " + actualActividad.getIntensidad());
-        lDuracion.setText("Duración: " + actualActividad.getDuracion());
-        textArea.setText(actualActividad.getDescripcion());
-        sitiosDisp.setText(String.valueOf(actualActividad.getOcupacion()));
-        
+        lIntensidad.setText(actualActividad.getIntensidad());
+        lDuracion.setText(String.valueOf(actualActividad.getDuracion()));
+        lDescripcion.setText(actualActividad.getDescripcion());
+        sitiosDisp.setText("Hay "+ String.valueOf(actualActividad.getCapacidad() - actualActividad.getOcupacion())+" sitios disponibles");
+        disponibilidadPbar.setValue(actualActividad.getCapacidad()-actualActividad.getOcupacion());
+        if (actualActividad.getCapacidad() - actualActividad.getOcupacion() < 1) {
+            disponibilidadPbar.setForeground(Color.RED);
+        } else {
+            disponibilidadPbar.setForeground(Color.GREEN);
+        }
+
         ImageIcon logo = actualActividad.getLogo();
         logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
         icono.setIcon(logo);
