@@ -12,14 +12,16 @@ public class Usuario {
 	private int telefono;
 	private int edad;
 	private Sexo sexo;
+	private String contraseña;
 	
-	public Usuario(String nombre, String apellido, String dni, int telefono, int edad, Sexo sexo) {
+	public Usuario(String nombre, String apellido, String dni, int telefono, int edad, Sexo sexo, String contraseña) {
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.dni = dni;
 		this.telefono = telefono;
 		this.edad = edad;
 		this.sexo = sexo;
+		this.contraseña = contraseña;
 	}
 	
 	public String getNombre() {
@@ -45,6 +47,10 @@ public class Usuario {
     public Sexo getSexo() {
         return sexo;
     }
+    
+    public String getContraseña() {
+    	return contraseña;
+    }
 
     public void setNombre(String nombre) {
         this.nombre = nombre;
@@ -69,10 +75,14 @@ public class Usuario {
     public void setSexo(Sexo sexo) {
         this.sexo = sexo;
     }
+    
+    public void setContraseña(String contraseña) {
+    	this.contraseña = contraseña;
+    }
 
     @Override
     public String toString() {
         return "Usuario [nombre=" + nombre + ", apellido=" + apellido + ", dni=" + dni + ", telefono=" + telefono
-                + ", edad=" + edad + ", sexo=" + sexo + "]";
+                + ", edad=" + edad + ", sexo=" + sexo + ", contraseña="+contraseña+"]";
     }
 }

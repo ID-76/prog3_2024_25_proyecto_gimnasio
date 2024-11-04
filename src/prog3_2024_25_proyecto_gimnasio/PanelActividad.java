@@ -28,10 +28,10 @@ public class PanelActividad extends JPanel implements ActionListener {
     
     
     public PanelActividad() {
-        Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Sexo.HOMBRE);
-        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Sexo.HOMBRE);
-        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Sexo.MUJER);
-        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Sexo.MUJER);
+        Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Sexo.HOMBRE, "aaa");
+        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Sexo.HOMBRE, "aaa");
+        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Sexo.MUJER, "aaa");
+        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Sexo.MUJER, "aaa");
 
         Actividad actividad1 = new Actividad("Andar", 50, null);
         Actividad actividad2 = new Actividad("Gimnasia", 15, null);

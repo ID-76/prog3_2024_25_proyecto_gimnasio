@@ -23,6 +23,10 @@ public class VentanaPrincipal extends JFrame {
 		this.ActualizarVentana();
 	}
 	
+	public List<Usuario> getUsuarios(){
+		return usuarios;
+	}
+	
 	public VentanaPrincipal(ArrayList<Usuario> usuarios) {
 		this.usuarios = usuarios;
 		this.usuario = null;
