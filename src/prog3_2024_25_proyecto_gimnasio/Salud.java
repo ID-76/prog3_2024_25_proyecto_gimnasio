@@ -123,7 +123,7 @@ public class Salud extends JPanel {
 	        if (attendedSessions < totalSessions) {
 	            attendedSessions++;
 	            int attendancePercentage = (int) ((attendedSessions / (double) totalSessions) * 100);
-	            attendanceLabel.setText("Attendance: " + attendancePercentage + "%");
+	            attendanceLabel.setText( attendancePercentage + "% de dias asistidos esta semana");
 
 	            // Optional: Disable button if goal is reached
 	            /**if (attendedSessions == totalSessions) {
