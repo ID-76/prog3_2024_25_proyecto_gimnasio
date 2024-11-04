@@ -112,16 +112,16 @@ public class VentanaPrincipal extends JFrame {
         VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
         ventana.setVisible(true);
 
-        Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, null);
-        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER, null);
-        Usuario usuario5 = new Usuario("Jon", "Lopez", "12345678A", 600000000, 30, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario6 = new Usuario("Andoni", "Perez", "89326102A", 680123045, 42, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario7 = new Usuario("Mikel", "Garcia", "03691284J", 633901881, 19, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario8 = new Usuario("Julen", "Gonzalez", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE, null);
-        Usuario usuario9 = new Usuario("June", "Lopez", "67812930A", 66129273, 25, Usuario.Sexo.MUJER, null);
-        Usuario usuario10 = new Usuario("Malen", "Bikandi", "98126102A", 682012371, 44, Usuario.Sexo.MUJER, null);
+        Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, "");
+        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER, "");
+        Usuario usuario5 = new Usuario("Jon", "Lopez", "12345678A", 600000000, 30, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario6 = new Usuario("Andoni", "Perez", "89326102A", 680123045, 42, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario7 = new Usuario("Mikel", "Garcia", "03691284J", 633901881, 19, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario8 = new Usuario("Julen", "Gonzalez", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE, "");
+        Usuario usuario9 = new Usuario("June", "Lopez", "67812930A", 66129273, 25, Usuario.Sexo.MUJER, "");
+        Usuario usuario10 = new Usuario("Malen", "Bikandi", "98126102A", 682012371, 44, Usuario.Sexo.MUJER, "");
         listaUsuarios.add(usuario1);
         listaUsuarios.add(usuario2);
         listaUsuarios.add(usuario3);

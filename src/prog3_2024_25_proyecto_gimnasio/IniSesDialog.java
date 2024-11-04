@@ -15,7 +15,7 @@ public class IniSesDialog extends JDialog{
 	private boolean aceptado = false;
 	
 	public IniSesDialog() {
-		setTitle("Formulario para ");
+		setTitle("Formulario para Iniciar Sesion");
 		setModal(true);
 		JPanel panel = new JPanel(new GridLayout(3,2));
 		setMinimumSize(new Dimension(400, 350));
