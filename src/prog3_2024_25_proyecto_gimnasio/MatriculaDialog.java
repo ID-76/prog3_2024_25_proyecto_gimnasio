@@ -7,39 +7,43 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class MatriculaDialog extends JDialog{
 	private static final long serialVersionUID = 1L;
-	private JTextField txtNombre, txtApellido, txtDni, txtNum, txtEdad;
+	private JTextField txtNombre, txtApellido, txtDni, txtNum, txtEdad, txtCont;
 	private JComboBox<Usuario.Sexo> comboSexo;
 	private boolean aceptado = false;
 	
 	public MatriculaDialog() {
 		setTitle("Formulario para matricularse");
 		setModal(true);
-		setLayout(new GridLayout(7,2));
-		setMinimumSize(new Dimension(800, 350));
+		JPanel panel = new JPanel(new GridLayout(8,2));
+		setMinimumSize(new Dimension(400, 350));
 		
 		txtNombre = new JTextField();
 		txtApellido = new JTextField();
 		txtDni = new JTextField();
 		txtNum = new JTextField();
 		txtEdad = new JTextField();
+		txtCont = new JTextField();
 		comboSexo = new JComboBox<>(Usuario.Sexo.values());
 		
-		add(new JLabel("Nombre:"));
-		add(txtNombre);
-		add(new JLabel("Apellido:"));
-		add(txtApellido);
-		add(new JLabel("DNI:"));
-		add(txtDni);
-		add(new JLabel("Numero de telefono:"));
-		add(txtNum);
-		add(new JLabel("Edad:"));
-		add(txtEdad);
-		add(new JLabel("Sexo:"));
-		add(comboSexo);
+		panel.add(new JLabel("Nombre:"));
+		panel.add(txtNombre);
+		panel.add(new JLabel("Apellido:"));
+		panel.add(txtApellido);
+		panel.add(new JLabel("DNI:"));
+		panel.add(txtDni);
+		panel.add(new JLabel("Contraseña:"));
+		panel.add(txtCont);
+		panel.add(new JLabel("Numero de telefono:"));
+		panel.add(txtNum);
+		panel.add(new JLabel("Edad:"));
+		panel.add(txtEdad);
+		panel.add(new JLabel("Sexo:"));
+		panel.add(comboSexo);
 		
 		JButton botonAceptar = new JButton("Aceptar");
 		botonAceptar.addActionListener(e -> {
@@ -52,8 +56,10 @@ public class MatriculaDialog extends JDialog{
 			setVisible(false);
 		});
 		
-		add(botonCancelar);
-		add(botonAceptar);
+		panel.add(botonCancelar);
+		panel.add(botonAceptar);
+		add(panel);
+		
 		setLocationRelativeTo(null);
 	}
 		
@@ -92,4 +98,8 @@ public class MatriculaDialog extends JDialog{
         public Usuario.Sexo getSexo() {
             return (Usuario.Sexo) comboSexo.getSelectedItem();
 	}
+        
+        public String getCont() {
+        	return txtCont.getText();
+        }
 }

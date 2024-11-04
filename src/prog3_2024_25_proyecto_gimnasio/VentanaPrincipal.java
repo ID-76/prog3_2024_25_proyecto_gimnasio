@@ -21,6 +21,25 @@ public class VentanaPrincipal extends JFrame {
     private Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
+	private static final long serialVersionUID = 1L;
+	private JPanel principal;
+	private List<Usuario> usuarios;
+	private Usuario usuario;
+	
+	public void setUsuario(Usuario u) {
+		this.usuario = u;
+		this.ActualizarVentana();
+	}
+	
+	public List<Usuario> getUsuarios(){
+		return usuarios;
+	}
+	
+	public VentanaPrincipal(ArrayList<Usuario> usuarios) {
+		this.usuarios = usuarios;
+		this.usuario = null;
+		
+		this.principal = new InicioSesion(this);
 
     public void setUsuario(Usuario u) {
         this.usuario = u;
