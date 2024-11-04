@@ -4,14 +4,21 @@ package prog3_2024_25_proyecto_gimnasio;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import javax.swing.*;
+
+import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
 
 public class PanelActividad extends JPanel implements ActionListener {
 
     private static final long serialVersionUID = 1L;
     int puntero = 0;
-    JComboBox<String> nombreActividad;
+    JComboBox<Tipo> tipoActividadCombo;
+    JComboBox<String> diaActividadCombo;
+    Tipo actualTipo;
+    ArrayList<Actividad> actividadesTipoActual;
+    ArrayList<String> actividadesTipoActualFecha;
     Actividad actualActividad;
     private JLabel lIntensidad;
     private JTextArea textArea;
@@ -22,11 +29,16 @@ public class PanelActividad extends JPanel implements ActionListener {
 
     public PanelActividad(ArrayList<Actividad> listaActividades) {
         this.listaActividades = listaActividades;
+        this.actividadesTipoActual = new ArrayList<>();
+        this.actividadesTipoActualFecha = new ArrayList<>();
 
         if (!listaActividades.isEmpty()) {
             actualActividad = listaActividades.get(0);
         }
 
+        if (!actividadesTipoActualFecha.isEmpty()) {
+            actividadesTipoActualFecha.add(listaActividades.get(0).getFecha().toString());
+        }
         setLayout(new BorderLayout(3, 3));
 
         try {
@@ -35,11 +47,15 @@ public class PanelActividad extends JPanel implements ActionListener {
             e.printStackTrace();
         }
 
+        
+        
         // INFORMACION (>>ACTIVIDAD)
         JPanel informacion = new JPanel(new BorderLayout(10, 3));
         informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
         add(informacion, BorderLayout.EAST);
 
+        
+        
         // TITULOS (>>INFORMACION)
         JPanel titulos = new JPanel(new GridLayout(4, 1));
         informacion.add(titulos, BorderLayout.WEST);
@@ -52,6 +68,8 @@ public class PanelActividad extends JPanel implements ActionListener {
         titulos.add(lDuracion);
         titulos.add(lDescripcion);
 
+        
+        
         // DATOS (>>INFORMACION)
         JPanel datos = new JPanel(new GridLayout(4, 1));
         informacion.add(datos, BorderLayout.EAST);
@@ -63,6 +81,8 @@ public class PanelActividad extends JPanel implements ActionListener {
         datos.add(new JScrollPane(textArea));
         datos.add(new JLabel());
 
+        
+        
         // RESERVA (>>ACTIVIDAD)
         JPanel reserva = new JPanel();
         reserva.setLayout(new GridBagLayout());
@@ -71,16 +91,31 @@ public class PanelActividad extends JPanel implements ActionListener {
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 5, 15, 5);
 
+        
+        
         // ACTIVIDADES
-        String[] actividades = listaActividades.stream().map(Actividad::getNombre).toArray(String[]::new);
-        nombreActividad = new JComboBox<>(actividades);
-        nombreActividad.addActionListener(this);
+        tipoActividadCombo = new JComboBox<>(Tipo.values());
+        tipoActividadCombo.addActionListener(this);
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(nombreActividad, gbc);
+        reserva.add(tipoActividadCombo, gbc);
 
+        
+        
+        // DIA
+        diaActividadCombo = new JComboBox<>(actividadesTipoActualFecha.toArray(new String[0]));
+        diaActividadCombo.addActionListener(this);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        gbc.gridwidth = 1;
+        gbc.gridheight = 1;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        reserva.add(diaActividadCombo, gbc);
+        
+        
+        
         // LOGO
         icono = new JLabel();
         gbc.gridx = 1;
@@ -97,15 +132,8 @@ public class PanelActividad extends JPanel implements ActionListener {
         icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
         reserva.add(icono, gbc);
 
-        // DIA
-        JLabel dia = new JLabel(actualActividad.getFecha().toString());
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(dia, gbc);
-
+        
+        
         // SITIOS DISPONIBLES
         sitiosDisp = new JLabel();
         if (actualActividad != null) {
@@ -147,11 +175,25 @@ public class PanelActividad extends JPanel implements ActionListener {
         }
     }
 
+    @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == nombreActividad) {
-            int punt = nombreActividad.getSelectedIndex();
-            actualActividad = listaActividades.get(punt);
+        if (e.getSource() == tipoActividadCombo) {
+            actividadesTipoActual.clear();
+            actividadesTipoActualFecha.clear(); // Clear the dates list before populating
 
+            for (Actividad actividad : listaActividades) {
+                if (actividad.getTipo() == tipoActividadCombo.getSelectedItem()) {
+                    actividadesTipoActual.add(actividad);
+                    actividadesTipoActualFecha.add(actividad.getFecha().toString());
+                }
+            }
+
+            // Update the diaActividadCombo model
+            diaActividadCombo.setModel(new DefaultComboBoxModel<>(actividadesTipoActualFecha.toArray(new String[0])));
+        }
+
+        if (e.getSource() == diaActividadCombo) {
+            actualActividad = actividadesTipoActual.get(diaActividadCombo.getSelectedIndex());
             if (actualActividad != null) {
                 updateActividadInfo();
             }
@@ -166,6 +208,7 @@ public class PanelActividad extends JPanel implements ActionListener {
         lDuracion.setText("Duración: " + actualActividad.getDuracion());
         textArea.setText(actualActividad.getDescripcion());
         sitiosDisp.setText(String.valueOf(actualActividad.getOcupacion()));
+        
         ImageIcon logo = actualActividad.getLogo();
         logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
         icono.setIcon(logo);

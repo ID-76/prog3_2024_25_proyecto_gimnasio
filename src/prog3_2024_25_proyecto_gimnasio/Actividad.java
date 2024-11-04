@@ -9,6 +9,11 @@ import javax.swing.ImageIcon;
 
 public class Actividad {
 
+	public enum Tipo {
+		ANDAR, CORE, CORE_AVANZADO, EQUILIBRIO, EQUILIBRIO_AVANAZADO, GIMNASIA, GIMNASIA_AVANZADA, HIIT, YOGA, YOGA_AVANZADO
+		} 
+
+	
 	private String nombre;
 	private int capacidad;
 	private LocalDateTime fecha;
@@ -19,6 +24,7 @@ public class Actividad {
 	private String intensidad;
 	private String descripcion;
 	private int duracion;
+	private Tipo tipo;
 	
 	
 	public Actividad(String nombre, LocalDateTime fecha) {
@@ -31,7 +37,7 @@ public class Actividad {
 		this.listaUsuarios = new ArrayList<>();
 		this.duracion = 20 + (new Random()).nextInt(61);
 		
-		if (nombre.contains("Avanzado")|| nombre.contains("HIIT")) {
+		if (nombre.contains("Avanzad")|| nombre.contains("HIIT")) {
 			this.intensidad = "Alta";
 		} else {
 			this.intensidad = "Normal";
@@ -83,8 +89,52 @@ public class Actividad {
 			this.descripcion = "No hay descripcion para esta actividad";
 			break;
 		}
+	
+		switch (nombre) {
+		case "Andar":
+			this.tipo = Tipo.ANDAR;
+			break;
+			
+		case "Core":
+			this.tipo = Tipo.CORE;
+			break;
+			
+		case "Core Avanzado":
+			this.tipo = Tipo.CORE_AVANZADO;
+			break;
+			
+		case "Equilibrio":
+			this.tipo = Tipo.EQUILIBRIO;
+			break;
+			
+		case "Equilibrio Avanzado": 
+			this.tipo = Tipo.EQUILIBRIO;
+			break;
+			
+		case "Gimnasia":
+			this.tipo = Tipo.GIMNASIA;
+			break;
+			
+		case "Gimnasia Avanzada":
+			this.tipo = Tipo.GIMNASIA_AVANZADA;
+			break;
+			
+		case "HIIT":
+			this.tipo = Tipo.HIIT;
+			break;
+		
+		case "Yoga":
+			this.tipo = Tipo.YOGA;
+			break;
+			
+		case "Yoga Avanzado":
+			this.tipo = Tipo.YOGA_AVANZADO;
+			break;
+		default:
+			this.tipo = null;
+			break;
+		}
 	}
-
 
 	public int getDuracion() {
 		return duracion;
@@ -151,14 +201,17 @@ public class Actividad {
 	}
 
 
+	public Tipo getTipo() {
+		return tipo;
+	}
+
 	@Override
 	public String toString() {
 		return "Actividad [nombre=" + nombre + ", capacidad=" + capacidad + ", fecha=" + fecha + ", ocupacion="
 				+ ocupacion + ", logo=" + logo + ", listaUsuarios=" + listaUsuarios + ", calorias=" + calorias
-				+ ", intensidad=" + intensidad + ", descripcion=" + descripcion + ", duracion=" + duracion + "]";
+				+ ", intensidad=" + intensidad + ", descripcion=" + descripcion + ", duracion=" + duracion + ", tipo="
+				+ tipo + "]";
 	}
-
-
 
 	
 }

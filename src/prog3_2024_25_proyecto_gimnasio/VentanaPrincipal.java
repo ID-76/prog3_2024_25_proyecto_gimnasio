@@ -6,6 +6,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -21,6 +22,7 @@ public class VentanaPrincipal extends JFrame {
     private Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
+    public String[] nombreClases;
 
     public void setUsuario(Usuario u) {
         this.usuario = u;
@@ -129,7 +131,7 @@ public class VentanaPrincipal extends JFrame {
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 3; j++) {
                     Actividad actividad = new Actividad(nombreClase, fecha1);
-                    for (int l = 0; l < (2 + (new Random()).nextInt(8)); l++) {
+                    for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
                         actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
                     }
                     listaActividades.add(actividad);
@@ -138,8 +140,6 @@ public class VentanaPrincipal extends JFrame {
                 fecha1 = fecha1.plusDays(1);
             }
         }
-        ventana.listaActividades = listaActividades; // Ensure listaActividades is set
-        System.out.println(listaUsuarios);
-        System.out.println(listaActividades);
+        ventana.listaActividades = listaActividades; 
     }
 }
