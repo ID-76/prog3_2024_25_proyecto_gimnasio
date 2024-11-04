@@ -98,7 +98,7 @@ public class PanelActividad extends JPanel implements ActionListener {
         reserva.add(icono, gbc);
 
         // DIA
-        JLabel dia = new JLabel("Dia");
+        JLabel dia = new JLabel(actualActividad.getFecha().toString());
         gbc.gridx = 0;
         gbc.gridy = 1;
         gbc.gridwidth = 1;
