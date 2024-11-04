@@ -11,7 +11,7 @@ import javax.swing.JPanel;
 	public class InicioSesion extends JPanel {
 		private static final long serialVersionUID = 1L;
 		
-		private Usuario usuario;
+		private Usuario usu;
 		
 		public InicioSesion(VentanaPrincipal ventana){
 			JButton matricula = new JButton("Matricularse");
@@ -19,8 +19,8 @@ import javax.swing.JPanel;
 				MatriculaDialog matDialog = new MatriculaDialog();
 				matDialog.setVisible(true);
 				if (matDialog.isAceptado()) {
-					this.usuario = new Usuario(matDialog.getNombre(), matDialog.getApellido(), matDialog.getDni(), matDialog.getNumero(), matDialog.getEdad(), matDialog.getSexo(), matDialog.getCont());
-					ventana.setUsuario(usuario);
+					this.usu = new Usuario(matDialog.getNombre(), matDialog.getApellido(), matDialog.getDni(), matDialog.getNumero(), matDialog.getEdad(), matDialog.getSexo(), matDialog.getCont());
+					ventana.setUsuario(usu);
 				}
 				  
 				
@@ -32,17 +32,19 @@ import javax.swing.JPanel;
 				if (iniDialog.isAceptado()) {
 					Usuario u = null;
 					for(Usuario usuario:ventana.getUsuarios()) {
-						if (usuario.getDni() == iniDialog.getDni()) {
+						if (usuario.getDni().equals(iniDialog.getDni())) {
 							u = usuario;
 						}
 					}
 					if (u == null) {
 						JOptionPane.showMessageDialog(null, "Usuario no existente");
+						iniDialog.setVisible(false);
+						return;
 					}
-					if (u.getContraseña() == iniDialog.getDni()) {
-						this.usuario = u;
-						ventana.setUsuario(usuario);
-						ventana.getUsuarios().add(usuario);
+					if (u.getContraseña().equals(iniDialog.getCont())) {
+						this.usu = u;
+						ventana.setUsuario(usu);
+						ventana.getUsuarios().add(usu);
 					}
 				}
 				});
@@ -59,6 +61,6 @@ import javax.swing.JPanel;
 		}
 		
 		public Usuario getUsuario() {
-			return usuario;
+			return usu;
 		}
 	}
