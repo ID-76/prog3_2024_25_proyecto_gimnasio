@@ -14,12 +14,13 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.UIManager;
 
 public class VentanaPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel principal;
     private List<Usuario> usuarios;
-    private Usuario usuario;
+    static Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
     public String[] nombreClases;
@@ -49,6 +50,11 @@ public class VentanaPrincipal extends JFrame {
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("HOME");
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void ActualizarVentana() {

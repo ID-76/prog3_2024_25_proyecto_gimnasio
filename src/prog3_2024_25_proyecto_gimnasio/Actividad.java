@@ -19,7 +19,7 @@ public class Actividad {
 	private LocalDateTime fecha;
 	private int ocupacion;
 	private ImageIcon logo;
-	private ArrayList<Usuario> listaUsuarios;
+	protected ArrayList<Usuario> listaUsuarios;
 	private int calorias;
 	private String intensidad;
 	private String descripcion;
@@ -181,6 +181,9 @@ public class Actividad {
 		this.listaUsuarios.add(usuario);
 	}
 	
+	public void removeUsuario(Usuario usuario) {
+		this.listaUsuarios.remove(usuario);
+	}
 	
 	public void actualizarOcupacion(){
 		this.ocupacion = this.listaUsuarios.size();

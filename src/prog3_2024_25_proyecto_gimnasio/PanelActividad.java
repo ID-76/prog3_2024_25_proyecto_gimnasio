@@ -1,12 +1,26 @@
 
 package prog3_2024_25_proyecto_gimnasio;
 
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Image;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import javax.swing.*;
+
+import javax.swing.BorderFactory;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
+import javax.swing.UIManager;
 
 import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
 
@@ -26,6 +40,8 @@ public class PanelActividad extends JPanel implements ActionListener {
     private JLabel icono;
     private JLabel lDuracion;
     private JProgressBar disponibilidadPbar;
+    private JButton apuntarse;
+    private JButton desapuntarse;
     private ArrayList<Actividad> listaActividades;
 
     public PanelActividad(ArrayList<Actividad> listaActividades) {
@@ -40,54 +56,48 @@ public class PanelActividad extends JPanel implements ActionListener {
 
         setLayout(new BorderLayout(3, 3));
 
-        try {
-            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+
 
         // INFORMACION (>>ACTIVIDAD)
         JPanel informacion = new JPanel();
         informacion.setLayout(new GridBagLayout());
         informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 30));
         add(informacion, BorderLayout.EAST);
-        
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(15, 5, 15, 5);
         gbc.anchor = GridBagConstraints.EAST;
-
 
         JLabel tIntensidad = new JLabel("Intensidad:");
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(tIntensidad, gbc);
-        
+
         JLabel tDuracion = new JLabel("Duración:");
         gbc.gridx = 0;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(tDuracion, gbc);
-        
+
         JLabel tDescripcion = new JLabel("Descripción:");
         gbc.gridx = 0;
         gbc.gridy = 4;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(tDescripcion, gbc);
-        
-        
+
         lIntensidad = new JLabel();
         gbc.gridx = 3;
         gbc.gridy = 0;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(lIntensidad, gbc);
-        
-        lDuracion = new JLabel();        
+
+        lDuracion = new JLabel();
         gbc.gridx = 3;
         gbc.gridy = 2;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(lDuracion, gbc);
-        
+
         lDescripcion = new JTextArea(5, 15);
         lDescripcion.setEditable(false);
         lDescripcion.setLineWrap(true);
@@ -97,10 +107,7 @@ public class PanelActividad extends JPanel implements ActionListener {
         gbc.gridwidth = 1;
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(lDescripcion, gbc);
-        
-        
-        
-        
+
         // RESERVA (>>ACTIVIDAD)
         JPanel reserva = new JPanel();
         reserva.setLayout(new GridBagLayout());
@@ -162,7 +169,9 @@ public class PanelActividad extends JPanel implements ActionListener {
         reserva.add(disponibilidadPbar, gbc);
 
         // APUNTARSE
-        JButton apuntarse = new JButton("Apuntarse");
+        apuntarse = new JButton("Apuntarse");
+        apuntarse.addActionListener(this);
+        apuntarse.setEnabled(false);
         gbc.gridx = 0;
         gbc.gridy = 6;
         gbc.gridwidth = 1;
@@ -172,7 +181,9 @@ public class PanelActividad extends JPanel implements ActionListener {
         reserva.add(apuntarse, gbc);
 
         // DESAPUNTARSE
-        JButton desapuntarse = new JButton("Desapuntarse");
+        desapuntarse = new JButton("Desapuntarse");
+        desapuntarse.addActionListener(this);
+        desapuntarse.setEnabled(false);
         gbc.gridx = 1;
         gbc.gridy = 6;
         desapuntarse.setBackground(Color.RED);
@@ -184,10 +195,11 @@ public class PanelActividad extends JPanel implements ActionListener {
     }
 
     @Override
+    // Con la ayuda de git hub copilot
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == tipoActividadCombo) {
             actividadesTipoActual.clear();
-            actividadesTipoActualFecha.clear(); // Clear the dates list before populating
+            actividadesTipoActualFecha.clear();
 
             for (Actividad actividad : listaActividades) {
                 if (actividad.getTipo() == tipoActividadCombo.getSelectedItem()) {
@@ -196,7 +208,6 @@ public class PanelActividad extends JPanel implements ActionListener {
                 }
             }
 
-            // Update the diaActividadCombo model
             diaActividadCombo.setModel(new DefaultComboBoxModel<>(actividadesTipoActualFecha.toArray(new String[0])));
         }
 
@@ -204,19 +215,50 @@ public class PanelActividad extends JPanel implements ActionListener {
             actualActividad = actividadesTipoActual.get(diaActividadCombo.getSelectedIndex());
             if (actualActividad != null) {
                 updateActividadInfo();
+                apuntarse.setEnabled(true);
+                desapuntarse.setEnabled(false);
+            } else {
+                apuntarse.setEnabled(false);
+                desapuntarse.setEnabled(false);
             }
-
+            if (actualActividad.getListaUsuarios().contains(VentanaPrincipal.usuario)) {
+                apuntarse.setEnabled(false);
+                desapuntarse.setEnabled(true);
+            } else {
+                apuntarse.setEnabled(true);
+                desapuntarse.setEnabled(false);
+            }
             revalidate();
             repaint();
+        }
+        if (e.getSource() == apuntarse) {
+            if (!actualActividad.getListaUsuarios().contains(VentanaPrincipal.usuario)) {
+                actualActividad.addUsuario(VentanaPrincipal.usuario);
+                actualActividad.actualizarOcupacion();
+                updateActividadInfo();
+
+                desapuntarse.setEnabled(true);
+                apuntarse.setEnabled(false);
+            }
+        }
+
+        if (e.getActionCommand().equals("Desapuntarse")) {
+            actualActividad.removeUsuario(VentanaPrincipal.usuario);
+            actualActividad.actualizarOcupacion();
+            updateActividadInfo();
+            desapuntarse.setEnabled(false);
+            apuntarse.setEnabled(true);
         }
     }
 
     private void updateActividadInfo() {
+        actualActividad.actualizarOcupacion();
         lIntensidad.setText(actualActividad.getIntensidad());
         lDuracion.setText(String.valueOf(actualActividad.getDuracion()));
         lDescripcion.setText(actualActividad.getDescripcion());
-        sitiosDisp.setText("Hay "+ String.valueOf(actualActividad.getCapacidad() - actualActividad.getOcupacion())+" sitios disponibles");
-        disponibilidadPbar.setValue(actualActividad.getCapacidad()-actualActividad.getOcupacion());
+        sitiosDisp.setText("Hay " + String.valueOf(actualActividad.getCapacidad() - actualActividad.getOcupacion())
+                + " sitios disponibles");
+        disponibilidadPbar.setValue(actualActividad.getCapacidad() - actualActividad.getOcupacion());
         if (actualActividad.getCapacidad() - actualActividad.getOcupacion() < 1) {
             disponibilidadPbar.setForeground(Color.RED);
         } else {
