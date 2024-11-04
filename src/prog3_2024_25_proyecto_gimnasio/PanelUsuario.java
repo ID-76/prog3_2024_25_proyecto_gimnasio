@@ -8,11 +8,14 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 public class PanelUsuario extends JPanel{
@@ -73,5 +76,27 @@ public class PanelUsuario extends JPanel{
 		sexl.setBounds(390, 260, 150, 30);
         sexl.setBorder(border);
 		add(sexl);
+		
+		ImageIcon iconoGym = new ImageIcon("/Users/asier.gomez/GitHub/prog3_2024_25_proyecto_gimnasio/Images/Usuario.jpeg");
+		JLabel icono = new JLabel(iconoGym);
+		icono.setBounds(10,10,210,210);
+		add(icono);
+		
+		JButton cerrarSes = new JButton("Cerrar Sesion");
+		cerrarSes.setBounds(10,230,210,30);
+		cerrarSes.addActionListener(e -> {
+			VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
+			ventana.setUsuario(null);
+		});
+		add(cerrarSes);
+		
+		JButton darseBaja = new JButton("Darse de baja");
+		darseBaja.setBounds(10,262,210,30);
+		darseBaja.addActionListener(e -> {
+			VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
+			ventana.getUsuarios().remove(usuario);
+			ventana.setUsuario(null);
+		});
+		add(darseBaja);
 	}
 }
