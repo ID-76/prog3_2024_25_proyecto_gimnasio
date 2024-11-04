@@ -123,7 +123,39 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
 
+<<<<<<< Updated upstream
         String[] nombreClases = { "Andar", "Core", "Core Avanzado", "Equilibrio", "Equilibrio Avanzado", "Gimnasia", "Gimnasia Avanzada", "HIIT", "Yoga", "Yoga Avanzado" };
+=======
+						break;
+					case "USUARIO":
+						principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
+
+						break;
+					case "MENU":
+					default:
+						principal.add(new Menu(), BorderLayout.CENTER);
+
+					}
+					principal.revalidate();
+					principal.repaint();
+					principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
+
+				});
+			sidebar.add(boton);
+		}
+		}
+		 add(principal);
+	     revalidate();
+	     repaint();
+	}
+
+	public static void main(String[] args) {
+		
+		ArrayList<Usuario> usuarios = new ArrayList<>();
+		VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
+		ventana.setVisible(true);
+	}
+>>>>>>> Stashed changes
 
         for (String nombreClase : nombreClases) {
             LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 10, 00);

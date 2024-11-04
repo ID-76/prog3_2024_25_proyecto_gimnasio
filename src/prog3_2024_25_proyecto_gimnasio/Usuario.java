@@ -75,10 +75,6 @@ public class Usuario {
     public void setSexo(Sexo sexo) {
         this.sexo = sexo;
     }
-    
-    public void setContraseña(String contraseña) {
-    	this.contraseña = contraseña;
-    }
 
     @Override
     public String toString() {
