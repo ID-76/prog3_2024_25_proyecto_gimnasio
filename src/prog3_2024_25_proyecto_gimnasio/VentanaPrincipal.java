@@ -19,7 +19,6 @@ import javax.swing.UIManager;
 public class VentanaPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel principal;
-    private List<Usuario> usuarios;
     static Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
@@ -31,14 +30,13 @@ public class VentanaPrincipal extends JFrame {
     }
 
     public List<Usuario> getUsuarios() {
-        return usuarios;
+        return listaUsuarios;
     }
 
     public VentanaPrincipal(ArrayList<Usuario> usuarios) {
-        this.usuarios = usuarios;
         this.usuario = null;
+        this.listaUsuarios = usuarios;
         this.listaActividades = new ArrayList<>(); // Initialize listaActividades
-        this.listaUsuarios = new ArrayList<>(); // Initialize listaUsuarios
 
         this.principal = new InicioSesion(this);
 
@@ -104,14 +102,11 @@ public class VentanaPrincipal extends JFrame {
     }
 
     public static void main(String[] args) {
-        ArrayList<Usuario> usuarios = new ArrayList<>();
         ArrayList<Actividad> listaActividades = new ArrayList<>();
         ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
         String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
-        VentanaPrincipal ventana = new VentanaPrincipal(usuarios);
-        ventana.setVisible(true);
-
+        
         Usuario usuario1 = new Usuario("Aitor", "Garcia", "79043212D", 659921098, 21, Usuario.Sexo.HOMBRE, "");
         Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, "");
         Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, "");
@@ -147,6 +142,9 @@ public class VentanaPrincipal extends JFrame {
                 fecha1 = fecha1.plusDays(1);
             }
         }
+        VentanaPrincipal ventana = new VentanaPrincipal(listaUsuarios);
+        ventana.setVisible(true);
+
         ventana.listaActividades = listaActividades; 
     }
 }

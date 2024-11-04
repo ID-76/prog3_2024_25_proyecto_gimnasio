@@ -33,10 +33,12 @@ import javax.swing.JPanel;
 					Usuario u = null;
 					for(Usuario usuario:ventana.getUsuarios()) {
 						if (usuario.getDni().equals(iniDialog.getDni())) {
+							System.out.println(usuario.getDni());
 							u = usuario;
+							break;
 						}
 					}
-					if (u == null) {
+					if (u ==null) {
 						JOptionPane.showMessageDialog(null, "Usuario no existente");
 						iniDialog.setVisible(false);
 						return;
@@ -45,6 +47,8 @@ import javax.swing.JPanel;
 						this.usu = u;
 						ventana.setUsuario(usu);
 						ventana.getUsuarios().add(usu);
+					} else {
+						JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
 					}
 				}
 				});
