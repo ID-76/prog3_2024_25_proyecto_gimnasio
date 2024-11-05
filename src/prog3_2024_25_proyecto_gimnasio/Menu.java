@@ -49,8 +49,4 @@ public class Menu extends JPanel{
 		
 		setVisible(true); 
 	}
-	
-	public static void main(String[] args) {
-		menu m = new Menu();
-	}
 }
