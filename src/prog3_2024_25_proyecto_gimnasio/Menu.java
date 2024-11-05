@@ -1,52 +1,54 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.GridBagConstraints;
 import java.awt.GridLayout;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 public class Menu extends JPanel{
-	
-	private JPanel pNorte, pSur, pCentro, pEste, pOeste;
-	
-	private JButton btnUsuario, btnSalud, btnClases, btnMenu;
-	
-	private JLabel lbMensaje;
-	
-	public Menu() {
-		setName("MENU");
-		setBounds(500, 600, 800, 700);
-		
-		pNorte = new JPanel();
-		pSur = new JPanel();
-		pEste = new JPanel();
-		pOeste = new JPanel();
-		pOeste.setLayout(new GridLayout(4, 1));
-		pCentro = new JPanel();
-		
-		getRootPane().add(pCentro, BorderLayout.CENTER);
-		getRootPane().add(pEste, BorderLayout.EAST);
-		getRootPane().add(pNorte, BorderLayout.NORTH);
-		getRootPane().add(pOeste, BorderLayout.WEST);
-		getRootPane().add(pSur, BorderLayout.SOUTH);
-		
-		btnUsuario = new JButton("Usuario");
-		btnSalud= new JButton("Salud");
-		btnClases = new JButton("Clases");
-		btnMenu = new JButton("Menu");
-		
-		pOeste.add(btnUsuario);
-		pOeste.add(btnSalud);
-		pOeste.add(btnClases);
-		pOeste.add(btnMenu);
+	private static final long serialVersionUID = 1L;
 
-		lbMensaje = new JLabel("Hola USUARIO, estas son tus clases para hoy: ");
-		//lbMensaje.setFont(new Font("Arial", Font.BOLD, 30));
-		pCentro.add(lbMensaje);
-		
-		
-		setVisible(true); 
+	@SuppressWarnings("null")
+	public Menu() {
+		setLayout(new GridLayout(2,1,3,3));
+		VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
+		Usuario usuario = ventana.getUsuario();
+		List<Actividad> actividades = ventana.getActividades();
+		LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
+	    LocalDateTime haceUnaSemana = fecha.minusWeeks(1);
+	    List<Actividad> actividadesUltimaSemana = null;
+	    for (Actividad actividad: actividades) {
+	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fecha)&& actividad.getListaUsuarios().contains(usuario)) {
+	    		actividadesUltimaSemana.add(actividad);
+	    	}
+	    }
+		JProgressBar barraCal = new JProgressBar(0, 5000);
+        barraCal.setStringPainted(true);
+        barraCal.setForeground(Color.WHITE);
+        int cal = 0;
+        for (Actividad actividad: actividadesUltimaSemana) {
+        	cal += actividad.getCalorias();
+        }
+        if(cal > 5000) {
+        	cal = 5000;
+        }
+        barraCal.setValue(cal);
+        if (cal < 400) {
+            barraCal.setForeground(Color.RED);
+        } else {
+            barraCal.setForeground(Color.GREEN);
+        }
+        add(barraCal);
+        setVisible(true);
 	}
 }

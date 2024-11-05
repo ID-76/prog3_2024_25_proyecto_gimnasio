@@ -37,6 +37,14 @@ public class VentanaPrincipal extends JFrame {
     public List<Usuario> getUsuarios() {
         return listaUsuarios;
     }
+    
+    public List<Actividad> getActividades(){
+    	return listaActividades;
+    }
+    
+    public Usuario getUsuario() {
+    	return usuario;
+    }
 
     public VentanaPrincipal(ArrayList<Usuario> usuarios) {
         this.usuario = null;
