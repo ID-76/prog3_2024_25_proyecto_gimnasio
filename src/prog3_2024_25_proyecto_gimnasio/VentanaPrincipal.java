@@ -60,7 +60,7 @@ public class VentanaPrincipal extends JFrame {
         setMinimumSize(new Dimension(800, 350));
         setResizable(false);
         setLocationRelativeTo(null);
-        setTitle("HOME");
+        setTitle("GIMNASIO");
         try {
             UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
         } catch (Exception e) {
@@ -81,7 +81,7 @@ public class VentanaPrincipal extends JFrame {
             sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
             principal.add(sidebar, BorderLayout.WEST);
 
-            String[] clasesText = { "MENU", "ACTIVIDADES", "SALUD", "USUARIO", };
+            String[] clasesText = {"ACTIVIDADES", "SALUD", "USUARIO" };
 
             for (String text : clasesText) {
             	
@@ -111,11 +111,9 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new Salud(), BorderLayout.CENTER);
                             break;
                         case "USUARIO":
+                        	default:
                             principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
                             break;
-                        case "MENU":
-                        default:
-                            principal.add(new Menu(), BorderLayout.CENTER);
                     }
                     principal.revalidate();
                     principal.repaint();
