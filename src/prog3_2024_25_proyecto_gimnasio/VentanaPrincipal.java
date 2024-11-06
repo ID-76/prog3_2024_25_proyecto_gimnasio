@@ -148,4 +148,6 @@ public class VentanaPrincipal extends JFrame {
         ventana.listaActividades = listaActividades; 
         
     }
+    
+   
 }
