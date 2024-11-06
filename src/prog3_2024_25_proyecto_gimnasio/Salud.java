@@ -72,7 +72,8 @@ public class Salud extends JPanel {
 	            @Override
 	            public void actionPerformed(ActionEvent e) {
 	                // Crear y mostrar una nueva instancia de VentanaSecundaria
-	                new Calendario();
+	                Calendario calendario = new Calendario();
+	                calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	            }
 	        });
 		

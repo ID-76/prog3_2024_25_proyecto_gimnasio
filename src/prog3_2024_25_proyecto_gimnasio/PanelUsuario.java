@@ -87,7 +87,7 @@ public class PanelUsuario extends JPanel{
 		cerrarSes.addActionListener(e -> {
 			VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
 			ventana.setUsuario(null);
-		});
+		});	
 		add(cerrarSes);
 		
 		JButton darseBaja = new JButton("Darse de baja");
