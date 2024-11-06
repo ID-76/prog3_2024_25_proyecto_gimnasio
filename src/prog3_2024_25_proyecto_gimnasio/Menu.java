@@ -11,11 +11,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
-public class Menu extends JFrame {
+public class Menu extends JPanel {
 	
 	private JButton btnUsuario, btnSalud, btnClases, btnMenu;
 	
-	private JPanel pNorte, pSur, pCentro, pEste, pOeste;
+	private JPanel pNorte, pSur, pCentro, pEste, pOeste, pCentroArriba,pCentroAbajo;
 	
 	private JLabel lbMensaje;
 	
@@ -23,22 +23,23 @@ public class Menu extends JFrame {
 	
 	public Menu() {
 		
-		//setTitle("MENU");
-		setBounds(300, 400, 800, 600);
+		this.setLayout(new BorderLayout());
 			
 		pNorte = new JPanel();
 		pSur = new JPanel();
 		pCentro = new JPanel();
-		pCentro.setLayout(new GridLayout(2, 1));
+		pCentro.setLayout(new GridLayout(5, 1));
 		pEste = new JPanel();
 		pOeste = new JPanel();
 		pOeste.setLayout(new GridLayout(4, 1));
+		pCentroArriba = new JPanel();
+		pCentroAbajo = new JPanel();
 		
-		getContentPane().add(pNorte, BorderLayout.NORTH);
-		getContentPane().add(pSur, BorderLayout.SOUTH);
-		getContentPane().add(pCentro, BorderLayout.CENTER);
-		getContentPane().add(pEste, BorderLayout.EAST);
-		getContentPane().add(pOeste, BorderLayout.WEST);
+		this.add(pNorte, BorderLayout.NORTH);
+		this.add(pSur, BorderLayout.SOUTH);
+		this.add(pCentro, BorderLayout.CENTER);
+		this.add(pEste, BorderLayout.EAST);
+		this.add(pOeste, BorderLayout.WEST);
 		
 			
 		btnUsuario = new JButton("Usuario");
@@ -52,9 +53,12 @@ public class Menu extends JFrame {
 		pOeste.add(btnMenu);
 		
 			
+		//lbMensaje = new JLabel("Hola " + VentanaPrincipal.usuario.getNombre()+ ". Estas son tus clases para hoy");
 		lbMensaje = new JLabel("Hola nombre. Estas son tus clases para hoy");
+		lbMensaje.setHorizontalAlignment(JLabel.CENTER);
 		pCentro.add(lbMensaje, BorderLayout.SOUTH);
-		
+		pCentro.add(new JPanel());
+		pCentro.add(new JPanel());
 		progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true); // Muestra el porcentaje en la barra
         progressBar.setForeground(Color.BLUE);
@@ -63,14 +67,18 @@ public class Menu extends JFrame {
 
         
         pCentro.add(progressBar, BorderLayout.CENTER);
-        
+        pCentro.add(new JPanel());
 		
 			
 		setVisible(true);
 	}
 
 	public static void main(String[] args) {
+		JFrame f = new JFrame();
+		f.setBounds(300, 200, 400, 200);
 		Menu menu = new Menu();
+		f.getContentPane().add(menu);
+		f.setVisible(true);
 	}
 	
 	
