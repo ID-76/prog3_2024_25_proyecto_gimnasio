@@ -25,7 +25,7 @@ import javax.swing.UIManager;
 import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
 
 public class PanelActividad extends JPanel implements ActionListener {
-
+	
     private static final long serialVersionUID = 1L;
     int puntero = 0;
     JComboBox<Tipo> tipoActividadCombo;

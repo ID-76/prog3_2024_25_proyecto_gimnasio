@@ -116,7 +116,7 @@ public class Salud extends JPanel {
             }
         });
         
-        
+      
 		// DATOS (>>INFORMACION)
 				JPanel datos = new JPanel(new GridLayout(5, 1));
 				informacion.add(datos, BorderLayout.EAST);

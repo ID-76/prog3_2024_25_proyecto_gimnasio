@@ -19,6 +19,11 @@ import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
 
 public class PanelUsuario extends JPanel{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public PanelUsuario(Usuario usuario) {
 		
 		String[] encabezados_text = {"Nombre", "Apellido", "DNI", "Telefono", "Edad", "Sexo"};

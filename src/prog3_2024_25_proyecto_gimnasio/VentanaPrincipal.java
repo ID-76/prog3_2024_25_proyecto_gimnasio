@@ -34,7 +34,7 @@ public class VentanaPrincipal extends JFrame {
         this.usuario = u;
         this.ActualizarVentana();
     }
-
+    
     public List<Usuario> getUsuarios() {
         return listaUsuarios;
     }
