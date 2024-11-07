@@ -28,6 +28,7 @@ public class VentanaPrincipal extends JFrame {
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
     public String[] nombreClases;
+    private Calendario Calendario;
 
     public void setUsuario(Usuario u) {
         this.usuario = u;
@@ -108,7 +109,7 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
                             break;
                         case "SALUD":
-                            principal.add(new Salud(), BorderLayout.CENTER);
+                            principal.add(new Salud(Calendario), BorderLayout.CENTER);
                             break;
                         case "USUARIO":
                         	default:

@@ -82,18 +82,14 @@ public class Calendario extends JFrame {
         // Button actions
         btnAnterior.addActionListener(e -> cambiarMes(-1));
         btnSiguiente.addActionListener(e -> cambiarMes(1));
-        highlightTodayButton.addActionListener(e ->highlight() );
+        highlightTodayButton.addActionListener(e -> highlightToday() );
 
         actualizarCalendario(mesActual, anoActual);
 
         setVisible(true);
     }
 
-    private void highlight() {
-    	highlightTodayButton.setEnabled(false);
-    	tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer());
-    	tabla.repaint();
-	}
+    
 
 	private void cambiarMes(int incremento) {
         mesActual += incremento;
@@ -143,28 +139,27 @@ public class Calendario extends JFrame {
         }
     }
 
+    public void highlightToday() {
+        tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer());
+        tabla.repaint();
+    }
+
+    // Renderizador de celdas personalizado para resaltar el día actual
     private class CalendarCellRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-
-            // Reset background color
             cell.setBackground(Color.WHITE);
 
-            // Highlight today's date if it matches the cell value
-            if (value != null && (int) value == diaActual &&
-                    mesActual == currentDate.getMonthValue() - 1 &&
-                    anoActual == currentDate.getYear()) {
+            // Resaltar el día actual
+            if (value != null && value.equals(diaActual)) {
                 cell.setBackground(Color.GREEN);
             }
-
             return cell;
         }
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(Calendario::new);
-    }
+    
 }
