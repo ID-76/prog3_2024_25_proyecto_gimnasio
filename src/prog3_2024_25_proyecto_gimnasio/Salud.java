@@ -76,6 +76,7 @@ public class Salud extends JPanel {
 	                calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	            }
 	        });
+		 
 		
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
@@ -100,12 +101,14 @@ public class Salud extends JPanel {
                 if (diasAsistidos.add(hoy)) {
                     calcularRacha();
                     incrementAttendance();
+                    registrarEjercicio();
                 } else {
                     JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
                 }
                 
             }
         });
+        
         
 		// DATOS (>>INFORMACION)
 				JPanel datos = new JPanel(new GridLayout(5, 1));
@@ -115,11 +118,37 @@ public class Salud extends JPanel {
 				datos.add(attendanceLabel);
 				datos.add(lblRacha);
 				datos.add(btnRegistrarDia);
-		       
-		        
-		       
+      
 		
 	}
+	
+	private void registrarEjercicio() {
+        // Opciones de ejercicio y sus calorías aproximadas
+        String[] ejercicios = {"Correr (300 kcal)", "Levantamiento de pesas (200 kcal)", "Yoga (100 kcal)", "Ciclismo (250 kcal)"};
+        int[] calorias = {300, 200, 100, 250};
+
+        // Mostrar las opciones en un diálogo
+        String seleccion = (String) JOptionPane.showInputDialog(
+                this,
+                "¿Qué ejercicio hiciste hoy?",
+                "Seleccionar Ejercicio",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                ejercicios,
+                ejercicios[0]
+        );
+
+        // Verificar la selección y actualizar la barra de progreso
+        if (seleccion != null) {
+            for (int i = 0; i < ejercicios.length; i++) {
+                if (seleccion.equals(ejercicios[i])) {
+                    int kcalActuales = progressBar.getValue() + calorias[i];
+                    progressBar.setString(kcalActuales + " / " + kcalObjetivo + " kcal quemadas"); // No excede el máximo
+                    break;
+                }
+            }
+        }
+    }
 	 private void incrementAttendance() {
 	        if (attendedSessions < totalSessions) {
 	            attendedSessions++;
