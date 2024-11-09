@@ -43,13 +43,17 @@ public class VentanaPrincipal extends JFrame {
     	return listaActividades;
     }
     
+    public void setUsuarios(ArrayList<Usuario> usuarios) {
+    	this.listaUsuarios = usuarios;
+    }
+    
     public Usuario getUsuario() {
     	return usuario;
     }
 
-    public VentanaPrincipal(ArrayList<Usuario> usuarios) {
+    public VentanaPrincipal() {
         this.usuario = null;
-        this.listaUsuarios = usuarios;
+        this.listaUsuarios = new ArrayList<>();
         this.listaActividades = new ArrayList<>(); // Initialize listaActividades
 
         this.principal = new InicioSesion(this);
@@ -169,10 +173,11 @@ public class VentanaPrincipal extends JFrame {
                 fecha1 = fecha1.plusDays(1);
             }
         }
-        VentanaPrincipal ventana = new VentanaPrincipal(listaUsuarios);
+        VentanaPrincipal ventana = new VentanaPrincipal();
         ventana.setVisible(true);
 
-        ventana.listaActividades = listaActividades; 
+        ventana.listaActividades = listaActividades;
+        ventana.listaUsuarios = listaUsuarios;
         
     }
 }

@@ -46,7 +46,6 @@ import javax.swing.JPanel;
 					if (u.getContraseña().equals(iniDialog.getCont())) {
 						this.usu = u;
 						ventana.setUsuario(usu);
-						ventana.getUsuarios().add(usu);
 					} else {
 						JOptionPane.showMessageDialog(null, "Contraseña incorrecta");
 					}
