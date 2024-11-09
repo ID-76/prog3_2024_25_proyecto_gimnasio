@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 				if (matDialog.isAceptado()) {
 					this.usu = new Usuario(matDialog.getNombre(), matDialog.getApellido(), matDialog.getDni(), matDialog.getNumero(), matDialog.getEdad(), matDialog.getSexo(), matDialog.getCont());
 					ventana.setUsuario(usu);
+					ventana.getUsuarios().add(usu);
 				}
 				  
 				
