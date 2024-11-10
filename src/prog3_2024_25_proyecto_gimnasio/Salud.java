@@ -1,105 +1,86 @@
 package prog3_2024_25_proyecto_gimnasio;
 
-import java.awt.BorderLayout;
-import java.awt.Font;
-import java.awt.GridLayout;
+
+import javax.swing.*;
+
+
+
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
-
-
 public class Salud extends JPanel {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	private JProgressBar progressBar;
-	    private int kcalActuales = 0;
-	    private final int kcalObjetivo = 5000; // Meta semanal en kilocalorías
-	    private JLabel lblRacha;
-	    private JButton btnRegistrarDia;
-	    private Set<LocalDate> diasAsistidos;
-	    private int rachaActual = 0;
-	    private int rachaMaxima = 0;
-	    private int totalSessions = 7;
-	    private int attendedSessions = 0;  // Track attended sessions
-	    private JLabel attendanceLabel;
-	    private Calendario Calendario;
+    private static final long serialVersionUID = 1L;
+    private JProgressBar progressBar;
+    private int kcalActuales = 0;
+    private int kcalObjetivo = 5000;
+    private JLabel lblRacha;
+    private JButton btnRegistrarDia;
+    private Set<LocalDate> diasAsistidos;
+    private int rachaActual = 0;
+    private int rachaMaxima = 0;
+    private int totalSessions = 7;
+    private int attendedSessions = 0;
+    private JLabel attendanceLabel;
+    private JTextArea infoArea;
+    private List<String> historialActividades;
+    private int rachaObjetivo = 5; // Nueva meta de racha
 
-	public Salud(Calendario Calendario){
-		this.Calendario = Calendario;
-		setLayout(new BorderLayout(3, 3));
-		
-		//PORCENTAJE
-		attendanceLabel = new JLabel("Attendance: 0%", SwingConstants.CENTER);
-	    attendanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
-		
-		//PROGRESSBAR
-	    progressBar = new JProgressBar(0, 5000);  // Máximo de 5000 kilocalorías
+    public Salud() {
+        setLayout(new BorderLayout(3, 3));
+
+        // Inicializar historial de actividades
+        historialActividades = new ArrayList<>();
+
+        // Porcentaje de asistencia
+        attendanceLabel = new JLabel("Attendance: 0%", SwingConstants.CENTER);
+        attendanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
+
+        // Barra de progreso de kilocalorías
+        progressBar = new JProgressBar(0, kcalObjetivo);
         progressBar.setStringPainted(true);
-		//progressBar = new JProgressBar(0, kcalObjetivo);
-       // progressBar.setValue(kcalActuales);
-        //progressBar.setStringPainted(true);
         progressBar.setString(kcalActuales + " / " + kcalObjetivo + " kcal quemadas");
 
-		// INFORMACION (>>ACTIVIDAD)
-		JPanel informacion = new JPanel(new BorderLayout(10, 3));
-		informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
-		add(informacion, BorderLayout.WEST);
-		
-		// TITULOS (>>INFORMACION)
-		/*
-		 * GridBagLayout titulos = (new GridBagLayout());
-		 * 
-		 * GridBagConstraints gbc = new GridBagConstraints();
-		 */
-		JPanel titulos = new JPanel(new GridLayout(5, 1));
-		informacion.add(titulos, BorderLayout.WEST);
+        // Panel de información (izquierda)
+        JPanel informacion = new JPanel(new BorderLayout(10, 3));
+        informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 20));
+        add(informacion, BorderLayout.WEST);
 
-		JLabel lActividad = new JLabel("Actividad:");
-		JLabel lConstancia = new JLabel("Constancia:");
-		JLabel lRacha= new JLabel("Constancia:");
-		JLabel lMRacha = new JLabel("Registro");
-		JButton lCalendario = new JButton("Calendario");
-		
-		 lCalendario.addActionListener(new ActionListener() {
-	            @Override
-	            public void actionPerformed(ActionEvent e) {
-	                // Crear y mostrar una nueva instancia de VentanaSecundaria
-	                Calendario calendario = new Calendario();
-	                calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-	            }
-	        });
-		 
-		
-		titulos.add(lActividad);
-		titulos.add(lConstancia);
-		titulos.add(lRacha);
-		titulos.add(lMRacha);	
-		titulos.add(lCalendario);
-		
-		//racha
-		// Inicializar el conjunto de días asistidos y la interfaz
-        diasAsistidos = new HashSet<>();
+        // Panel de títulos
+        JPanel titulos = new JPanel(new GridLayout(5, 1));
+        informacion.add(titulos, BorderLayout.WEST);
+
+        JLabel lActividad = new JLabel("Actividad:");
+        JLabel lConstancia = new JLabel("Constancia:");
         lblRacha = new JLabel("Racha actual: 0 días, Racha máxima: 0 días");
-     
-
-        // Botón para registrar asistencia diaria
-        btnRegistrarDia = new JButton("Registrar Asistencia Hoy");
         
-        // Evento para el botón de registrar día
+        JLabel lMRacha = new JLabel("Registro de actividad:");
+        JButton lCalendario = new JButton("Calendario:");
+        
+        titulos.add(lActividad);
+        titulos.add(lConstancia);
+        titulos.add(lblRacha);
+        titulos.add(lMRacha);
+        titulos.add(lCalendario);
+        lCalendario.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Calendario calendario = new Calendario();
+                calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                
+            }
+        });
+
+        // Inicialización de racha y días asistidos
+        diasAsistidos = new HashSet<>();
+
+        // Botón para registrar día de actividad
+        btnRegistrarDia = new JButton("Actividad de hoy");
         btnRegistrarDia.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,33 +89,38 @@ public class Salud extends JPanel {
                     calcularRacha();
                     incrementAttendance();
                     registrarEjercicio();
-                    //Calendario.highlightToday();
+                    checkAchievements(); // Verificar logros
                 } else {
-                    JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
+                    JOptionPane.showMessageDialog(null, "Ya registraste actividad de hoy.");
                 }
-                
             }
         });
-        
-      
-		// DATOS (>>INFORMACION)
-				JPanel datos = new JPanel(new GridLayout(5, 1));
-				informacion.add(datos, BorderLayout.EAST);
 
-				datos.add(progressBar);
-				datos.add(attendanceLabel);
-				datos.add(lblRacha);
-				datos.add(btnRegistrarDia);
-      
-		
-	}
-	
-	private void registrarEjercicio() {
-        // Opciones de ejercicio y sus calorías aproximadas
-        String[] ejercicios = {"Andar (350 kcal)", "Core (400 kcal)", "Core_Avanzado (650 kcal)", "Equilibrio (250 kcal)", "Gimnasia (500 kcal)", "Hiit (550 kcal)", "Yoga (200 kcal)"};
-        int[] calorias = {350, 400, 650, 250, 500 ,550, 200};
+        // Botón de resumen semanal
+        JButton btnResumenSemanal = new JButton("Resumen Semanal");
+        btnResumenSemanal.addActionListener(e -> mostrarResumenSemanal());
 
-        // Mostrar las opciones en un diálogo
+        // Panel de datos
+        JPanel datos = new JPanel(new GridLayout(6, 1));
+        informacion.add(datos, BorderLayout.EAST);
+
+        datos.add(progressBar);
+        datos.add(attendanceLabel);
+        datos.add(lblRacha);
+        datos.add(btnRegistrarDia);
+        datos.add(btnResumenSemanal);
+
+        // Área de texto adicional (derecha)
+        infoArea = new JTextArea(10, 20);
+        infoArea.setEditable(false);
+        infoArea.setBorder(BorderFactory.createTitledBorder("Actividades apuntadas:"));
+        add(new JScrollPane(infoArea), BorderLayout.EAST);
+    }
+
+    private void registrarEjercicio() {
+        String[] ejercicios = {"Andar (350 kcal)", "Core (400 kcal)", "Core Avanzado (650 kcal)", "Equilibrio (250 kcal)", "Gimnasia (500 kcal)", "Hiit (550 kcal)", "Yoga (200 kcal)"};
+        int[] calorias = {350, 400, 650, 250, 500, 550, 200};
+
         String seleccion = (String) JOptionPane.showInputDialog(
                 this,
                 "¿Qué ejercicio hiciste hoy?",
@@ -145,56 +131,83 @@ public class Salud extends JPanel {
                 ejercicios[0]
         );
 
-        // Verificar la selección y actualizar la barra de progreso
         if (seleccion != null) {
             for (int i = 0; i < ejercicios.length; i++) {
                 if (seleccion.equals(ejercicios[i])) {
                     int nuevoValor = progressBar.getValue() + calorias[i];
                     progressBar.setString(nuevoValor + " / " + kcalObjetivo + " kcal quemadas");
-                    progressBar.setStringPainted(true);// No excede el máximo
                     progressBar.setValue(nuevoValor);
+                    infoArea.append("Ejercicio: " + seleccion + "\n");
+                    historialActividades.add(seleccion + " - " + calorias[i] + " kcal");
+                    
+                    if (nuevoValor >= kcalObjetivo * 0.9) {
+                        JOptionPane.showMessageDialog(this, "¡Estás cerca de tu meta semanal de kilocalorías!");
+                    }
                     break;
                 }
             }
         }
     }
-	 private void incrementAttendance() {
-	        if (attendedSessions < totalSessions) {
-	            attendedSessions++;
-	            int attendancePercentage = (int) ((attendedSessions / (double) totalSessions) * 100);
-	            attendanceLabel.setText( attendancePercentage + "% de dias asistidos esta semana");
 
-	            // Optional: Disable button if goal is reached
-	            /**if (attendedSessions == totalSessions) {
-	                attendButton.setEnabled(false);
-	            }**/
-	        }
-	    }
-	private void calcularRacha() {
+    private void mostrarResumenSemanal() {
+        StringBuilder resumen = new StringBuilder();
+        resumen.append("Resumen Semanal:\n")
+                .append("Kilocalorías quemadas: ").append(progressBar.getValue()).append("\n")
+                .append("Días de actividad: ").append(diasAsistidos.size()).append("\n")
+                .append("Racha más larga: ").append(rachaMaxima).append(" días\n")
+                .append("Ejercicios realizados:\n");
+        for (String actividad : historialActividades) {
+            resumen.append("- ").append(actividad).append("\n");
+        }
+        JOptionPane.showMessageDialog(this, resumen.toString());
+    }
+
+    private void incrementAttendance() {
+        if (attendedSessions < totalSessions) {
+            attendedSessions++;
+            int attendancePercentage = (int) ((attendedSessions / (double) totalSessions) * 100);
+            attendanceLabel.setText(attendancePercentage + "% de días asistidos esta semana");
+        }
+    }
+
+    private void calcularRacha() {
         rachaActual = 0;
         LocalDate fecha = LocalDate.now();
 
-        // Contamos los días consecutivos hacia atrás
         while (diasAsistidos.contains(fecha)) {
             rachaActual++;
             fecha = fecha.minusDays(1);
         }
 
-        // Actualizamos la racha máxima si la racha actual es mayor
         if (rachaActual > rachaMaxima) {
             rachaMaxima = rachaActual;
+            JOptionPane.showMessageDialog(this, "¡Nueva racha máxima: " + rachaMaxima + " días!");
         }
-        
-        // Actualizar la etiqueta de racha
+
         lblRacha.setText("Racha actual: " + rachaActual + " días, Racha máxima: " + rachaMaxima + " días");
+
+        if (rachaActual >= rachaObjetivo) {
+            JOptionPane.showMessageDialog(this, "¡Has alcanzado tu objetivo de racha de " + rachaObjetivo + " días!");
+        }
     }
-	public static void main(String[] args) {
-		Calendario Calendario = new Calendario();
-        Calendario.setVisible(true);
+
+    private void checkAchievements() {
+        if (progressBar.getValue() >= kcalObjetivo) {
+            infoArea.append("¡Logro desbloqueado: Meta de kilocalorías alcanzada!\n");
+        }
+        if (rachaActual == rachaObjetivo) {
+            infoArea.append("¡Logro desbloqueado: Objetivo de racha alcanzado!\n");
+        }
+    }
+
+    public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> {
-            Salud app = new Salud(Calendario);
-            app.setVisible(true);
+            Salud app = new Salud();
+            JFrame frame = new JFrame("Panel de Salud");
+            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            frame.add(app);
+            frame.setSize(800, 400);
+            frame.setVisible(true);
         });
-	}
-	
+    }
 }

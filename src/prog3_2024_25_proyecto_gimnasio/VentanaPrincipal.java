@@ -268,7 +268,7 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
                             break;
                         case "SALUD":
-                            principal.add(new Salud(Calendario), BorderLayout.CENTER);
+                            principal.add(new Salud(), BorderLayout.CENTER);
                             break;
                         case "USUARIO":
                         	default:
