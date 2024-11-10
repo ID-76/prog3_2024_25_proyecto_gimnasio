@@ -26,7 +26,7 @@ public class Menu extends JPanel{
 		List<Actividad> actividades = ventana.getActividades();
 		LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
 	    LocalDateTime haceUnaSemana = fecha.minusWeeks(1);
-	    List<Actividad> actividadesUltimaSemana = null;
+	    List<Actividad> actividadesUltimaSemana = new ArrayList<Actividad>();
 	    for (Actividad actividad: actividades) {
 	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fecha)&& actividad.getListaUsuarios().contains(usuario)) {
 	    		actividadesUltimaSemana.add(actividad);

@@ -1,272 +1,122 @@
-
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Vector;
 
-import javax.swing.BorderFactory;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
-import javax.swing.UIManager;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
 
-public class PanelActividad extends JPanel implements ActionListener {
+public class PanelActividad extends JPanel{
+	private static final long serialVersionUID = 1L;
+	DefaultTableModel modelo;
+	JTable tabla;
+	List<Actividad> listaActividades;
+	HashMap<LocalDateTime,ArrayList<ArrayList<Actividad>>> actividades = new HashMap<>();
+	String tipo = "Core";
+	LocalDateTime fecha = LocalDateTime.of(2024, 11, 4, 9, 00);
 	
-    private static final long serialVersionUID = 1L;
-    int puntero = 0;
-    JComboBox<Tipo> tipoActividadCombo;
-    JComboBox<String> diaActividadCombo;
-    Tipo actualTipo;
-    ArrayList<Actividad> actividadesTipoActual;
-    ArrayList<String> actividadesTipoActualFecha;
-    Actividad actualActividad;
-    private JLabel lIntensidad;
-    private JTextArea lDescripcion;
-    private JLabel sitiosDisp;
-    private JLabel icono;
-    private JLabel lDuracion;
-    private JProgressBar disponibilidadPbar;
-    private JButton apuntarse;
-    private JButton desapuntarse;
-    private ArrayList<Actividad> listaActividades;
-
-    public PanelActividad(ArrayList<Actividad> listaActividades) {
-        this.listaActividades = listaActividades;
-        this.actividadesTipoActual = new ArrayList<>();
-        this.actividadesTipoActualFecha = new ArrayList<>();
-
-        if (!listaActividades.isEmpty()) {
-            actualActividad = listaActividades.get(0);
-            actividadesTipoActualFecha.add(listaActividades.get(0).getFecha().toString());
-        }
-
-        setLayout(new BorderLayout(3, 3));
-
-
-
-        // INFORMACION (>>ACTIVIDAD)
-        JPanel informacion = new JPanel();
-        informacion.setLayout(new GridBagLayout());
-        informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 30));
-        add(informacion, BorderLayout.EAST);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(15, 5, 15, 5);
-        gbc.anchor = GridBagConstraints.EAST;
-
-        JLabel tIntensidad = new JLabel("Intensidad:");
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(tIntensidad, gbc);
-
-        JLabel tDuracion = new JLabel("Duración:");
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(tDuracion, gbc);
-
-        JLabel tDescripcion = new JLabel("Descripción:");
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(tDescripcion, gbc);
-
-        lIntensidad = new JLabel();
-        gbc.gridx = 3;
-        gbc.gridy = 0;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(lIntensidad, gbc);
-
-        lDuracion = new JLabel();
-        gbc.gridx = 3;
-        gbc.gridy = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(lDuracion, gbc);
-
-        lDescripcion = new JTextArea(5, 15);
-        lDescripcion.setEditable(false);
-        lDescripcion.setLineWrap(true);
-        lDescripcion.setWrapStyleWord(true);
-        gbc.gridx = 3;
-        gbc.gridy = 4;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        informacion.add(lDescripcion, gbc);
-
-        // RESERVA (>>ACTIVIDAD)
-        JPanel reserva = new JPanel();
-        reserva.setLayout(new GridBagLayout());
-        add(reserva, BorderLayout.WEST);
-
-        gbc.insets = new Insets(15, 5, 15, 5);
-
-        // ACTIVIDADES
-        tipoActividadCombo = new JComboBox<>(Tipo.values());
-        tipoActividadCombo.addActionListener(this);
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        gbc.gridwidth = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(tipoActividadCombo, gbc);
-
-        // DIA
-        diaActividadCombo = new JComboBox<>(actividadesTipoActualFecha.toArray(new String[0]));
-        diaActividadCombo.addActionListener(this);
-        gbc.gridx = 0;
-        gbc.gridy = 1;
-        gbc.gridwidth = 1;
-        gbc.gridheight = 1;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(diaActividadCombo, gbc);
-
-        // LOGO
-        icono = new JLabel();
-        gbc.gridx = 1;
-        gbc.gridy = 0;
-        gbc.gridwidth = 2;
-        gbc.gridheight = 2;
-        gbc.fill = GridBagConstraints.BOTH;
-        icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
-        if (actualActividad != null) {
-            ImageIcon logo = actualActividad.getLogo();
-            logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
-            icono.setIcon(logo);
-        }
-        icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
-        reserva.add(icono, gbc);
-
-        // SITIOS DISPONIBLES
-        sitiosDisp = new JLabel();
-        gbc.gridx = 0;
-        gbc.gridy = 2;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(sitiosDisp, gbc);
-
-        // PROGRESS BAR
-        disponibilidadPbar = new JProgressBar(0, actualActividad.getCapacidad());
-        disponibilidadPbar.setStringPainted(true);
-        disponibilidadPbar.setForeground(Color.WHITE);
-        gbc.gridx = 0;
-        gbc.gridy = 4;
-        gbc.gridwidth = 2;
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        reserva.add(disponibilidadPbar, gbc);
-
-        // APUNTARSE
-        apuntarse = new JButton("Apuntarse");
-        apuntarse.addActionListener(this);
-        apuntarse.setEnabled(false);
-        gbc.gridx = 0;
-        gbc.gridy = 6;
-        gbc.gridwidth = 1;
-        apuntarse.setBackground(Color.green);
-        apuntarse.setOpaque(true);
-        apuntarse.setBorderPainted(false);
-        reserva.add(apuntarse, gbc);
-
-        // DESAPUNTARSE
-        desapuntarse = new JButton("Desapuntarse");
-        desapuntarse.addActionListener(this);
-        desapuntarse.setEnabled(false);
-        gbc.gridx = 1;
-        gbc.gridy = 6;
-        desapuntarse.setBackground(Color.RED);
-        reserva.add(desapuntarse, gbc);
-
-        if (actualActividad != null) {
-            updateActividadInfo();
-        }
-    }
-
-    @Override
-    // Con la ayuda de git hub copilot
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == tipoActividadCombo) {
-            actividadesTipoActual.clear();
-            actividadesTipoActualFecha.clear();
-
-            for (Actividad actividad : listaActividades) {
-                if (actividad.getTipo() == tipoActividadCombo.getSelectedItem()) {
-                    actividadesTipoActual.add(actividad);
-                    actividadesTipoActualFecha.add(actividad.getFecha().toString());
-                }
-            }
-
-            diaActividadCombo.setModel(new DefaultComboBoxModel<>(actividadesTipoActualFecha.toArray(new String[0])));
-        }
-
-        if (e.getSource() == diaActividadCombo) {
-            actualActividad = actividadesTipoActual.get(diaActividadCombo.getSelectedIndex());
-            if (actualActividad != null) {
-                updateActividadInfo();
-                apuntarse.setEnabled(true);
-                desapuntarse.setEnabled(false);
-            } else {
-                apuntarse.setEnabled(false);
-                desapuntarse.setEnabled(false);
-            }
-            if (actualActividad.getListaUsuarios().contains(VentanaPrincipal.usuario)) {
-                apuntarse.setEnabled(false);
-                desapuntarse.setEnabled(true);
-            } else {
-                apuntarse.setEnabled(true);
-                desapuntarse.setEnabled(false);
-            }
-            revalidate();
-            repaint();
-        }
-        if (e.getSource() == apuntarse) {
-            if (!actualActividad.getListaUsuarios().contains(VentanaPrincipal.usuario)) {
-                actualActividad.addUsuario(VentanaPrincipal.usuario);
-                actualActividad.actualizarOcupacion();
-                updateActividadInfo();
-
-                desapuntarse.setEnabled(true);
-                apuntarse.setEnabled(false);
-            }
-        }
-
-        if (e.getActionCommand().equals("Desapuntarse")) {
-            actualActividad.removeUsuario(VentanaPrincipal.usuario);
-            actualActividad.actualizarOcupacion();
-            updateActividadInfo();
-            desapuntarse.setEnabled(false);
-            apuntarse.setEnabled(true);
-        }
-    }
-
-    private void updateActividadInfo() {
-        actualActividad.actualizarOcupacion();
-        lIntensidad.setText(actualActividad.getIntensidad());
-        lDuracion.setText(String.valueOf(actualActividad.getDuracion()));
-        lDescripcion.setText(actualActividad.getDescripcion());
-        sitiosDisp.setText("Hay " + String.valueOf(actualActividad.getCapacidad() - actualActividad.getOcupacion())
-                + " sitios disponibles");
-        disponibilidadPbar.setValue(actualActividad.getCapacidad() - actualActividad.getOcupacion());
-        if (actualActividad.getCapacidad() - actualActividad.getOcupacion() < 1) {
-            disponibilidadPbar.setForeground(Color.RED);
-        } else {
-            disponibilidadPbar.setForeground(Color.GREEN);
-        }
-
-        ImageIcon logo = actualActividad.getLogo();
-        logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
-        icono.setIcon(logo);
-    }
+	public PanelActividad(List<Actividad> listaActividades) {
+		this.listaActividades = listaActividades;
+		ArrayList<Actividad> actividadesA = new ArrayList<Actividad>();
+		for(Actividad actividad:listaActividades) {
+			if (actividad.getNombre().equals(tipo)) {
+				actividadesA.add(actividad);
+			}
+		}
+		for(Actividad actividad:actividadesA) {
+			
+			int diaSe = actividad.getFecha().getDayOfWeek().getValue();
+			LocalDateTime lunesSe = actividad.getFecha().minusDays(diaSe-1);
+			ArrayList<ArrayList<Actividad>> actSe = actividades.get(lunesSe);
+			ArrayList<Actividad> actDiaSe = null;
+			if (actSe == null) {
+				actSe = new ArrayList<ArrayList<Actividad>>();
+				actDiaSe = new ArrayList<Actividad>();
+				for (int i=0;i<7;i++) {
+					actSe.add(null);
+				}
+			}else {
+				actDiaSe = actSe.get(diaSe);
+				
+			}
+			if(!actividad.getFecha().toLocalTime().isBefore(LocalTime.of(9, 0)) && !actividad.getFecha().toLocalTime().isAfter(LocalTime.of(11, 0))) {
+				actDiaSe.set(0, actividad);
+			} else if(!actividad.getFecha().toLocalTime().isBefore(LocalTime.of(12, 0)) && !actividad.getFecha().toLocalTime().isAfter(LocalTime.of(14, 00))) {
+				actDiaSe.set(1, actividad);
+			} else if(!actividad.getFecha().toLocalTime().isBefore(LocalTime.of(16, 0)) && !actividad.getFecha().toLocalTime().isAfter(LocalTime.of(18, 00))){
+				actDiaSe.set(2, actividad);
+			}else {
+				actDiaSe.set(3, actividad);
+			}
+			actSe.set(diaSe, actDiaSe);
+			actividades.put(lunesSe, actSe);
+		}
+		iniciarTabla();
+		loadActividades();
+		JPanel principal = new JPanel(new BorderLayout());
+		JComboBox<Tipo> tipoActividadCombo = new JComboBox<>(Tipo.values());
+		principal.add(tipoActividadCombo,BorderLayout.NORTH);
+		principal.add(tabla,BorderLayout.CENTER);
+	}
+	
+	public void iniciarTabla() {
+		Vector<String> diasSemana = new Vector<String>(Arrays.asList("Horarios","Lunes","Martes","Miercoles","Jueves","Viernes"));
+		modelo = new DefaultTableModel(new Vector<Vector<Object>>(),diasSemana);
+		tabla = new JTable(modelo) {
+			private static final long serialVersionUID = 1L;
+			
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
+			}
+		};
+		
+		TableCellRenderer cellRenderer = (table, value, isSelected, hasFocus, row, column) -> {
+			Actividad actividad = (Actividad) value;
+			JButton result = new JButton("clase de " + actividad.getNombre());
+			result.addActionListener(e -> {
+				PanelActividadDialog panel = new PanelActividadDialog(actividad);
+				panel.setVisible(true);
+			});
+			
+			result.setBackground(table.getBackground());
+			result.setForeground(table.getForeground());
+			
+			result.setOpaque(true);
+			
+			return result;
+	};
+		tabla.setRowHeight(26);
+		tabla.getTableHeader().setReorderingAllowed(false);
+		tabla.getTableHeader().setResizingAllowed(false);
+		tabla.setAutoCreateRowSorter(true);
+		tabla.getTableHeader().setDefaultRenderer(cellRenderer);		
+		tabla.setDefaultRenderer(Object.class, cellRenderer);
+	}
+	
+	public void loadActividades() {
+		modelo.setRowCount(0);
+		ArrayList<ArrayList<Actividad>> as = actividades.get(fecha);
+		modelo.addColumn(new String[] {"9:00-11:00","12:00-14:00","15:00-17:00","18:00-20:00"});
+		as.forEach(aSe -> {
+			ArrayList<Actividad> aH = new ArrayList<Actividad>();
+			for (Actividad a:aSe) {
+				aH.add(a);
+			}
+			modelo.addColumn(aH);
+		});
+	}
 }
