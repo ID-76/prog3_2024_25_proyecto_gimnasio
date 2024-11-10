@@ -1,7 +1,10 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Vector;
 
+import javax.swing.AbstractCellEditor;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -17,6 +21,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
 import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
@@ -41,10 +46,10 @@ public class PanelActividad extends JPanel {
         JComboBox<Tipo> tipoActividadCombo = new JComboBox<>(Tipo.values());
         tipoActividadCombo.setPreferredSize(new Dimension(600, 20));
         tipoActividadCombo.addActionListener(e -> {
-        	tipo = ((Tipo) tipoActividadCombo.getSelectedItem()).toString();
-        	actualizarMap();
+            tipo = ((Tipo) tipoActividadCombo.getSelectedItem()).toString();
+            actualizarMap();
             loadActividades();
-        	modelo.fireTableDataChanged();
+            modelo.fireTableDataChanged();
         });
         principal.add(tipoActividadCombo, BorderLayout.NORTH);
         principal.add(new JScrollPane(tabla), BorderLayout.CENTER);
@@ -52,8 +57,8 @@ public class PanelActividad extends JPanel {
     }
     
     public void actualizarMap() {
-    	actividades = new HashMap<>();
-    	ArrayList<Actividad> actividadesA = new ArrayList<Actividad>();
+        actividades = new HashMap<>();
+        ArrayList<Actividad> actividadesA = new ArrayList<>();
         for (Actividad actividad : listaActividades) {
             if (actividad.getTipo().toString().equals(tipo)) {
                 actividadesA.add(actividad);
@@ -77,6 +82,7 @@ public class PanelActividad extends JPanel {
             actividades.put(lunesSe, actSe);
         }
     }
+
     private int getSlotIndex(LocalTime time) {
         if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(LocalTime.of(11, 0))) return 0;
         if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(LocalTime.of(14, 0))) return 1;
@@ -86,58 +92,34 @@ public class PanelActividad extends JPanel {
     }
 
     public void iniciarTabla() {
-        Vector<String> diasSemana = new Vector<>(Arrays.asList("Horarios", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"));
+        Vector<String> diasSemana = new Vector<>(Arrays.asList("Horarios", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"));
         modelo = new DefaultTableModel(diasSemana, 0);
         tabla = new JTable(modelo) {
             private static final long serialVersionUID = 1L;
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column > 0;
             }
         };
-        TableCellRenderer cellRenderer = (table, value, isSelected, hasFocus, row, column) -> {
-        	if (value instanceof String) {
-        		JLabel label = new JLabel((String) value);
-    			
-        		label.setBackground(table.getBackground());
-        		label.setForeground(table.getForeground());
-        			
-        		label.setOpaque(true);
-        			
-        		return label;
-        	}else {
-        		Actividad actividad = (Actividad) value;
-    			if (value == null) {
-    				return new JLabel("");
-    			}else {
-    				JButton result = new JButton(actividad.getNombre());
-    				result.addActionListener(e -> {
-    					PanelActividadDialog panel = new PanelActividadDialog(actividad);
-    					panel.setVisible(true);
-    				});
-    				
-    				result.setBackground(table.getBackground());
-    				result.setForeground(table.getForeground());
-    				
-    				result.setOpaque(true);
-    				
-    				return result;
-        	}
-			
-			}
-	};
-	
-	TableCellRenderer headersRenderer = (table, value, isSelected, hasFocus, row, column) -> {
-		JLabel label = new JLabel((String) value);
-			
-		label.setBackground(table.getBackground());
-		label.setForeground(table.getForeground());
-			
-		label.setOpaque(true);
-			
-		return label;
-	};
+
+        // Renderer para mostrar los botones en la tabla
+        tabla.setDefaultRenderer(Object.class, new TableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                if (value instanceof Actividad) {
+                    Actividad actividad = (Actividad) value;
+                    JButton button = new JButton(actividad.getNombre());
+                    return button;
+                } else {
+                    return new JLabel(value != null ? value.toString() : "");
+                }
+            }
+        });
+
+        // Editor para hacer que los botones sean clicables
+        tabla.setDefaultEditor(Object.class, new ButtonEditor());
 
         tabla.setRowHeight(60);
         tabla.getColumnModel().getColumn(0).setPreferredWidth(240);
@@ -146,8 +128,6 @@ public class PanelActividad extends JPanel {
         }
         tabla.getTableHeader().setReorderingAllowed(false);
         tabla.getTableHeader().setResizingAllowed(false);
-        tabla.getTableHeader().setDefaultRenderer(headersRenderer);		
-		tabla.setDefaultRenderer(Object.class, cellRenderer);
     }
 
     public void loadActividades() {
@@ -165,6 +145,41 @@ public class PanelActividad extends JPanel {
                 }
                 modelo.addRow(row);
             }
+        }
+    }
+
+    // Hecho con ayuda de la IA
+    class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
+        private static final long serialVersionUID = 1L;
+        private JButton button;
+
+        public ButtonEditor() {
+            button = new JButton();
+            button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    Actividad actividad = (Actividad) button.getClientProperty("actividad");
+                    if (actividad != null) {
+                        new PanelActividadDialog(actividad).setVisible(true);
+                    }
+                    fireEditingStopped();
+                }
+            });
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            if (value instanceof Actividad) {
+                Actividad actividad = (Actividad) value;
+                button.setText(actividad.getNombre());
+                button.putClientProperty("actividad", actividad);
+            }
+            return button;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return null;
         }
     }
 }

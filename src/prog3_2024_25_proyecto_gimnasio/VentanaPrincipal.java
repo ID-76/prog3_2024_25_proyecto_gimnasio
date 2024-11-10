@@ -179,5 +179,8 @@ public class VentanaPrincipal extends JFrame {
         ventana.listaActividades = listaActividades;
         ventana.listaUsuarios = listaUsuarios;
         
+        //PanelActividadDialog dialog = new PanelActividadDialog(listaActividades.get(0));
+        //dialog.setVisible(true);
+        
     }
 }
