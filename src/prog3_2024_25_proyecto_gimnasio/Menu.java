@@ -5,18 +5,21 @@ import java.awt.Color;
 import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 public class Menu extends JPanel {
 	
 	private JButton btnUsuario, btnSalud, btnClases, btnMenu;
 	
-	private JPanel pNorte, pSur, pCentro, pEste, pOeste, pCentroArriba,pCentroAbajo;
+	private JPanel pNorte, pSur, pCentro, pEste, pOeste, pCentroArriba, pCentroAbajo;
 	
 	private JLabel lbMensaje;
 	
@@ -63,15 +66,52 @@ public class Menu extends JPanel {
 		pCentro.add(new JPanel());
 		
 		
-		progressBar = new JProgressBar(0, 100);
+		progressBar = new JProgressBar(0, contarActividadesporUsuario(VentanaPrincipal.usuario));
         progressBar.setStringPainted(true); // Muestra el porcentaje en la barra
         progressBar.setForeground(Color.BLUE);
-        
-        
-
-        
         pCentro.add(progressBar, BorderLayout.CENTER);
         pCentro.add(new JPanel());
+        
+        
+        
+        
+        
+        
+        
+        VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
+		Usuario usuario = ventana.getUsuario();
+		List<Actividad> actividades = ventana.getActividades();
+		LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
+	    LocalDateTime haceUnaSemana = fecha.minusWeeks(1);
+	    List<Actividad> actividadesUltimaSemana = null;
+	    for (Actividad actividad: actividades) {
+	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fecha)&& actividad.getListaUsuarios().contains(usuario)) {
+	    		actividadesUltimaSemana.add(actividad);
+	    	}
+	    }
+		JProgressBar barraCal = new JProgressBar(0, 5000);
+        barraCal.setStringPainted(true);
+        barraCal.setForeground(Color.WHITE);
+        int cal = 0;
+        for (Actividad actividad: actividadesUltimaSemana) {
+        	cal += actividad.getCalorias();
+        }
+        if(cal > 5000) {
+        	cal = 5000;
+        }
+        barraCal.setValue(cal);
+        if (cal < 400) {
+            barraCal.setForeground(Color.RED);
+        } else {
+            barraCal.setForeground(Color.GREEN);
+        }
+        add(barraCal);
+        
+        
+        
+        
+        
+         
 		
 			
 		setVisible(true);
@@ -87,10 +127,11 @@ public class Menu extends JPanel {
 	
 	public int contarActividadesporUsuario(Usuario usuario) {
 		int contador = 0;
-		for (Actividad actividad : VentanaPrincipal.listaActividades) {
-			if (actividad.getListaUsuarios().contains(usuario)) {
-				contador++;
-			}
+		List<Actividad> actividades = VentanaPrincipal.getActividades();
+		for (Actividad actividad : actividades) {
+				if (actividad.getListaUsuarios().contains(usuario)) {
+					contador++;
+				}
 		}
 		return contador;
 	}
