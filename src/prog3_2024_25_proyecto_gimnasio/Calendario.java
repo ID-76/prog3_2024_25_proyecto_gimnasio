@@ -10,6 +10,8 @@ import java.awt.event.*;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -22,6 +24,7 @@ import java.util.GregorianCalendar;
 public class Calendario extends JFrame {
     private static final long serialVersionUID = 1L;
     private JLabel lblMes, lblAno;
+    private Set<LocalDate> diasAsistidos;
     private JButton btnAnterior, btnSiguiente, highlightTodayButton;
     private JTable tabla;
     private int anoActual, mesActual, diaActual;
@@ -61,7 +64,7 @@ public class Calendario extends JFrame {
         lblAno = new JLabel(String.valueOf(anoActual));
         btnAnterior = new JButton("<");
         btnSiguiente = new JButton(">");
-        highlightTodayButton = new JButton("Highlight Today");
+        highlightTodayButton = new JButton("Registrar Asistencia");
 
         // Navigation panel
         JPanel pnlNavegacion = new JPanel(new FlowLayout());
@@ -82,7 +85,19 @@ public class Calendario extends JFrame {
         // Button actions
         btnAnterior.addActionListener(e -> cambiarMes(-1));
         btnSiguiente.addActionListener(e -> cambiarMes(1));
-        highlightTodayButton.addActionListener(e -> highlightToday() );
+        diasAsistidos = new HashSet<>();
+        highlightTodayButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                LocalDate hoy = LocalDate.now();
+                if (diasAsistidos.add(hoy)) {
+                	highlightToday();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
+                }
+                
+            }
+        });
 
         actualizarCalendario(mesActual, anoActual);
 

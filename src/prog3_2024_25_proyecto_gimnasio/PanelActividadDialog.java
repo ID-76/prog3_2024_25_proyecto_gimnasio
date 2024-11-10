@@ -23,6 +23,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.UIManager;
 
+
 import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
 
 public class PanelActividadDialog extends JDialog implements ActionListener {
@@ -44,11 +45,13 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
     private JButton apuntarse;
     private JButton desapuntarse;
     private ArrayList<Actividad> listaActividades;
+    private ClaseCalendario calendario;
 
     public PanelActividadDialog(Actividad actividad) {
         this.listaActividades = listaActividades;
         this.actividadesTipoActual = new ArrayList<>();
         this.actividadesTipoActualFecha = new ArrayList<>();
+        calendario = new ClaseCalendario();
 
         if (!listaActividades.isEmpty()) {
             actualActividad = listaActividades.get(0);
@@ -206,6 +209,7 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
                 if (actividad.getTipo() == tipoActividadCombo.getSelectedItem()) {
                     actividadesTipoActual.add(actividad);
                     actividadesTipoActualFecha.add(actividad.getFecha().toString());
+                    calendario.actualizarCalendario(actividadesTipoActual); // Actualiza el calendario con las inscripciones
                 }
             }
 
