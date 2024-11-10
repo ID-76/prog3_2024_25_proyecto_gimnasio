@@ -42,7 +42,7 @@ public class Salud extends JPanel {
     private int attendedSessions = 0;
     private JLabel attendanceLabel;
     private Calendario Calendario;
-    private ClaseCalendario clasecalendario;
+   
     private JTextArea infoArea; // Nueva área de texto para información adicional
 
     public Salud(Calendario Calendario) {
@@ -78,8 +78,7 @@ public class Salud extends JPanel {
             public void actionPerformed(ActionEvent e) {
                 Calendario calendario = new Calendario();
                 calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                ClaseCalendario clasecalendario = new ClaseCalendario();
-                clasecalendario.setVisible(true);
+                
             }
         });
 
