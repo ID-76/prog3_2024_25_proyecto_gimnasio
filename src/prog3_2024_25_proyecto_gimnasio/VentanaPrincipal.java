@@ -160,7 +160,7 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario10);
 
         for (String nombreClase : nombreClases) {
-            LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 10, 00);
+            LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 9, 00);
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 3; j++) {
                     Actividad actividad = new Actividad(nombreClase, fecha1);
