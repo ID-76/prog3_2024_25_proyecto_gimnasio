@@ -3,6 +3,7 @@ package prog3_2024_25_proyecto_gimnasio;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;
@@ -54,11 +55,14 @@ public class Menu extends JPanel {
 		
 			
 		//lbMensaje = new JLabel("Hola " + VentanaPrincipal.usuario.getNombre()+ ". Estas son tus clases para hoy");
-		lbMensaje = new JLabel("Hola nombre. Estas son tus clases para hoy");
+		lbMensaje = new JLabel("Hola nombre. Estas son tus clases para hoy: ");
+		lbMensaje.setFont(new Font("Arial", Font.BOLD, 20));
 		lbMensaje.setHorizontalAlignment(JLabel.CENTER);
 		pCentro.add(lbMensaje, BorderLayout.SOUTH);
 		pCentro.add(new JPanel());
 		pCentro.add(new JPanel());
+		
+		
 		progressBar = new JProgressBar(0, 100);
         progressBar.setStringPainted(true); // Muestra el porcentaje en la barra
         progressBar.setForeground(Color.BLUE);
@@ -79,6 +83,16 @@ public class Menu extends JPanel {
 		Menu menu = new Menu();
 		f.getContentPane().add(menu);
 		f.setVisible(true);
+	}
+	
+	public int contarActividadesporUsuario(Usuario usuario) {
+		int contador = 0;
+		for (Actividad actividad : VentanaPrincipal.listaActividades) {
+			if (actividad.getListaUsuarios().contains(usuario)) {
+				contador++;
+			}
+		}
+		return contador;
 	}
 	
 	
