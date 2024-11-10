@@ -52,19 +52,20 @@ public class Salud extends JPanel {
         add(informacion, BorderLayout.WEST);
 
         // Panel de títulos
-        JPanel titulos = new JPanel(new GridLayout(5, 1));
+        JPanel titulos = new JPanel(new GridLayout(6, 1));
         informacion.add(titulos, BorderLayout.WEST);
 
         JLabel lActividad = new JLabel("Actividad:");
         JLabel lConstancia = new JLabel("Constancia:");
+        JLabel lRAcha = new JLabel("Racha:");
         lblRacha = new JLabel("Racha actual: 0 días, Racha máxima: 0 días");
-        
+      
         JLabel lMRacha = new JLabel("Registro de actividad:");
         JButton lCalendario = new JButton("Calendario:");
         
         titulos.add(lActividad);
         titulos.add(lConstancia);
-        titulos.add(lblRacha);
+        titulos.add(lRAcha);
         titulos.add(lMRacha);
         titulos.add(lCalendario);
         lCalendario.addActionListener(new ActionListener() {
