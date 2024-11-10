@@ -19,7 +19,7 @@ public class IniSesDialog extends JDialog{
 		setModal(true);
 		JPanel panel = new JPanel(new GridLayout(3,2));
 		setMinimumSize(new Dimension(400, 350));
-	
+		
 		txtDni = new JTextField();
 		txtCont = new JTextField();
 		

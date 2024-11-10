@@ -17,6 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+
 
 public class Salud extends JPanel {
 	/**
@@ -34,8 +36,10 @@ public class Salud extends JPanel {
 	    private int totalSessions = 7;
 	    private int attendedSessions = 0;  // Track attended sessions
 	    private JLabel attendanceLabel;
+	    private Calendario Calendario;
 
-	public Salud(){
+	public Salud(Calendario Calendario){
+		this.Calendario = Calendario;
 		setLayout(new BorderLayout(3, 3));
 		
 		//PORCENTAJE
@@ -43,9 +47,11 @@ public class Salud extends JPanel {
 	    attendanceLabel.setFont(new Font("Arial", Font.BOLD, 16));
 		
 		//PROGRESSBAR
-		progressBar = new JProgressBar(0, kcalObjetivo);
-        progressBar.setValue(kcalActuales);
+	    progressBar = new JProgressBar(0, 5000);  // Máximo de 5000 kilocalorías
         progressBar.setStringPainted(true);
+		//progressBar = new JProgressBar(0, kcalObjetivo);
+       // progressBar.setValue(kcalActuales);
+        //progressBar.setStringPainted(true);
         progressBar.setString(kcalActuales + " / " + kcalObjetivo + " kcal quemadas");
 
 		// INFORMACION (>>ACTIVIDAD)
@@ -76,6 +82,7 @@ public class Salud extends JPanel {
 	                calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	            }
 	        });
+		 
 		
 		titulos.add(lActividad);
 		titulos.add(lConstancia);
@@ -100,6 +107,8 @@ public class Salud extends JPanel {
                 if (diasAsistidos.add(hoy)) {
                     calcularRacha();
                     incrementAttendance();
+                    registrarEjercicio();
+                    //Calendario.highlightToday();
                 } else {
                     JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
                 }
@@ -107,6 +116,7 @@ public class Salud extends JPanel {
             }
         });
         
+      
 		// DATOS (>>INFORMACION)
 				JPanel datos = new JPanel(new GridLayout(5, 1));
 				informacion.add(datos, BorderLayout.EAST);
@@ -115,11 +125,39 @@ public class Salud extends JPanel {
 				datos.add(attendanceLabel);
 				datos.add(lblRacha);
 				datos.add(btnRegistrarDia);
-		       
-		        
-		       
+      
 		
 	}
+	
+	private void registrarEjercicio() {
+        // Opciones de ejercicio y sus calorías aproximadas
+        String[] ejercicios = {"Andar (350 kcal)", "Core (400 kcal)", "Core_Avanzado (650 kcal)", "Equilibrio (250 kcal)", "Gimnasia (500 kcal)", "Hiit (550 kcal)", "Yoga (200 kcal)"};
+        int[] calorias = {350, 400, 650, 250, 500 ,550, 200};
+
+        // Mostrar las opciones en un diálogo
+        String seleccion = (String) JOptionPane.showInputDialog(
+                this,
+                "¿Qué ejercicio hiciste hoy?",
+                "Seleccionar Ejercicio",
+                JOptionPane.QUESTION_MESSAGE,
+                null,
+                ejercicios,
+                ejercicios[0]
+        );
+
+        // Verificar la selección y actualizar la barra de progreso
+        if (seleccion != null) {
+            for (int i = 0; i < ejercicios.length; i++) {
+                if (seleccion.equals(ejercicios[i])) {
+                    int nuevoValor = progressBar.getValue() + calorias[i];
+                    progressBar.setString(nuevoValor + " / " + kcalObjetivo + " kcal quemadas");
+                    progressBar.setStringPainted(true);// No excede el máximo
+                    progressBar.setValue(nuevoValor);
+                    break;
+                }
+            }
+        }
+    }
 	 private void incrementAttendance() {
 	        if (attendedSessions < totalSessions) {
 	            attendedSessions++;
@@ -150,6 +188,13 @@ public class Salud extends JPanel {
         // Actualizar la etiqueta de racha
         lblRacha.setText("Racha actual: " + rachaActual + " días, Racha máxima: " + rachaMaxima + " días");
     }
+	public static void main(String[] args) {
+		Calendario Calendario = new Calendario();
+        Calendario.setVisible(true);
+        SwingUtilities.invokeLater(() -> {
+            Salud app = new Salud(Calendario);
+            app.setVisible(true);
+        });
+	}
 	
-
 }

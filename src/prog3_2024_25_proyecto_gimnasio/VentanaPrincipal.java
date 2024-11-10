@@ -183,12 +183,13 @@ public class VentanaPrincipal extends JFrame {
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
     public String[] nombreClases;
+    private Calendario Calendario;
 
     public void setUsuario(Usuario u) {
         this.usuario = u;
         this.ActualizarVentana();
     }
-
+    
     public List<Usuario> getUsuarios() {
         return listaUsuarios;
     }
@@ -197,13 +198,17 @@ public class VentanaPrincipal extends JFrame {
     	return listaActividades;
     }
     
+    public void setUsuarios(ArrayList<Usuario> usuarios) {
+    	this.listaUsuarios = usuarios;
+    }
+    
     public Usuario getUsuario() {
     	return usuario;
     }
 
-    public VentanaPrincipal(ArrayList<Usuario> usuarios) {
+    public VentanaPrincipal() {
         this.usuario = null;
-        this.listaUsuarios = usuarios;
+        this.listaUsuarios = new ArrayList<>();
         this.listaActividades = new ArrayList<>(); // Initialize listaActividades
 
         this.principal = new InicioSesion(this);
@@ -263,7 +268,7 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
                             break;
                         case "SALUD":
-                            principal.add(new Salud(), BorderLayout.CENTER);
+                            principal.add(new Salud(Calendario), BorderLayout.CENTER);
                             break;
                         case "USUARIO":
                         	default:
@@ -323,10 +328,11 @@ public class VentanaPrincipal extends JFrame {
                 fecha1 = fecha1.plusDays(1);
             }
         }
-        VentanaPrincipal ventana = new VentanaPrincipal(listaUsuarios);
+        VentanaPrincipal ventana = new VentanaPrincipal();
         ventana.setVisible(true);
 
-        ventana.listaActividades = listaActividades; 
+        ventana.listaActividades = listaActividades;
+        ventana.listaUsuarios = listaUsuarios;
         
     }
 }
