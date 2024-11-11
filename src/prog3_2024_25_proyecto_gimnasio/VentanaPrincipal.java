@@ -162,25 +162,20 @@ public class VentanaPrincipal extends JFrame {
         for (String nombreClase : nombreClases) {
             LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 9, 00);
             for (int i = 0; i < 5; i++) {
-                boolean[] horariosOcupados = new boolean[4];
-                int actividadesCreadas = 0;
-                while (actividadesCreadas < 2) {
-                    int horarioAleatorio = (new Random()).nextInt(4);
-                    if (!horariosOcupados[horarioAleatorio]) {
-                        Actividad actividad = new Actividad(nombreClase, fecha1.plusHours(horarioAleatorio * 3));
-                        for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
-                            actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
-                        }
-                        listaActividades.add(actividad);
-                        horariosOcupados[horarioAleatorio] = true;
-                        actividadesCreadas++;
+                for (int j = 0; j < 3; j++) {
+                    Actividad actividad = new Actividad(nombreClase, fecha1);
+                    for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
+                        actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
                     }
+                    listaActividades.add(actividad);
+                    fecha1 = fecha1.plusHours(8);
                 }
                 fecha1 = fecha1.plusDays(1);
             }
         }
         VentanaPrincipal ventana = new VentanaPrincipal();
         ventana.setVisible(true);
+
         ventana.listaActividades = listaActividades;
         ventana.listaUsuarios = listaUsuarios;
     }

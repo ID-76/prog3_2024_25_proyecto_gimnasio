@@ -89,13 +89,12 @@ public class PanelActividad extends JPanel {
     }
 
     private int getSlotIndex(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(9, 0)) && !time.isAfter(LocalTime.of(11, 0))) return 0;
-        if (!time.isBefore(LocalTime.of(12, 0)) && !time.isAfter(LocalTime.of(14, 0))) return 1;
-        if (!time.isBefore(LocalTime.of(16, 0)) && !time.isAfter(LocalTime.of(18, 0))) return 2;
-        if (!time.isBefore(LocalTime.of(18, 0)) && !time.isAfter(LocalTime.of(20, 0))) return 3;
+        if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(LocalTime.of(11, 0))) return 0;
+        if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(LocalTime.of(14, 0))) return 1;
+        if (!time.isBefore(LocalTime.of(16, 0)) && time.isBefore(LocalTime.of(18, 0))) return 2;
+        if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(LocalTime.of(20, 0))) return 3;
         return -1;
     }
-
 
     public void iniciarTabla() {
         Vector<String> diasSemana = new Vector<>(Arrays.asList("Horarios", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"));
@@ -163,7 +162,7 @@ public class PanelActividad extends JPanel {
     public void loadActividades() {
         modelo.setRowCount(0);
         ArrayList<String> horarios = new ArrayList<>(Arrays.asList("9:00-11:00", "12:00-14:00", "16:00-18:00", "18:00-20:00"));
-        
+
         ArrayList<ArrayList<Actividad>> as = actividades.get(fecha);
         if (as != null) {
             for (int i = 0; i < 4; i++) {
