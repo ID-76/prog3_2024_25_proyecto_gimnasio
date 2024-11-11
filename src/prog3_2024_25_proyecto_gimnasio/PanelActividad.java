@@ -1,10 +1,13 @@
 package prog3_2024_25_proyecto_gimnasio;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionAdapter;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -34,6 +37,8 @@ public class PanelActividad extends JPanel {
     HashMap<LocalDateTime, ArrayList<ArrayList<Actividad>>> actividades = new HashMap<>();
     String tipo = "ANDAR";
     LocalDateTime fecha = LocalDateTime.of(2024, 11, 4, 9, 00);
+    private int hoveredRow = -1;
+    private int hoveredColumn = -1;
 
     public PanelActividad(List<Actividad> listaActividades) {
         this.listaActividades = listaActividades;
@@ -84,12 +89,13 @@ public class PanelActividad extends JPanel {
     }
 
     private int getSlotIndex(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(9, 0)) && time.isBefore(LocalTime.of(11, 0))) return 0;
-        if (!time.isBefore(LocalTime.of(12, 0)) && time.isBefore(LocalTime.of(14, 0))) return 1;
-        if (!time.isBefore(LocalTime.of(16, 0)) && time.isBefore(LocalTime.of(18, 0))) return 2;
-        if (!time.isBefore(LocalTime.of(18, 0)) && time.isBefore(LocalTime.of(20, 0))) return 3;
+        if (!time.isBefore(LocalTime.of(9, 0)) && !time.isAfter(LocalTime.of(11, 0))) return 0;
+        if (!time.isBefore(LocalTime.of(12, 0)) && !time.isAfter(LocalTime.of(14, 0))) return 1;
+        if (!time.isBefore(LocalTime.of(16, 0)) && !time.isAfter(LocalTime.of(18, 0))) return 2;
+        if (!time.isBefore(LocalTime.of(18, 0)) && !time.isAfter(LocalTime.of(20, 0))) return 3;
         return -1;
     }
+
 
     public void iniciarTabla() {
         Vector<String> diasSemana = new Vector<>(Arrays.asList("Horarios", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado", "Domingo"));
@@ -103,7 +109,6 @@ public class PanelActividad extends JPanel {
             }
         };
 
-        // Renderer para mostrar los botones en la tabla
         tabla.setDefaultRenderer(Object.class, new TableCellRenderer() {
             @Override
             public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
@@ -111,14 +116,25 @@ public class PanelActividad extends JPanel {
                 if (value instanceof Actividad) {
                     Actividad actividad = (Actividad) value;
                     JButton button = new JButton(actividad.getNombre());
+                    if (row == hoveredRow && column == hoveredColumn) {
+                        button.setBackground(Color.LIGHT_GRAY);
+                    } else {
+                        button.setBackground(null);
+                    }
                     return button;
                 } else {
-                    return new JLabel(value != null ? value.toString() : "");
+                    JLabel label = new JLabel(value != null ? value.toString() : "");
+                    if (row == hoveredRow && column == hoveredColumn) {
+                        label.setBackground(Color.LIGHT_GRAY);
+                        label.setOpaque(true);
+                    } else {
+                        label.setOpaque(false);
+                    }
+                    return label;
                 }
             }
         });
 
-        // Editor para hacer que los botones sean clicables
         tabla.setDefaultEditor(Object.class, new ButtonEditor());
 
         tabla.setRowHeight(60);
@@ -128,12 +144,26 @@ public class PanelActividad extends JPanel {
         }
         tabla.getTableHeader().setReorderingAllowed(false);
         tabla.getTableHeader().setResizingAllowed(false);
+
+        tabla.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseMoved(MouseEvent e) {
+                int row = tabla.rowAtPoint(e.getPoint());
+                int column = tabla.columnAtPoint(e.getPoint());
+
+                if (row != hoveredRow || column != hoveredColumn) {
+                    hoveredRow = row;
+                    hoveredColumn = column;
+                    tabla.repaint(); 
+                }
+            }
+        });
     }
 
     public void loadActividades() {
         modelo.setRowCount(0);
         ArrayList<String> horarios = new ArrayList<>(Arrays.asList("9:00-11:00", "12:00-14:00", "16:00-18:00", "18:00-20:00"));
-
+        
         ArrayList<ArrayList<Actividad>> as = actividades.get(fecha);
         if (as != null) {
             for (int i = 0; i < 4; i++) {
