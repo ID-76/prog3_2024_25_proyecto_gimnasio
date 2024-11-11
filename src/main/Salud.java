@@ -1,9 +1,9 @@
-package prog3_2024_25_proyecto_gimnasio;
+package main;
 
 
 import javax.swing.*;
 
-
+import gui.Calendario;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;

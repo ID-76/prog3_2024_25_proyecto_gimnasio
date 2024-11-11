@@ -1,25 +1,25 @@
-package prog3_2024_25_proyecto_gimnasio;
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
-
-
-import java.awt.*;
-import java.awt.event.*;
+package gui;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class Calendario extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -32,8 +32,6 @@ public class Calendario extends JFrame {
     private final String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private final Calendar calendario = new GregorianCalendar();
-    private LocalDate currentDate;
-
     public Calendario() {
         setTitle("Calendario");
         setSize(400, 300);
@@ -41,14 +39,15 @@ public class Calendario extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Initialize components
-        currentDate = LocalDate.now();
+        LocalDate.now();
         mesActual = calendario.get(Calendar.MONTH);
         anoActual = calendario.get(Calendar.YEAR);
         diaActual = calendario.get(Calendar.DAY_OF_MONTH);
 
         DefaultTableModel tableModel = new DefaultTableModel(6, 7) {
-            @Override
+			private static final long serialVersionUID = 1L;
+
+			@Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
@@ -57,8 +56,7 @@ public class Calendario extends JFrame {
         tabla = new JTable(tableModel);
         tabla.setRowHeight(38);
 
-        // Add custom cell renderer for highlighting today's date
-       // tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer());
+        
 
         lblMes = new JLabel(meses[mesActual]);
         lblAno = new JLabel(String.valueOf(anoActual));
@@ -66,23 +64,23 @@ public class Calendario extends JFrame {
         btnSiguiente = new JButton(">");
         highlightTodayButton = new JButton("Registrar Asistencia");
 
-        // Navigation panel
+        
         JPanel pnlNavegacion = new JPanel(new FlowLayout());
         pnlNavegacion.add(btnAnterior);
         pnlNavegacion.add(lblMes);
         pnlNavegacion.add(lblAno);
         pnlNavegacion.add(btnSiguiente);
 
-        // Calendar panel
+
         JPanel pnlCalendario = new JPanel(new BorderLayout());
         pnlCalendario.add(pnlNavegacion, BorderLayout.NORTH);
         pnlCalendario.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // Add panels to frame
+
         add(pnlCalendario, BorderLayout.CENTER);
         add(highlightTodayButton, BorderLayout.SOUTH);
 
-        // Button actions
+
         btnAnterior.addActionListener(e -> cambiarMes(-1));
         btnSiguiente.addActionListener(e -> cambiarMes(1));
         diasAsistidos = new HashSet<>();
@@ -128,7 +126,7 @@ public class Calendario extends JFrame {
         int inicioDiaSemana = calendario.get(Calendar.DAY_OF_WEEK) - 1;
         int diasMes = calendario.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        // Clear table data
+        
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
@@ -136,7 +134,7 @@ public class Calendario extends JFrame {
             }
         }
 
-        // Fill table with days of the month
+        
         int dia = 1;
         for (int i = inicioDiaSemana; i < 7; i++) {
             model.setValueAt(dia++, 0, i);

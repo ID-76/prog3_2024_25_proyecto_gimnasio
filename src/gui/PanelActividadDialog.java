@@ -1,4 +1,4 @@
-package prog3_2024_25_proyecto_gimnasio;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -17,6 +17,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+
+import main.Actividad;
+import main.VentanaPrincipal;
 
 public class PanelActividadDialog extends JDialog implements ActionListener {
 

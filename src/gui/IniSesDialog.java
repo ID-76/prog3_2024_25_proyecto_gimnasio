@@ -1,4 +1,4 @@
-package prog3_2024_25_proyecto_gimnasio;
+package gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;

@@ -1,14 +1,12 @@
 
-package prog3_2024_25_proyecto_gimnasio;
+package main;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -16,21 +14,25 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import gui.InicioSesion;
+import gui.PanelActividad;
+import gui.PanelUsuario;
+
+@SuppressWarnings("static-access")
+
+
 public class VentanaPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel principal;
-    static Usuario usuario;
+    public static Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
     public String[] nombreClases;
-    private Calendario Calendario;
-
-    public void setUsuario(Usuario u) {
+	public void setUsuario(Usuario u) {
         this.usuario = u;
         this.ActualizarVentana();
     }
@@ -61,8 +63,7 @@ public class VentanaPrincipal extends JFrame {
         // COMPORATMIENTO VENTANA PRINCIPAL
         add(principal);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setMinimumSize(new Dimension(775, 350));
-        setMinimumSize(new Dimension(800, 350));
+        setMinimumSize(new Dimension(850, 400));
         setResizable(false);
         setLocationRelativeTo(null);
         setTitle("GIMNASIO");

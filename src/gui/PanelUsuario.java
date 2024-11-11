@@ -1,12 +1,6 @@
-package prog3_2024_25_proyecto_gimnasio;
+package gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Font;
-import java.awt.GridLayout;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -14,10 +8,11 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.border.Border;
+
+import main.Usuario;
+import main.VentanaPrincipal;
 
 public class PanelUsuario extends JPanel{
 	/**
@@ -27,7 +22,6 @@ public class PanelUsuario extends JPanel{
 
 	public PanelUsuario(Usuario usuario) {
 		
-		String[] encabezados_text = {"Nombre", "Apellido", "DNI", "Telefono", "Edad", "Sexo"};
 		setLayout(null);
 		
 		JLabel nom = new JLabel("Nombre");

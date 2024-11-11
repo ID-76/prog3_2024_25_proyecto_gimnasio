@@ -1,4 +1,4 @@
-package prog3_2024_25_proyecto_gimnasio;
+package gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -27,7 +27,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 
-import prog3_2024_25_proyecto_gimnasio.Actividad.Tipo;
+import main.Actividad;
+import main.Actividad.Tipo;
 
 public class PanelActividad extends JPanel {
     private static final long serialVersionUID = 1L;
@@ -49,7 +50,7 @@ public class PanelActividad extends JPanel {
 
         JPanel principal = new JPanel(new BorderLayout());
         JComboBox<Tipo> tipoActividadCombo = new JComboBox<>(Tipo.values());
-        tipoActividadCombo.setPreferredSize(new Dimension(600, 20));
+        tipoActividadCombo.setPreferredSize(new Dimension(625, 35));
         tipoActividadCombo.addActionListener(e -> {
             tipo = ((Tipo) tipoActividadCombo.getSelectedItem()).toString();
             actualizarMap();
@@ -137,7 +138,7 @@ public class PanelActividad extends JPanel {
         tabla.setDefaultEditor(Object.class, new ButtonEditor());
 
         tabla.setRowHeight(60);
-        tabla.getColumnModel().getColumn(0).setPreferredWidth(240);
+        tabla.getColumnModel().getColumn(0).setPreferredWidth(350);
         for (int i = 1; i < tabla.getColumnCount(); i++) {
             tabla.getColumnModel().getColumn(i).setPreferredWidth(300);
         }
