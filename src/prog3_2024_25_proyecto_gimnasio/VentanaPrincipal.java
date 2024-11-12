@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+/*<<<<<<< HEAD
 
 package prog3_2024_25_proyecto_gimnasio;
 
@@ -152,7 +152,7 @@ public class VentanaPrincipal extends JFrame {
     
    
 }
-=======
+=======*/
 
 package prog3_2024_25_proyecto_gimnasio;
 
@@ -241,7 +241,7 @@ public class VentanaPrincipal extends JFrame {
             sidebar.setBorder(BorderFactory.createEmptyBorder(8, 10, 10, 10));
             principal.add(sidebar, BorderLayout.WEST);
 
-            String[] clasesText = {"ACTIVIDADES", "SALUD", "USUARIO" };
+            String[] clasesText = {"ACTIVIDADES", "SALUD", "USUARIO","MENU" };
 
             for (String text : clasesText) {
             	
@@ -250,7 +250,7 @@ public class VentanaPrincipal extends JFrame {
             		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(45, 45, Image.SCALE_DEFAULT));
             	} else if(text.equals("ACTIVIDADES")){
             		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(52, 52, Image.SCALE_DEFAULT));
-            	} else {
+            	} else if(text.equals("USUARIO")){
             		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT));
             	}
                 JButton boton = new JButton(text);
@@ -264,6 +264,9 @@ public class VentanaPrincipal extends JFrame {
                     principal.removeAll();
                     principal.add(sidebar, BorderLayout.WEST);
                     switch (text) {
+                    	case "MENU":
+                    		principal.add(new Menu(listaActividades,usuario), BorderLayout.CENTER);
+                    		break;
                         case "ACTIVIDADES":
                             principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
                             break;
@@ -275,6 +278,7 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
                             break;
                     }
+                    
                     principal.revalidate();
                     principal.repaint();
                     principal.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 10));
@@ -336,4 +340,4 @@ public class VentanaPrincipal extends JFrame {
         
     }
 }
->>>>>>> branch 'master' of https://github.com/ID-76/prog3_2024_25_proyecto_gimnasio
+//>>>>>>> branch 'master' of https://github.com/ID-76/prog3_2024_25_proyecto_gimnasio

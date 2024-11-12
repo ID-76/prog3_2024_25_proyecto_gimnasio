@@ -6,6 +6,8 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
+import java.util.AbstractList;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
@@ -25,14 +27,17 @@ public class Menu extends JPanel {
 	
 	private JProgressBar progressBar;
 	
-	public Menu() {
-		
+	private List<Actividad> listaActividades;
+	private Usuario usuario;
+	public Menu(List<Actividad> la, Usuario u) {
+		listaActividades = la;
+		usuario = u;
 		this.setLayout(new BorderLayout());
 			
 		pNorte = new JPanel();
 		pSur = new JPanel();
 		pCentro = new JPanel();
-		pCentro.setLayout(new GridLayout(5, 1));
+		pCentro.setLayout(new GridLayout(3, 1,0,20));
 		pEste = new JPanel();
 		pOeste = new JPanel();
 		pOeste.setLayout(new GridLayout(4, 1));
@@ -58,19 +63,17 @@ public class Menu extends JPanel {
 		
 			
 		//lbMensaje = new JLabel("Hola " + VentanaPrincipal.usuario.getNombre()+ ". Estas son tus clases para hoy");
-		lbMensaje = new JLabel("Hola nombre. Estas son tus clases para hoy: ");
+		lbMensaje = new JLabel("Hola "+usuario.getNombre()+". Estas son tus clases para hoy: ");
 		lbMensaje.setFont(new Font("Arial", Font.BOLD, 20));
 		lbMensaje.setHorizontalAlignment(JLabel.CENTER);
 		pCentro.add(lbMensaje, BorderLayout.SOUTH);
-		pCentro.add(new JPanel());
-		pCentro.add(new JPanel());
 		
 		
-		progressBar = new JProgressBar(0, contarActividadesporUsuario(VentanaPrincipal.usuario));
+		progressBar = new JProgressBar(0, contarActividadesporUsuario());
+		progressBar.setValue(contarActividadesPasadas());
         progressBar.setStringPainted(true); // Muestra el porcentaje en la barra
         progressBar.setForeground(Color.BLUE);
         pCentro.add(progressBar, BorderLayout.CENTER);
-        pCentro.add(new JPanel());
         
         
         
@@ -78,13 +81,10 @@ public class Menu extends JPanel {
         
         
         
-        VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
-		Usuario usuario = ventana.getUsuario();
-		List<Actividad> actividades = ventana.getActividades();
-		LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
+        LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
 	    LocalDateTime haceUnaSemana = fecha.minusWeeks(1);
-	    List<Actividad> actividadesUltimaSemana = null;
-	    for (Actividad actividad: actividades) {
+	    List<Actividad> actividadesUltimaSemana = new ArrayList<Actividad>();
+	    for (Actividad actividad: listaActividades) {
 	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fecha)&& actividad.getListaUsuarios().contains(usuario)) {
 	    		actividadesUltimaSemana.add(actividad);
 	    	}
@@ -105,33 +105,31 @@ public class Menu extends JPanel {
         } else {
             barraCal.setForeground(Color.GREEN);
         }
-        add(barraCal);
-        
-        
-        
-        
+        pCentro.add(barraCal);
+     
         
          
 		
 			
 		setVisible(true);
 	}
-
-	public static void main(String[] args) {
-		JFrame f = new JFrame();
-		f.setBounds(300, 200, 400, 200);
-		Menu menu = new Menu();
-		f.getContentPane().add(menu);
-		f.setVisible(true);
-	}
-	
-	public int contarActividadesporUsuario(Usuario usuario) {
+	private int contarActividadesporUsuario() {
 		int contador = 0;
-		List<Actividad> actividades = VentanaPrincipal.getActividades();
-		for (Actividad actividad : actividades) {
+		for (Actividad actividad : listaActividades) {
 				if (actividad.getListaUsuarios().contains(usuario)) {
 					contador++;
 				}
+		}
+		return contador;
+	}
+	
+	private int contarActividadesPasadas() {
+		int contador = 0;
+		LocalDateTime fActual = LocalDateTime.now();
+		for(Actividad actividad: listaActividades) {
+			if(actividad.getFecha().isBefore(fActual)) {
+				contador++;
+			}
 		}
 		return contador;
 	}
