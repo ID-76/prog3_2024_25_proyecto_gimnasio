@@ -34,7 +34,7 @@ public class Calendario extends JFrame {
     private final Calendar calendario = new GregorianCalendar();
     public Calendario() {
         setTitle("Calendario");
-        setSize(400, 300);
+        setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -54,7 +54,7 @@ public class Calendario extends JFrame {
         };
         tableModel.setColumnIdentifiers(columnas);
         tabla = new JTable(tableModel);
-        tabla.setRowHeight(38);
+        tabla.setRowHeight(70);
 
         
 

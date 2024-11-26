@@ -1,10 +1,13 @@
 
 package main;
 
+
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
+
 
 import gui.InicioSesion;
 import gui.PanelActividad;
@@ -72,7 +76,9 @@ public class VentanaPrincipal extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        
     }
+    
 
     public void ActualizarVentana() {
         remove(principal);
@@ -179,5 +185,7 @@ public class VentanaPrincipal extends JFrame {
 
         ventana.listaActividades = listaActividades;
         ventana.listaUsuarios = listaUsuarios;
+        
+        
     }
 }
