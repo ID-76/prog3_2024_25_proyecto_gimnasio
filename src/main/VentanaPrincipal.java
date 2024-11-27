@@ -7,7 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
-
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,9 +20,10 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-
+import gui.Calendario;
 import gui.InicioSesion;
 import gui.PanelActividad;
 import gui.PanelUsuario;
@@ -76,7 +78,24 @@ public class VentanaPrincipal extends JFrame {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // Detectar Ctrl + E
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_E) {
+                    abrirVentanaSecundaria();
+                }
+            }
+        });
         
+    }
+    private void abrirVentanaSecundaria() {
+        // Instancia y muestra la ventana secundaria
+        SwingUtilities.invokeLater(() -> {
+            Calendario calendario = new Calendario();
+            calendario.setVisible(true);
+            calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        });
     }
     
 
@@ -97,7 +116,7 @@ public class VentanaPrincipal extends JFrame {
 
             for (String text : clasesText) {
             	
-            	ImageIcon iconoBtn = new ImageIcon("/Users/asier.gomez/GitHub/prog3_2024_25_proyecto_gimnasio/Images/"+text+".png");
+            	ImageIcon iconoBtn = new ImageIcon("Images/"+text+".png");
             	if (text.equals("MENU")) {
             		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(45, 45, Image.SCALE_DEFAULT));
             	} else if(text.equals("ACTIVIDADES")){
