@@ -88,6 +88,7 @@ public class Salud extends JPanel {
         titulos.add(lRAcha);
         titulos.add(lMRacha);
         titulos.add(lResumen);
+        titulos.add(lCalendario);
         lCalendario.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
