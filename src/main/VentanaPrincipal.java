@@ -27,6 +27,7 @@ import gui.Calendario;
 import gui.InicioSesion;
 import gui.PanelActividad;
 import gui.PanelUsuario;
+import persistence.GestorBD;
 
 @SuppressWarnings("static-access")
 
@@ -159,6 +160,7 @@ public class VentanaPrincipal extends JFrame {
     }
 
     public static void main(String[] args) {
+    	
         ArrayList<Actividad> listaActividades = new ArrayList<>();
         ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
@@ -184,7 +186,8 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario8);
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
-
+        
+        
         for (String nombreClase : nombreClases) {
             LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 9, 00);
             for (int i = 0; i < 5; i++) {

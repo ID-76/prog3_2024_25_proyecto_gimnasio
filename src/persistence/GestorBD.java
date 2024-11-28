@@ -1,65 +1,102 @@
 package persistence;
 
+import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
+
 
 import main.Usuario;
 import main.Usuario.Sexo;
 
 public class GestorBD {
-    private Connection connection;
+
+	//Se elimina el final de los atributos para poder actualizar los valores.
+	protected static String DRIVER_NAME;
+	protected static String DATABASE_FILE;
+	protected static String CONNECTION_STRING;
 
     // Constructor: Establece la conexión con la base de datos
-    public GestorBD(String url) {
-        try {
-            connection = DriverManager.getConnection(url);
-            crearTablaUsuarios(); // Crear tabla si no existe
-        } catch (SQLException e) {
-            System.err.println("Error al conectar con la base de datos: " + e.getMessage());
-        }
-    }
-
+    public GestorBD() {
+    	try {
+			//Se crea el Properties y se actualizan los 3 parámetros
+			Properties connectionProperties = new Properties();
+			connectionProperties.load(new FileReader("resources/parametros.properties"));
+			
+			DRIVER_NAME = connectionProperties.getProperty("DRIVER_NAME");
+			DATABASE_FILE = connectionProperties.getProperty("DATABASE_FILE");
+			CONNECTION_STRING = connectionProperties.getProperty("CONNECTION_STRING") + DATABASE_FILE;
+			
+			//Cargar el diver SQLite
+			Class.forName(DRIVER_NAME);
+		} catch (Exception ex) {
+			System.err.format("\n* Error al cargar el driver de BBDD: %s", ex.getMessage());
+			ex.printStackTrace();
+		}
+	}
+    
+    
     // Crear tabla Usuarios si no existe
     private void crearTablaUsuarios() {
-        String sql = """
-            CREATE TABLE IF NOT EXISTS usuarios (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nombre TEXT NOT NULL,
-                apellido TEXT NOT NULL,
-                dni TEXT NOT NULL UNIQUE,
-                telefono INTEGER NOT NULL,
-                edad INTEGER NOT NULL,
-                sexo TEXT NOT NULL,
-                contraseña TEXT NOT NULL
-            )
-        """;
+    	//Se abre la conexión y se obtiene el Statement
+    	//Al abrir la conexión, si no existía el fichero, se crea la base de datos
+    	try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {	
+	    	String sql = """
+	            CREATE TABLE IF NOT EXISTS usuario (
+	                id INTEGER PRIMARY KEY AUTOINCREMENT,
+	                nombre TEXT NOT NULL,
+	                apellido TEXT NOT NULL,
+	                dni TEXT NOT NULL UNIQUE,
+	                telefono INTEGER NOT NULL,
+	                edad INTEGER NOT NULL,
+	                sexo TEXT NOT NULL,
+	                contraseña TEXT NOT NULL
+	            )
+	        """;
+	    	 PreparedStatement pstmt = con.prepareStatement(sql);
 
-        try (Statement stmt = connection.createStatement()) {
-            stmt.execute(sql);
-        } catch (SQLException e) {
-            System.err.println("Error al crear tabla usuarios: " + e.getMessage());
-        }
+	    	 if (!pstmt.execute()) {
+		        	System.out.println("\n- Se ha creado la tabla Usuario");
+		        }
+		        
+		        //Es necesario cerrar el PreparedStatement
+		        pstmt.close();		
+			} catch (Exception ex) {
+				System.err.format("\n* Error al crear la BBDD: %s", ex.getMessage());
+				ex.printStackTrace();			
+			}
     }
 
     // Método para insertar un usuario en la base de datos
-    public boolean insertarUsuario(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (nombre, apellido, dni, telefono, edad, sexo, contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getApellido());
-            stmt.setString(3, usuario.getDni());
-            stmt.setInt(4, usuario.getTelefono());
-            stmt.setInt(5, usuario.getEdad());
-            stmt.setString(6, usuario.getSexo().toString());
-            stmt.setString(7, usuario.getContraseña());
-            stmt.executeUpdate();
-            return true;
-        } catch (SQLException e) {
-            System.err.println("Error al insertar usuario: " + e.getMessage());
-            return false;
-        }
+    public void insertarUsuarios(Usuario... usuarios) {
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
+          //Se define la plantilla de la sentencia SQL
+            String sql = "INSERT INTO usuarios (nombre, apellido, dni, telefono, edad, sexo, contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";			
+			PreparedStatement pstmt = con.prepareStatement(sql);
+			
+			System.out.println("- Insertando usuarios...");
+			
+			//Se recorren los clientes y se insertan uno a uno
+			for (Usuario u : usuarios) {				
+				pstmt.setString(1, u.getNombre());
+				pstmt.setString(2, u.getApellido());
+				pstmt.setString(3, u.getDni());
+				pstmt.setInt(4, u.getTelefono());
+				pstmt.setInt(5, u.getEdad());
+				pstmt.setString(6, u.getSexo().toString());
+				pstmt.setString(7, u.getContraseña());
+				
+				if (1 == pstmt.executeUpdate()) {					
+					System.out.format("\n - Cliente insertado: %s", u.toString());
+				} else {
+					System.out.format("\n - No se ha insertado el cliente: %s", u.toString());
+				}
+			}			
+		} catch (Exception ex) {
+			System.err.format("\n* Error al insertar datos de la BBDD: %s", ex.getMessage());
+			ex.printStackTrace();						
+		}	
     }
 
     // Método para actualizar un usuario en la base de datos
@@ -158,7 +195,7 @@ public class GestorBD {
     }
     
     public static void main(String[] args) {
-        GestorBD gestorBD = new GestorBD("jdbc:sqlite:usuarios.db");
+        GestorBD gestorBD = new GestorBD("jdbc:sqlite:usuarios.csv");
 
         // Insertar un usuario
         Usuario usuario = new Usuario("Juan", "Pérez", "12345678A", 123456789, 30, Sexo.HOMBRE, "password123");
