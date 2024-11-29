@@ -1,8 +1,7 @@
-package prog3_2024_25_proyecto_gimnasio;
+package main;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Random;
 
 import javax.swing.ImageIcon;

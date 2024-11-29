@@ -1,15 +1,18 @@
-package prog3_2024_25_proyecto_gimnasio;
+package main;
 
 
 import javax.swing.*;
 
-
+import gui.Calendario;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,8 @@ public class Salud extends JPanel {
 
     public Salud() {
         setLayout(new BorderLayout(3, 3));
+        setFocusable(true);
+        
 
         // Inicializar historial de actividades
         historialActividades = new ArrayList<>();
@@ -52,20 +57,37 @@ public class Salud extends JPanel {
         add(informacion, BorderLayout.WEST);
 
         // Panel de títulos
-        JPanel titulos = new JPanel(new GridLayout(5, 1));
+        JPanel titulos = new JPanel(new GridLayout(6, 1));
         informacion.add(titulos, BorderLayout.WEST);
 
         JLabel lActividad = new JLabel("Actividad:");
         JLabel lConstancia = new JLabel("Constancia:");
+        JLabel lRAcha = new JLabel("Racha:");
         lblRacha = new JLabel("Racha actual: 0 días, Racha máxima: 0 días");
-        
+      
         JLabel lMRacha = new JLabel("Registro de actividad:");
+        JLabel lResumen = new JLabel("Resumen:");
+        JLabel lcal = new JLabel ("Pulse Ctrl + E \n"
+        		+ " para ver tu calendario");
         JButton lCalendario = new JButton("Calendario:");
+        
+        addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyPressed(KeyEvent e) {
+                // Detectar Ctrl + E
+                if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_E) {
+                    abrirVentanaSecundaria();
+                }
+            }
+        });
+
+    
         
         titulos.add(lActividad);
         titulos.add(lConstancia);
-        titulos.add(lblRacha);
+        titulos.add(lRAcha);
         titulos.add(lMRacha);
+        titulos.add(lResumen);
         titulos.add(lCalendario);
         lCalendario.addActionListener(new ActionListener() {
             @Override
@@ -84,15 +106,16 @@ public class Salud extends JPanel {
         btnRegistrarDia.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                LocalDate hoy = LocalDate.now();
+                LocalDate hoy = LocalDate.now(); 
+                registrarEjercicio();
                 if (diasAsistidos.add(hoy)) {
                     calcularRacha();
                     incrementAttendance();
-                    registrarEjercicio();
+                   
                     checkAchievements(); // Verificar logros
-                } else {
-                    JOptionPane.showMessageDialog(null, "Ya registraste actividad de hoy.");
-                }
+                } //else {
+                   // JOptionPane.showMessageDialog(null, "Ya registraste actividad de hoy.");
+                //}
             }
         });
 
@@ -109,6 +132,7 @@ public class Salud extends JPanel {
         datos.add(lblRacha);
         datos.add(btnRegistrarDia);
         datos.add(btnResumenSemanal);
+        datos.add(lcal);
 
         // Área de texto adicional (derecha)
         infoArea = new JTextArea(10, 20);
@@ -121,25 +145,50 @@ public class Salud extends JPanel {
         String[] ejercicios = {"Andar (350 kcal)", "Core (400 kcal)", "Core Avanzado (650 kcal)", "Equilibrio (250 kcal)", "Gimnasia (500 kcal)", "Hiit (550 kcal)", "Yoga (200 kcal)"};
         int[] calorias = {350, 400, 650, 250, 500, 550, 200};
 
-        String seleccion = (String) JOptionPane.showInputDialog(
+        // Crear panel personalizado para el diálogo
+        JPanel panel = new JPanel(new GridLayout(3, 1, 5, 5));
+        JLabel labelEjercicio = new JLabel("Selecciona el ejercicio realizado:");
+        JComboBox<String> comboEjercicios = new JComboBox<>(ejercicios);
+
+        JLabel labelFecha = new JLabel("Selecciona la fecha de la actividad:");
+        JSpinner spinnerFecha = new JSpinner(new SpinnerDateModel());
+        JSpinner.DateEditor editor = new JSpinner.DateEditor(spinnerFecha, "yyyy-MM-dd");
+        spinnerFecha.setEditor(editor);
+        spinnerFecha.setValue(new Date()); // Fecha actual por defecto
+
+        // Añadir componentes al panel
+        panel.add(labelEjercicio);
+        panel.add(comboEjercicios);
+        panel.add(labelFecha);
+        panel.add(spinnerFecha);
+
+        // Mostrar el cuadro de diálogo
+        int result = JOptionPane.showConfirmDialog(
                 this,
-                "¿Qué ejercicio hiciste hoy?",
-                "Seleccionar Ejercicio",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                ejercicios,
-                ejercicios[0]
+                panel,
+                "Registrar actividad",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.PLAIN_MESSAGE
         );
 
-        if (seleccion != null) {
+        if (result == JOptionPane.OK_OPTION) {
+            // Obtener datos seleccionados
+            String seleccion = (String) comboEjercicios.getSelectedItem();
+            Date fechaSeleccionada = (Date) spinnerFecha.getValue();
+            LocalDate fecha = LocalDate.parse(new java.text.SimpleDateFormat("yyyy-MM-dd").format(fechaSeleccionada));
+
+            // Buscar las calorías asociadas y registrar
             for (int i = 0; i < ejercicios.length; i++) {
                 if (seleccion.equals(ejercicios[i])) {
                     int nuevoValor = progressBar.getValue() + calorias[i];
                     progressBar.setString(nuevoValor + " / " + kcalObjetivo + " kcal quemadas");
                     progressBar.setValue(nuevoValor);
-                    infoArea.append("Ejercicio: " + seleccion + "\n");
-                    historialActividades.add(seleccion + " - " + calorias[i] + " kcal");
-                    
+
+                    // Registrar actividad con fecha
+                    String actividadConFecha = "Fecha: " + fecha + ", Ejercicio: " + seleccion + " - " + calorias[i] + " kcal";
+                    infoArea.append(actividadConFecha + "\n");
+                    historialActividades.add(actividadConFecha);
+
                     if (nuevoValor >= kcalObjetivo * 0.9) {
                         JOptionPane.showMessageDialog(this, "¡Estás cerca de tu meta semanal de kilocalorías!");
                     }
@@ -147,6 +196,17 @@ public class Salud extends JPanel {
                 }
             }
         }
+    }
+
+
+    
+    private void abrirVentanaSecundaria() {
+        // Instancia y muestra la ventana secundaria
+        SwingUtilities.invokeLater(() -> {
+            Calendario calendario = new Calendario();
+            calendario.setVisible(true);
+            calendario.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        });
     }
 
     private void mostrarResumenSemanal() {

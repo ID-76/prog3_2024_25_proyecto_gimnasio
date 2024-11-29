@@ -1,30 +1,35 @@
-package prog3_2024_25_proyecto_gimnasio;
-import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-
-
-
-import java.awt.*;
-import java.awt.event.*;
+package gui;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.time.LocalDate;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
-import javax.swing.*;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
-import java.time.LocalDate;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 public class Calendario extends JFrame {
     private static final long serialVersionUID = 1L;
     private JLabel lblMes, lblAno;
     private Set<LocalDate> diasAsistidos;
+    private Map<LocalDate, String> actividadesDias;
     private JButton btnAnterior, btnSiguiente, highlightTodayButton;
     private JTable tabla;
     private int anoActual, mesActual, diaActual;
@@ -32,22 +37,22 @@ public class Calendario extends JFrame {
     private final String[] meses = {"Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
             "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
     private final Calendar calendario = new GregorianCalendar();
-    private LocalDate currentDate;
 
     public Calendario() {
-        setTitle("Calendario");
-        setSize(400, 300);
+        setTitle("Calendario de Actividades");
+        setSize(700, 600);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
-        // Initialize components
-        currentDate = LocalDate.now();
+        LocalDate.now();
         mesActual = calendario.get(Calendar.MONTH);
         anoActual = calendario.get(Calendar.YEAR);
         diaActual = calendario.get(Calendar.DAY_OF_MONTH);
 
         DefaultTableModel tableModel = new DefaultTableModel(6, 7) {
+            private static final long serialVersionUID = 1L;
+
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
@@ -55,47 +60,57 @@ public class Calendario extends JFrame {
         };
         tableModel.setColumnIdentifiers(columnas);
         tabla = new JTable(tableModel);
-        tabla.setRowHeight(38);
-
-        // Add custom cell renderer for highlighting today's date
-       // tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer());
+        tabla.setRowHeight(70);
 
         lblMes = new JLabel(meses[mesActual]);
         lblAno = new JLabel(String.valueOf(anoActual));
         btnAnterior = new JButton("<");
         btnSiguiente = new JButton(">");
-        highlightTodayButton = new JButton("Registrar Asistencia");
+        highlightTodayButton = new JButton("Registrar Actividad");
 
-        // Navigation panel
         JPanel pnlNavegacion = new JPanel(new FlowLayout());
         pnlNavegacion.add(btnAnterior);
         pnlNavegacion.add(lblMes);
         pnlNavegacion.add(lblAno);
         pnlNavegacion.add(btnSiguiente);
 
-        // Calendar panel
         JPanel pnlCalendario = new JPanel(new BorderLayout());
         pnlCalendario.add(pnlNavegacion, BorderLayout.NORTH);
         pnlCalendario.add(new JScrollPane(tabla), BorderLayout.CENTER);
 
-        // Add panels to frame
         add(pnlCalendario, BorderLayout.CENTER);
         add(highlightTodayButton, BorderLayout.SOUTH);
 
-        // Button actions
         btnAnterior.addActionListener(e -> cambiarMes(-1));
         btnSiguiente.addActionListener(e -> cambiarMes(1));
+        
         diasAsistidos = new HashSet<>();
+        actividadesDias = new HashMap<>();
+
         highlightTodayButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 LocalDate hoy = LocalDate.now();
-                if (diasAsistidos.add(hoy)) {
-                	highlightToday();
+                if (!diasAsistidos.contains(hoy)) {
+                    String[] actividades = {"Andar", "Core", "Gimnasio"};
+                    String actividadSeleccionada = (String) JOptionPane.showInputDialog(
+                        null, 
+                        "Selecciona tu actividad de hoy:", 
+                        "Registro de Actividad", 
+                        JOptionPane.QUESTION_MESSAGE, 
+                        null, 
+                        actividades, 
+                        actividades[0]
+                    );
+                    
+                    if (actividadSeleccionada != null) {
+                        diasAsistidos.add(hoy);
+                        actividadesDias.put(hoy, actividadSeleccionada);
+                        highlightToday(actividadSeleccionada);
+                    }
                 } else {
-                    JOptionPane.showMessageDialog(null, "Ya registraste asistencia para hoy.");
+                    JOptionPane.showMessageDialog(null, "Ya registraste actividad para hoy.");
                 }
-                
             }
         });
 
@@ -104,9 +119,7 @@ public class Calendario extends JFrame {
         setVisible(true);
     }
 
-    
-
-	private void cambiarMes(int incremento) {
+    private void cambiarMes(int incremento) {
         mesActual += incremento;
         if (mesActual < 0) {
             mesActual = 11;
@@ -128,7 +141,6 @@ public class Calendario extends JFrame {
         int inicioDiaSemana = calendario.get(Calendar.DAY_OF_WEEK) - 1;
         int diasMes = calendario.getActualMaximum(Calendar.DAY_OF_MONTH);
 
-        // Clear table data
         DefaultTableModel model = (DefaultTableModel) tabla.getModel();
         for (int i = 0; i < model.getRowCount(); i++) {
             for (int j = 0; j < model.getColumnCount(); j++) {
@@ -136,7 +148,6 @@ public class Calendario extends JFrame {
             }
         }
 
-        // Fill table with days of the month
         int dia = 1;
         for (int i = inicioDiaSemana; i < 7; i++) {
             model.setValueAt(dia++, 0, i);
@@ -154,27 +165,54 @@ public class Calendario extends JFrame {
         }
     }
 
-    public void highlightToday() {
-        tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer());
+    public void highlightToday(String actividad) {
+        tabla.setDefaultRenderer(Object.class, new CalendarCellRenderer(actividad));
         tabla.repaint();
     }
 
-    // Renderizador de celdas personalizado para resaltar el día actual
     private class CalendarCellRenderer extends DefaultTableCellRenderer {
         private static final long serialVersionUID = 1L;
+        private String actividadHoy;
+
+        public CalendarCellRenderer(String actividadHoy) {
+            this.actividadHoy = actividadHoy;
+        }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             cell.setBackground(Color.WHITE);
 
-            // Resaltar el día actual
             if (value != null && value.equals(diaActual)) {
                 cell.setBackground(Color.GREEN);
+                
+                if (actividadHoy != null) {
+                    ImageIcon icono = null;
+                    switch (actividadHoy) {
+                        case "Andar":
+                            icono = new ImageIcon("images/Andar.png");
+                            break;
+                        case "Core":
+                            icono = new ImageIcon("images/Core.png");
+                            break;
+                        case "Gimnasio":
+                            icono = new ImageIcon("images/Gimnasia.png");
+                            break;
+                    }
+                    
+                    if (icono != null) {
+                        // Scale image to fit cell
+                       // Image scaledImage = icono.getImage().getScaledInstance(tabla.getColumnModel().getColumnWidth(column), tabla.getRowHeight(), Image.SCALE_SMOOTH);
+                       // ((JLabel)cell).setIcon(new ImageIcon(scaledImage));
+                        ((JLabel)cell).setText("");
+                    }
+                }
             }
             return cell;
         }
     }
 
-    
+    public static void main(String[] args) {
+        new Calendario();
+    }
 }

@@ -1,4 +1,4 @@
-package prog3_2024_25_proyecto_gimnasio;
+package gui;
 
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -9,6 +9,8 @@ import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import main.Usuario;
 
 public class MatriculaDialog extends JDialog{
 	private static final long serialVersionUID = 1L;
