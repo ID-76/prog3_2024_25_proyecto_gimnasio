@@ -9,6 +9,7 @@ import java.util.Properties;
 import javax.swing.ImageIcon;
 
 import main.Actividad;
+import main.Actividad.Tipo;
 import main.Usuario;
 import main.Usuario.Sexo;
 
@@ -41,7 +42,7 @@ public class GestorBD {
     
     
     // Crear tabla Usuarios si no existe
-    private void crearTablaUsuarios() {
+    public void crearTablaUsuarios() {
     	//Se abre la conexión y se obtiene el Statement
     	//Al abrir la conexión, si no existía el fichero, se crea la base de datos
     	try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {	
@@ -248,7 +249,7 @@ public class GestorBD {
                 pstmt.setInt(2, actividad.getCapacidad());
                 pstmt.setObject(3, actividad.getFecha());
                 pstmt.setInt(4, actividad.getOcupacion());
-                pstmt.setBytes(5, actividad.getLogoBytes()); // Convertir ImageIcon a byte[]
+                //pstmt.setByte(5, actividad.getLogo()); // Convertir ImageIcon a byte[]
                 pstmt.setInt(6, actividad.getCalorias());
                 pstmt.setString(7, actividad.getIntensidad());
                 pstmt.setString(8, actividad.getDescripcion());
@@ -309,20 +310,6 @@ public class GestorBD {
     
     
     
-    public static void main(String[] args) {
-        GestorBD gestorBD = new GestorBD("jdbc:sqlite:usuarios.csv");
-
-        // Insertar un usuario
-        Usuario usuario = new Usuario("Juan", "Pérez", "12345678A", 123456789, 30, Sexo.HOMBRE, "password123");
-        gestorBD.insertarUsuario(usuario);
-
-        // Consultar todos los usuarios
-        List<Usuario> usuarios = gestorBD.obtenerTodosLosUsuarios();
-        usuarios.forEach(u -> System.out.println(u.getNombre() + " " + u.getApellido()));
-
-        // Cerrar la conexión
-        gestorBD.cerrarConexion();
-    }
-
+   
 }
 

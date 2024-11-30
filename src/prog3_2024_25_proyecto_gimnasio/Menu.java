@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.SwingUtilities;
 
+import main.Actividad;
+import main.Usuario;
+
 public class Menu extends JPanel {
 	
 	private JButton btnUsuario, btnSalud, btnClases, btnMenu;

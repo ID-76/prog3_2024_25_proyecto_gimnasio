@@ -176,6 +176,10 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 
+import gui.InicioSesion;
+import main.Actividad;
+import main.Usuario;
+
 public class VentanaPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel principal;

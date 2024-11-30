@@ -202,9 +202,9 @@ public class Calendario extends JFrame {
                     
                     if (icono != null) {
                         // Scale image to fit cell
-                       // Image scaledImage = icono.getImage().getScaledInstance(tabla.getColumnModel().getColumnWidth(column), tabla.getRowHeight(), Image.SCALE_SMOOTH);
-                       // ((JLabel)cell).setIcon(new ImageIcon(scaledImage));
-                        ((JLabel)cell).setText("");
+                       //Image scaledImage = icono.getImage().getScaledInstance(tabla.getColumnModel().getColumnWidth(column), tabla.getRowHeight(), Image.SCALE_SMOOTH);
+                       //((JLabel)cell).setIcon(new ImageIcon(scaledImage));
+                        
                     }
                 }
             }
