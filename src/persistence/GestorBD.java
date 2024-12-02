@@ -14,6 +14,7 @@ import main.Usuario;
 import main.Usuario.Sexo;
 
 public class GestorBD {
+	
 
 	//Se elimina el final de los atributos para poder actualizar los valores.
 	protected static String DRIVER_NAME;
@@ -21,6 +22,7 @@ public class GestorBD {
 	protected static String CONNECTION_STRING;
 	protected static Connection connection;
 
+	
     // Constructor: Establece la conexión con la base de datos
     public GestorBD() {
     	try {
@@ -71,6 +73,7 @@ public class GestorBD {
 				ex.printStackTrace();			
 			}
     }
+    
 
     // Método para insertar un usuario en la base de datos
     public void insertarUsuarios(Usuario... usuarios) {
@@ -161,6 +164,7 @@ public class GestorBD {
         }
         return usuarios;
     }
+    
 
     // Método para obtener un usuario por su DNI
     public Usuario obtenerUsuarioPorDni(String dni) {
@@ -308,6 +312,7 @@ public class GestorBD {
     }
     
     
+    
     // Método para obtener una actividad por su nombre
  // Método para obtener una actividad por su nombre
     public Actividad obtenerActividadPorNombre(String nombre) {
@@ -399,6 +404,7 @@ public class GestorBD {
         }
     }
     
+    
     // Consultar qué usuarios están inscritos en una actividad específica.
     public List<Usuario> obtenerUsuariosPorActividad(int idActividad) {
         List<Usuario> usuarios = new ArrayList<>();
@@ -475,6 +481,7 @@ public class GestorBD {
 
     
     
+    
     // Método para obtener todas las participaciones
     public List<String> obtenerTodasLasParticipaciones() {
         List<String> participaciones = new ArrayList<>();
@@ -531,6 +538,7 @@ public class GestorBD {
 
 		return participaciones;
 	}*/
+    
     
     
     
