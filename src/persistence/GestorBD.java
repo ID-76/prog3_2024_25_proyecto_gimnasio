@@ -304,6 +304,273 @@ public class GestorBD {
     }
     
     
+    // Método para obtener una actividad por su nombre
+ // Método para obtener una actividad por su nombre
+    public Actividad obtenerActividadPorNombre(String nombre) {
+        String sql = "SELECT * FROM actividades WHERE nombre = ?";
+        Actividad actividad = null;
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setString(1, nombre);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                actividad = new Actividad(
+                    rs.getString("nombre"),
+                    rs.getInt("capacidad"),
+                    rs.getTimestamp("fecha").toLocalDateTime(),
+                    rs.getInt("ocupacion"),
+                    new ImageIcon(rs.getBytes("logo")),
+                    rs.getInt("calorias"),
+                    rs.getString("intensidad"),
+                    rs.getString("descripcion"),
+                    rs.getInt("duracion"),
+                    Tipo.valueOf(rs.getString("tipo"))
+                );
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener actividad por nombre: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return actividad;
+    }
+
+    
+    
+    // Crear tabla Participaciones si no existe
+    private void crearTablaParticipaciones() {
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
+            String sql = """
+                CREATE TABLE IF NOT EXISTS participaciones (
+                    id_participacion INTEGER PRIMARY KEY AUTOINCREMENT,
+                    id_usuario INTEGER NOT NULL,
+                    id_actividad INTEGER NOT NULL,
+                    fecha_inscripcion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    estado TEXT DEFAULT 'Confirmada',
+                    FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
+                    FOREIGN KEY (id_actividad) REFERENCES actividades(id)
+                )
+            """;
+
+            PreparedStatement pstmt = con.prepareStatement(sql);
+
+            if (!pstmt.execute()) {
+                System.out.println("\n- Se ha creado la tabla Participaciones");
+            }
+
+            pstmt.close();
+        } catch (Exception ex) {
+            System.err.format("\n* Error al crear la tabla de participaciones: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    
+    // Método para insertar participaciones en la base de datos
+    
+    public void insertarParticipacion(int idUsuario, int idActividad, String estado) {
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
+            String sql = """
+                INSERT INTO participaciones (id_usuario, id_actividad, estado) 
+                VALUES (?, ?, ?)
+            """;
+
+            PreparedStatement pstmt = con.prepareStatement(sql);
+            pstmt.setInt(1, idUsuario);
+            pstmt.setInt(2, idActividad);
+            pstmt.setString(3, estado);
+
+            if (1 == pstmt.executeUpdate()) {
+                System.out.format("\n - Usuario %d inscrito a la actividad %d con estado %s", idUsuario, idActividad, estado);
+            } else {
+                System.out.println("\n - No se pudo inscribir al usuario.");
+            }
+
+            pstmt.close();
+        } catch (Exception ex) {
+            System.err.format("\n* Error al insertar participación: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
+    
+    // Consultar qué usuarios están inscritos en una actividad específica.
+    public List<Usuario> obtenerUsuariosPorActividad(int idActividad) {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = """
+            SELECT u.* FROM usuarios u
+            INNER JOIN participaciones p ON u.id = p.id_usuario
+            WHERE p.id_actividad = ?
+        """;
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idActividad);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Usuario usuario = new Usuario(
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("dni"),
+                    rs.getInt("telefono"),
+                    rs.getInt("edad"),
+                    Sexo.valueOf(rs.getString("sexo")),
+                    rs.getString("contraseña")
+                );
+                usuarios.add(usuario);
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener usuarios por actividad: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return usuarios;
+    }
+    
+    // Consultar qué actividades está inscrito un usuario específico.
+    
+    public List<Actividad> obtenerActividadesPorUsuario(int idUsuario) {
+        List<Actividad> actividades = new ArrayList<>();
+        String sql = """
+            SELECT a.* FROM actividades a
+            INNER JOIN participaciones p ON a.id = p.id_actividad
+            WHERE p.id_usuario = ?
+        """;
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idUsuario);
+            ResultSet rs = pstmt.executeQuery();
+
+            while (rs.next()) {
+                Actividad actividad = new Actividad(
+                    rs.getString("nombre"),
+                    rs.getInt("capacidad"),
+                    rs.getTimestamp("fecha").toLocalDateTime(),
+                    rs.getInt("ocupacion"),
+                    new ImageIcon(rs.getBytes("logo")),
+                    rs.getInt("calorias"),
+                    rs.getString("intensidad"),
+                    rs.getString("descripcion"),
+                    rs.getInt("duracion"),
+                    Tipo.valueOf(rs.getString("tipo"))
+                );
+                actividades.add(actividad);
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener actividades por usuario: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return actividades;
+    }
+
+    
+    
+    // Método para obtener todas las participaciones
+    public List<String> obtenerTodasLasParticipaciones() {
+        List<String> participaciones = new ArrayList<>();
+        String sql = """
+            SELECT u.nombre AS nombre_usuario, u.apellido, a.nombre AS nombre_actividad, 
+                   p.fecha_inscripcion, p.estado
+            FROM participaciones p
+            INNER JOIN usuarios u ON p.id_usuario = u.id
+            INNER JOIN actividades a ON p.id_actividad = a.id
+        """;
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                String participacion = String.format(
+                    "Usuario: %s %s, Actividad: %s, Fecha: %s, Estado: %s",
+                    rs.getString("nombre_usuario"),
+                    rs.getString("apellido"),
+                    rs.getString("nombre_actividad"),
+                    rs.getString("fecha_inscripcion"),
+                    rs.getString("estado")
+                );
+                participaciones.add(participacion);
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener participaciones: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return participaciones;
+    }
+
+    
+	/*public List<Participacion> obtenerTodasLasParticipaciones() {
+		List<Participacion> participaciones = new ArrayList<>();
+		String sql = "SELECT * FROM participaciones";
+
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+				Statement stmt = con.createStatement();
+				ResultSet rs = stmt.executeQuery(sql)) {
+
+			while (rs.next()) {
+				Participacion participacion = new Participacion(rs.getInt("id_participacion"), rs.getInt("id_usuario"),
+						rs.getInt("id_actividad"), rs.getTimestamp("fecha_inscripcion").toLocalDateTime(),
+						rs.getString("estado"));
+				participaciones.add(participacion);
+			}
+		} catch (Exception ex) {
+			System.err.format("\n* Error al obtener participaciones: %s", ex.getMessage());
+			ex.printStackTrace();
+		}
+
+		return participaciones;
+	}*/
+    
+    
+    
+    // Método para obtener una participación por su ID
+    public String obtenerParticipacionPorId(int id) {
+        String participacion = null;
+        String sql = """
+            SELECT u.nombre AS nombre_usuario, u.apellido, a.nombre AS nombre_actividad, 
+                   p.fecha_inscripcion, p.estado
+            FROM participaciones p
+            INNER JOIN usuarios u ON p.id_usuario = u.id
+            INNER JOIN actividades a ON p.id_actividad = a.id
+            WHERE p.id = ?
+        """;
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, id);
+            ResultSet rs = pstmt.executeQuery();
+
+            if (rs.next()) {
+                participacion = String.format(
+                    "ID: %d, Usuario: %s %s, Actividad: %s, Fecha: %s, Estado: %s",
+                    id,
+                    rs.getString("nombre_usuario"),
+                    rs.getString("apellido"),
+                    rs.getString("nombre_actividad"),
+                    rs.getString("fecha_inscripcion"),
+                    rs.getString("estado")
+                );
+            } else {
+                System.out.println("No se encontró ninguna participación con ese ID.");
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener participación por ID: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return participacion;
+    }
+
+    
+    
     
     
     
