@@ -201,8 +201,8 @@ public class VentanaPrincipal extends JFrame {
 		gestorBD.crearTablaUsuarios();
 		
 		//INSERT: Insertar datos en la BBDD		
-		List<Usuario> clientes = initUsuarios();
-		gestorBD.insertarUsuarios(clientes.toArray(new Usuario[clientes.size()]));
+		List<Usuario> usuarios = initUsuarios();
+		gestorBD.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
 		
 		//SELECT: Se obtienen datos de la BBDD
 		//clientes = gestorBD.obtenerDatos();
@@ -265,21 +265,34 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
 		
-		try (BufferedReader in = new BufferedReader(new FileReader("data/usuarios.csv"))) {
-			String linea;
-			String[] campos;
-			
-			in.readLine();
-			
-			while( (linea = in.readLine()) != null ) {
-				campos = linea.split(";");				
-				//listaUsuarios.add(new Usuario(campos[0], campos[1], campos[2], Integer.campos[3], Integer.campos[4], Sexo.campos[5], campos[6]));		
-			}			
-			
-		} catch(Exception ex) {
-			System.err.format("- Error leyecto CSV: %s", ex.getMessage());
-		}
-		
-		return listaUsuarios;
+        try (BufferedReader in = new BufferedReader(new FileReader("data/usuarios.csv"))) {
+            String linea;
+            String[] campos;
+
+            in.readLine(); // Leer y descartar la primera línea (cabecera)
+
+            while ((linea = in.readLine()) != null) {
+                campos = linea.split(";");
+                
+                try {
+                    String campo0 = campos[0]; // Supongamos que es String
+                    String campo1 = campos[1]; // Supongamos que es String
+                    String campo2 = campos[2]; // Supongamos que es String
+                    int campo3 = Integer.parseInt(campos[3]); // Convertir a int
+                    int campo4 = Integer.parseInt(campos[4]); // Convertir a int
+                    Usuario.Sexo campo5 = Usuario.Sexo.valueOf(campos[5]); // Convertir a ENUM
+                    String campo6 = campos[6]; // Supongamos que es String
+
+                    listaUsuarios.add(new Usuario(campo0, campo1, campo2, campo3, campo4, campo5, campo6));
+                } catch(Exception ex) {
+        			System.err.format("- Error leyecto CSV: %s", ex.getMessage());
+        		}
+            }
+        } catch (Exception ex) {
+            System.err.format("- Error leyendo CSV: %s%n", ex.getMessage());
+        }
+
+        return listaUsuarios;
+
 	}
 }

@@ -26,7 +26,7 @@ public class GestorBD {
     	try {
 			//Se crea el Properties y se actualizan los 3 parámetros
 			Properties connectionProperties = new Properties();
-			connectionProperties.load(new FileReader("resources/parametros.properties"));
+			connectionProperties.load(new FileReader("src/data/parametros.properties"));
 			
 			DRIVER_NAME = connectionProperties.getProperty("DRIVER_NAME");
 			DATABASE_FILE = connectionProperties.getProperty("DATABASE_FILE");
