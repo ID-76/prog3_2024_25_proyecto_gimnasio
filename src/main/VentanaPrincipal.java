@@ -14,6 +14,7 @@ import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import javax.swing.BorderFactory;
@@ -174,7 +175,7 @@ public class VentanaPrincipal extends JFrame {
 
         String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
         
-        Usuario usuario1 = new Usuario("Aitor", "Garcia", "", 659921098, 21, Usuario.Sexo.HOMBRE, "");
+       /** Usuario usuario1 = new Usuario("Aitor", "Garcia", "", 659921098, 21, Usuario.Sexo.HOMBRE, "");
         Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, "");
         Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, "");
         Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER, "");
@@ -194,6 +195,7 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario8);
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
+        **/
         
         GestorBD gestorBD = new GestorBD();		
 		
@@ -222,6 +224,73 @@ public class VentanaPrincipal extends JFrame {
 		//SELECT: Se obtienen datos de la BBDD
 		//clientes = gestorBD.obtenerDatos();
 		//printClientes(clientes);
+	    
+	 // Crear una instancia de GestorBD
+        GestorBD gestor = new GestorBD();
+
+        try {
+            // Crear la tabla usuarios si no existe
+            gestor.crearTablaUsuarios();
+
+            // Insertar algunos usuarios
+            Usuario usuario1 = new Usuario("Juan", "Pérez", "12345678A", 600123456, 25, Usuario.Sexo.HOMBRE, "contraseña1");
+            Usuario usuario2 = new Usuario("María", "Gómez", "87654321B", 600654321, 30, Usuario.Sexo.MUJER, "contraseña2");
+            Usuario usuario3 = new Usuario("Carlos", "López", "11223344C", 600987654, 35, Usuario.Sexo.HOMBRE, "contraseña3");
+
+            gestor.insertarUsuarios(usuario1, usuario2, usuario3);
+
+            // Obtener y mostrar todos los usuarios
+            List<Usuario> usuarios2 = gestor.obtenerTodosLosUsuarios();
+            System.out.println("\nUsuarios en la base de datos:");
+            usuarios2.forEach(System.out::println);
+
+            // Actualizar un usuario
+            usuario1.setApellido("Pérez Actualizado");
+            usuario1.setEdad(26);
+            boolean actualizado = gestor.actualizarUsuario(usuario1);
+            System.out.println("\nUsuario actualizado: " + actualizado);
+
+            // Obtener un usuario por DNI
+            Usuario usuarioPorDni = gestor.obtenerUsuarioPorDni("12345678A");
+            System.out.println("\nUsuario con DNI 12345678A:");
+            System.out.println(usuarioPorDni);
+
+            // Eliminar un usuario
+            boolean eliminado = gestor.eliminarUsuario("87654321B");
+            System.out.println("\nUsuario eliminado: " + eliminado);
+            
+            //Actualizar contraseña
+            String dni = "12345678A";
+            String nuevaContraseña = "NuevaContraseña123";
+
+            boolean exito = gestor.actualizarContraseña(dni, nuevaContraseña);
+
+            if (exito) {
+                System.out.println("La contraseña fue actualizada con éxito.");
+            } else {
+                System.out.println("No se pudo actualizar la contraseña. Verifica el DNI.");
+            }
+
+            // Contar usuarios por sexo
+            int totalHombres = gestor.contarUsuariosPorSexo(Usuario.Sexo.HOMBRE);
+            int totalMujeres = gestor.contarUsuariosPorSexo(Usuario.Sexo.MUJER);
+            System.out.println("\nTotal de hombres: " + totalHombres);
+            System.out.println("Total de mujeres: " + totalMujeres);
+
+            // Obtener desglose por sexo
+            Map<Usuario.Sexo, Integer> desglosePorSexo = gestor.desgloseUsuariosPorSexo();
+            System.out.println("\nDesglose de usuarios por sexo:");
+            desglosePorSexo.forEach((sexo, total) -> System.out.println(sexo + ": " + total));
+
+            // Obtener usuarios en un rango de edad
+            List<Usuario> usuariosRangoEdad = gestor.obtenerUsuariosPorRangoDeEdad(20, 30);
+            System.out.println("\nUsuarios entre 20 y 30 años:");
+            usuariosRangoEdad.forEach(System.out::println);
+        } finally {
+            // Cerrar la conexión
+            gestor.cerrarConexion();
+            System.out.println("\nConexión cerrada.");
+        }
         
 
         

@@ -232,6 +232,29 @@ public class GestorBD {
         return conteoPorSexo;
     }
 
+ // Método para actualizar la contraseña de un usuario
+    public boolean actualizarContraseña(String dni, String nuevaContraseña) {
+        String sql = "UPDATE usuarios SET contraseña = ? WHERE dni = ?";
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
+            stmt.setString(1, nuevaContraseña);
+            stmt.setString(2, dni);
+
+            int filasActualizadas = stmt.executeUpdate();
+            if (filasActualizadas > 0) {
+                System.out.println("Contraseña actualizada correctamente para el DNI: " + dni);
+                return true;
+            } else {
+                System.out.println("No se encontró un usuario con el DNI: " + dni);
+                return false;
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al actualizar la contraseña: " + e.getMessage());
+            return false;
+        }
+    }
+
 
 
     // Método para obtener un usuario por su DNI
