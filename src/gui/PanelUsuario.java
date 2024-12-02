@@ -77,7 +77,7 @@ public class PanelUsuario extends JPanel{
         sexl.setBorder(border);
 		add(sexl);
 		
-		ImageIcon iconoGym = new ImageIcon("/Users/asier.gomez/GitHub/prog3_2024_25_proyecto_gimnasio/Images/Usuario.jpeg");
+		ImageIcon iconoGym = new ImageIcon("Images/Usuario.jpeg");
 		JLabel icono = new JLabel(iconoGym);
 		icono.setBounds(10,10,210,210);
 		add(icono);

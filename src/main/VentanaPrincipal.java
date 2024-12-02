@@ -203,6 +203,13 @@ public class VentanaPrincipal extends JFrame {
 		//INSERT: Insertar datos en la BBDD		
 		List<Usuario> usuarios = initUsuarios();
 		gestorBD.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
+		// Contar usuarios masculinos
+	    int hombres = gestorBD.contarUsuariosPorSexo(Sexo.HOMBRE);
+	    System.out.println("Total de hombres: " + hombres);
+
+	    // Contar usuarios femeninos
+	    int mujeres = gestorBD.contarUsuariosPorSexo(Sexo.MUJER);
+	    System.out.println("Total de mujeres: " + mujeres);
 		
 		//SELECT: Se obtienen datos de la BBDD
 		//clientes = gestorBD.obtenerDatos();

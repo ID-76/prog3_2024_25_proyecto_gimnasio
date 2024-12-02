@@ -92,7 +92,7 @@ public class Calendario extends JFrame {
             public void actionPerformed(ActionEvent e) {
                 LocalDate hoy = LocalDate.now();
                 if (!diasAsistidos.contains(hoy)) {
-                    String[] actividades = {"Andar", "Core", "Gimnasio"};
+                    String[] actividades = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "Hiit", "Yoga"};
                     String actividadSeleccionada = (String) JOptionPane.showInputDialog(
                         null, 
                         "Selecciona tu actividad de hoy:", 
@@ -178,7 +178,7 @@ public class Calendario extends JFrame {
             this.actividadHoy = actividadHoy;
         }
 
-        @Override
+       /** @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
             Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
             cell.setBackground(Color.WHITE);
@@ -202,14 +202,71 @@ public class Calendario extends JFrame {
                     
                     if (icono != null) {
                         // Scale image to fit cell
-                       //Image scaledImage = icono.getImage().getScaledInstance(tabla.getColumnModel().getColumnWidth(column), tabla.getRowHeight(), Image.SCALE_SMOOTH);
-                       //((JLabel)cell).setIcon(new ImageIcon(scaledImage));
+                       Image scaledImage = icono.getImage().getScaledInstance(tabla.getColumnModel().getColumnWidth(column), tabla.getRowHeight(), Image.SCALE_SMOOTH);
+                       ((JLabel)cell).setIcon(new ImageIcon(scaledImage));
                         
                     }
                 }
             }
             return cell;
         }
+        **/
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            // Llamar al método de la superclase
+            Component cell = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+
+            // Asegurarse de que el componente es un JLabel
+            if (cell instanceof JLabel) {
+                JLabel label = (JLabel) cell;
+                label.setIcon(null); // Reiniciar icono por defecto
+                label.setBackground(Color.WHITE); // Fondo blanco por defecto
+
+                // Comprobar si el valor coincide con el día actual
+                if (value != null && value.equals(diaActual)) {
+                    label.setBackground(Color.GREEN); // Fondo verde para el día actual
+
+                    // Asignar icono según la actividad del día
+                    if (actividadHoy != null) {
+                        ImageIcon icono = null;
+                        switch (actividadHoy) {
+                            case "Andar":
+                                icono = new ImageIcon("Images/Andar.png");
+                                break;
+                            case "Core":
+                                icono = new ImageIcon("Images/Core.png");
+                                break;
+                            case "Core Avanzado":
+                                icono = new ImageIcon("Images/CoreAvanzado.png");
+                                break;
+                            case "Gimnasio":
+                                icono = new ImageIcon("Images/Gimnasia.png");
+                                break;
+                            case "Equilibrio":
+                                icono = new ImageIcon("Images/Equilibrio.png");
+                                break;
+                            case "Hiit":
+                                icono = new ImageIcon("Images/HIIT.png");
+                                break;
+                            case "Yoga":
+                                icono = new ImageIcon("Images/Yoga.png");
+                                break;
+                        }
+
+                        // Escalar el icono si existe
+                        if (icono != null) {
+                            int columnWidth = table.getColumnModel().getColumn(column).getWidth();
+                            int rowHeight = table.getRowHeight(row);
+                            Image scaledImage = icono.getImage().getScaledInstance(columnWidth, rowHeight, Image.SCALE_SMOOTH);
+                            label.setIcon(new ImageIcon(scaledImage));
+                        }
+                    }
+                }
+            }
+
+            return cell;
+        }
+
     }
 
     public static void main(String[] args) {

@@ -3,7 +3,9 @@ package persistence;
 import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.swing.ImageIcon;
@@ -161,6 +163,76 @@ public class GestorBD {
         }
         return usuarios;
     }
+    
+ // Método para obtener usuarios dentro de un rango de edad
+    public List<Usuario> obtenerUsuariosPorRangoDeEdad(int edadMinima, int edadMaxima) {
+        List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios WHERE edad BETWEEN ? AND ?";
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setInt(1, edadMinima);
+            stmt.setInt(2, edadMaxima);
+            ResultSet rs = stmt.executeQuery();
+
+            while (rs.next()) {
+                Usuario usuario = new Usuario(
+                    rs.getString("nombre"),
+                    rs.getString("apellido"),
+                    rs.getString("dni"),
+                    rs.getInt("telefono"),
+                    rs.getInt("edad"),
+                    Sexo.valueOf(rs.getString("sexo")),
+                    rs.getString("contraseña")
+                );
+                usuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener usuarios por rango de edad: " + e.getMessage());
+        }
+
+        return usuarios;
+    }
+    
+ // Método para contar usuarios por sexo
+    public int contarUsuariosPorSexo(Sexo sexo) {
+        String sql = "SELECT COUNT(*) AS total FROM usuarios WHERE sexo = ?";
+        int total = 0;
+
+        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+            stmt.setString(1, sexo.toString());
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                total = rs.getInt("total");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al contar usuarios por sexo: " + e.getMessage());
+        }
+
+        return total;
+    }
+
+    
+ // Método para obtener un desglose de usuarios por sexo
+    public Map<Sexo, Integer> desgloseUsuariosPorSexo() {
+        String sql = "SELECT sexo, COUNT(*) AS total FROM usuarios GROUP BY sexo";
+        Map<Sexo, Integer> conteoPorSexo = new HashMap<>();
+
+        try (Statement stmt = connection.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                Sexo sexo = Sexo.valueOf(rs.getString("sexo"));
+                int total = rs.getInt("total");
+                conteoPorSexo.put(sexo, total);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener desglose de usuarios por sexo: " + e.getMessage());
+        }
+
+        return conteoPorSexo;
+    }
+
+
 
     // Método para obtener un usuario por su DNI
     public Usuario obtenerUsuarioPorDni(String dni) {
