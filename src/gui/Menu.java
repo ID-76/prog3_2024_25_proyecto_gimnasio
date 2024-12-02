@@ -21,6 +21,11 @@ import main.Usuario;
 
 public class Menu extends JPanel {
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	private JButton btnUsuario, btnSalud, btnClases, btnMenu;
 	
 	private JPanel pNorte, pSur, pCentro, pEste, pOeste, pCentroArriba, pCentroAbajo;
