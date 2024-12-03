@@ -311,7 +311,7 @@ public class GestorBD {
     
     
  // Crear tabla Actividades si no existe
-    private void crearTablaActividades() {
+    public void crearTablaActividades() {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
                 CREATE TABLE IF NOT EXISTS actividades (
