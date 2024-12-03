@@ -4,7 +4,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,9 +67,9 @@ public class GestorBD {
 			Class.forName(driverName);
 
 			// Crear tablas
-			crearTablaUsuarios();
-			crearTablaActividades();
-			crearTablaParticipaciones();
+			//crearTablaUsuarios();
+			//crearTablaActividades();
+			//crearTablaParticipaciones();
 		} catch (Exception ex) {
 			logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
 		}
@@ -326,7 +328,7 @@ public class GestorBD {
                     intensidad TEXT NOT NULL,
                     descripcion TEXT,
                     duracion INTEGER NOT NULL,
-                    tipo TEXT NOT NULL CHECK (tipo IN ('ANDAR', 'CORE', 'CORE AVANZADO', 'EQUILIBRIO', 'GIMNASIA', 'HIIT', 'YOGA'))
+                    tipo TEXT NOT NULL
                 )
             """;
 
@@ -371,7 +373,7 @@ public class GestorBD {
             for (Actividad actividad : actividades) {
                 pstmt.setString(1, actividad.getNombre());
                 pstmt.setInt(2, actividad.getCapacidad());
-                pstmt.setObject(3, actividad.getFecha());
+                pstmt.setObject(3, actividad.getFecha().toString());
                 pstmt.setInt(4, actividad.getOcupacion());
                 //pstmt.setByte(5, actividad.getLogo()); // Convertir ImageIcon a byte[]
                 pstmt.setInt(6, actividad.getCalorias());
@@ -405,10 +407,12 @@ public class GestorBD {
              ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
+            	DateTimeFormatter formateador = new DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")).toFormatter();
+            	LocalDateTime fecha = LocalDateTime.parse(rs.getString("fecha"), formateador);
                 Actividad actividad = new Actividad(
                     rs.getString("nombre"),
                     rs.getInt("capacidad"),
-                    rs.getTimestamp("fecha").toLocalDateTime(),
+                    fecha,
                     rs.getInt("ocupacion"),
                     rs.getString("descripcion"),
                     rs.getInt("duracion"),
@@ -729,14 +733,11 @@ public class GestorBD {
         System.out.printf("%-20s %-10s %-15s %-12s %-10s %-10s %-15s\n", 
                 "Nombre", "Capacidad", "Fecha", "Ocupación", "Calorías", "Duración", "Tipo");
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-
         for (Actividad actividad : actividades) {
-            String fechaFormateada = (actividad.getFecha() != null) ? actividad.getFecha().format(formatter) : "Fecha no disponible";
             System.out.printf("%-20s %-10d %-15s %-12d %-10d %-10d %-15s\n", 
                     actividad.getNombre(),
                     actividad.getCapacidad(),
-                    fechaFormateada,
+                    actividad.toString(),
                     actividad.getOcupacion(),
                     actividad.getCalorias(),
                     actividad.getDuracion(),

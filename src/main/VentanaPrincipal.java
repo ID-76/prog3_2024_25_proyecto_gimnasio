@@ -214,7 +214,7 @@ public class VentanaPrincipal extends JFrame {
                  );
              }
         	gestor.verUsuarios();
-            gestor.verActividades();
+            //gestor.verActividades();
             dispose();
         }
     }
@@ -231,10 +231,10 @@ public class VentanaPrincipal extends JFrame {
         // Load users and activities from the database
         ArrayList<Usuario> usuarios = (ArrayList<Usuario>) gestorBD.obtenerTodosLosUsuarios();
         List<Actividad> actividades = gestorBD.obtenerTodasLasActividades();
-        System.out.println();
+        System.out.println(actividades);
        
         ventana.setUsuarios(usuarios);
-        ventana.setActividades((ArrayList<Actividad>) actividades);
+        //ventana.setActividades((ArrayList<Actividad>) actividades);
     	
         ArrayList<Actividad> listaActividades = new ArrayList<>();
         ArrayList<Usuario> listaUsuarios = usuarios;
@@ -258,7 +258,7 @@ public class VentanaPrincipal extends JFrame {
                 }
                 fecha1 = fecha1.plusDays(1);
             }
-        } 
+        }
         ventana.setActividades(listaActividades);
         ventana.setVisible(true);
     }
