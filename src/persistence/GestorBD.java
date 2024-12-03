@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.*;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -702,14 +703,45 @@ public class GestorBD {
         return participacion;
     }
 
+    public void verUsuarios() {
+        List<Usuario> usuarios = obtenerTodosLosUsuarios();
+        
+        // Imprimir encabezado de la tabla
+        System.out.printf("%-20s %-20s %-15s %-12s %-10s %-10s %-15s\n", 
+                "Nombre", "Apellido", "DNI", "Teléfono", "Edad", "Sexo", "Contraseña");
+        
+        // Imprimir cada usuario en una fila
+        for (Usuario usuario : usuarios) {
+            System.out.printf("%-20s %-20s %-15s %-12d %-10d %-10s %-15s\n", 
+                    usuario.getNombre(), 
+                    usuario.getApellido(), 
+                    usuario.getDni(), 
+                    usuario.getTelefono(), 
+                    usuario.getEdad(), 
+                    usuario.getSexo(), 
+                    usuario.getContraseña());
+        }
+    }
     
-    
-    
-    
-    
-    
-    
-    
-   
+    public void verActividades() {
+        List<Actividad> actividades = obtenerTodasLasActividades();
+
+        System.out.printf("%-20s %-10s %-15s %-12s %-10s %-10s %-15s\n", 
+                "Nombre", "Capacidad", "Fecha", "Ocupación", "Calorías", "Duración", "Tipo");
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        for (Actividad actividad : actividades) {
+            String fechaFormateada = (actividad.getFecha() != null) ? actividad.getFecha().format(formatter) : "Fecha no disponible";
+            System.out.printf("%-20s %-10d %-15s %-12d %-10d %-10d %-15s\n", 
+                    actividad.getNombre(),
+                    actividad.getCapacidad(),
+                    fechaFormateada,
+                    actividad.getOcupacion(),
+                    actividad.getCalorias(),
+                    actividad.getDuracion(),
+                    actividad.getTipo().toString());
+        }
+    }
 }
 
