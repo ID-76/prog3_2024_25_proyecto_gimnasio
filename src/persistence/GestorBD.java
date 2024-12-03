@@ -24,9 +24,9 @@ import main.Usuario.Sexo;
 
 public class GestorBD {
 
-    private static final String PROPERTIES_FILE = "resources/config/parametros.properties";
+    private static final String PROPERTIES_FILE = "config/parametros.properties";
     private static final String CONNECTION_STRING = "jdbc:sqlite:resources/data/database.db";
-    private static final String LOG_FOLDER = "resources/log";
+    private static final String LOG_FOLDER = "log";
 
     private Properties properties;
     private String driverName;
@@ -35,36 +35,42 @@ public class GestorBD {
     private static final Logger logger = Logger.getLogger(GestorBD.class.getName());
 
     // Constructor: Inicializa el gestor de la base de datos
-    public GestorBD() {
-        try (FileInputStream fis = new FileInputStream("resources/config/logger.properties")) {
-            // Inicialización del Logger
-            LogManager.getLogManager().readConfiguration(fis);
 
-            // Lectura del fichero de propiedades
-            properties = new Properties();
-            properties.load(new FileReader(PROPERTIES_FILE));
+	public GestorBD() {
+		try (FileInputStream fis = new FileInputStream("config/logger.properties")) {
+			// Inicialización del Logger
+			LogManager.getLogManager().readConfiguration(fis);
 
-            driverName = properties.getProperty("driver");
-            databaseFile = properties.getProperty("file");
+			// Lectura del fichero de propiedades
+			properties = new Properties();
+			properties.load(new FileReader(PROPERTIES_FILE));
 
-            // Crear carpetas de log si no existen
-            File dir = new File(LOG_FOLDER);
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+			driverName = properties.getProperty("driver");
+			databaseFile = properties.getProperty("file");
 
-            // Crear carpeta para la base de datos si no existe
-            dir = new File(databaseFile.substring(0, databaseFile.lastIndexOf("/")));
-            if (!dir.exists()) {
-                dir.mkdirs();
-            }
+			// Crear carpetas de log si no existen
+			File dir = new File(LOG_FOLDER);
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
 
-            // Cargar el driver SQLite
-            Class.forName(driverName);
-        } catch (Exception ex) {
-            logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
-        }
-    }
+			// Crear carpeta para la base de datos si no existe
+			dir = new File(databaseFile.substring(0, databaseFile.lastIndexOf("/")));
+			if (!dir.exists()) {
+				dir.mkdirs();
+			}
+
+			// Cargar el driver SQLite
+			Class.forName(driverName);
+
+			// Crear tablas
+			crearTablaUsuarios();
+			crearTablaActividades();
+			crearTablaParticipaciones();
+		} catch (Exception ex) {
+			logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
+		}
+	}
 
     // Crear tabla Usuarios
     public void crearTablaUsuarios() {
@@ -259,8 +265,6 @@ public class GestorBD {
 
 
 
-
-
  // Método para obtener un usuario por su DNI
     public Usuario obtenerUsuarioPorDni(String dni) {
         String sql = "SELECT * FROM usuario WHERE dni = ?";
@@ -303,10 +307,7 @@ public class GestorBD {
     }
 
     
-    
-    
-    
-    
+
     
     
  // Crear tabla Actividades si no existe
@@ -397,15 +398,6 @@ public class GestorBD {
                     rs.getInt("capacidad"),
                     rs.getTimestamp("fecha").toLocalDateTime(),
                     rs.getInt("ocupacion"),
-                    new ImageIcon(rs.getBytes("logo")),
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    rs.getInt("calorias"),
-                    rs.getString("intensidad"),
                     rs.getString("descripcion"),
                     rs.getInt("duracion"),
                     Tipo.valueOf(rs.getString("tipo"))
@@ -438,17 +430,7 @@ public class GestorBD {
                     rs.getString("nombre"),
                     rs.getInt("capacidad"),
                     rs.getTimestamp("fecha").toLocalDateTime(),
-                    rs.getInt("ocupacion"),                    
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    new ImageIcon(rs.getBytes("logo")),
-                    rs.getInt("calorias"),
-                    rs.getString("intensidad"),
+                    rs.getInt("ocupacion"),
                     rs.getString("descripcion"),
                     rs.getInt("duracion"),
                     Tipo.valueOf(rs.getString("tipo"))
@@ -576,15 +558,6 @@ public class GestorBD {
                     rs.getInt("capacidad"),
                     rs.getTimestamp("fecha").toLocalDateTime(),
                     rs.getInt("ocupacion"),
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
-                    new ImageIcon(rs.getBytes("logo")),
-                    rs.getInt("calorias"),
-                    rs.getString("intensidad"),
                     rs.getString("descripcion"),
                     rs.getInt("duracion"),
                     Tipo.valueOf(rs.getString("tipo"))
