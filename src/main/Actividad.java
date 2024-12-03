@@ -26,8 +26,8 @@ public class Actividad {
 	private Tipo tipo;
 	
 	
-	public Actividad(String nombre, int capacidad, LocalDateTime fecha, int ocupacion, int calorias,
-			String intensidad, String descripcion, int duracion, Tipo tipo) {
+	public Actividad(String nombre, int capacidad, LocalDateTime fecha, int ocupacion,
+			 String descripcion, int duracion, Tipo tipo) {
 		super();
 		this.nombre = nombre;
 		this.capacidad = capacidad;
