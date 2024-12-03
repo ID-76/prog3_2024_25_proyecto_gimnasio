@@ -47,7 +47,7 @@ public class VentanaPrincipal extends JFrame {
     public static Usuario usuario;
     public ArrayList<Actividad> listaActividades;
     public ArrayList<Usuario> listaUsuarios;
-    public String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
+    public static String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
 
 	public void setUsuario(Usuario u) {
         this.usuario = u;
@@ -79,7 +79,7 @@ public class VentanaPrincipal extends JFrame {
 
         // COMPORATMIENTO VENTANA PRINCIPAL
         add(principal);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
         setMinimumSize(new Dimension(850, 400));
         setResizable(false);
         setLocationRelativeTo(null);
