@@ -204,6 +204,7 @@ public class VentanaPrincipal extends JFrame {
 		
 		//INSERT: Insertar datos en la BBDD		
 		List<Usuario> usuarios = initUsuarios();
+		
 		gestorBD.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
 		// Contar usuarios masculinos
 	    int hombres = gestorBD.contarUsuariosPorSexo(Sexo.HOMBRE);
@@ -243,7 +244,7 @@ public class VentanaPrincipal extends JFrame {
             List<Usuario> usuarios2 = gestor.obtenerTodosLosUsuarios();
             System.out.println("\nUsuarios en la base de datos:");
             usuarios2.forEach(System.out::println);
-
+            listaUsuarios = (ArrayList<Usuario>) usuarios2;
             // Actualizar un usuario
             usuario1.setApellido("Pérez Actualizado");
             usuario1.setEdad(26);
@@ -291,17 +292,19 @@ public class VentanaPrincipal extends JFrame {
             gestor.cerrarConexion();
             System.out.println("\nConexión cerrada.");
         }
-        
 
-        
-        
+       
         for (String nombreClase : nombreClases) {
             LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 9, 00);
             for (int i = 0; i < 5; i++) {
                 for (int j = 0; j < 3; j++) {
                     Actividad actividad = new Actividad(nombreClase, fecha1);
                     for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
-                        actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
+                        if (!listaUsuarios.isEmpty()) {
+                            actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
+                        } else {
+                            System.err.println("La lista de usuarios está vacía. No se pueden agregar usuarios a la actividad.");
+                        }
                     }
                     listaActividades.add(actividad);
                     fecha1 = fecha1.plusHours(8);
