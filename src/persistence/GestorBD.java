@@ -213,6 +213,34 @@ public class GestorBD {
         }
         return 0;
     }
+    
+    
+ // Método para obtener un desglose de usuarios por sexo
+    public Map<Sexo, Integer> desgloseUsuariosPorSexo() {
+        String sql = "SELECT sexo, COUNT(*) AS total FROM usuario GROUP BY sexo";
+        Map<Sexo, Integer> conteoPorSexo = new HashMap<>();
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                try {
+                    Sexo sexo = Sexo.valueOf(rs.getString("sexo"));
+                    int total = rs.getInt("total");
+                    conteoPorSexo.put(sexo, total);
+                } catch (IllegalArgumentException | NullPointerException e) {
+                    System.err.println("Dato inválido encontrado en la columna 'sexo': " + rs.getString("sexo"));
+                }
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener desglose de usuarios por sexo: " + e.getMessage());
+        }
+
+        return conteoPorSexo;
+    }
+
 
     // Actualizar contraseña de un usuario
     public boolean actualizarContraseña(String dni, String nuevaContraseña) {
