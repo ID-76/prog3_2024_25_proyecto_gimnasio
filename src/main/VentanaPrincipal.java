@@ -1,10 +1,6 @@
-
 package main;
 
-
-
 import java.awt.BorderLayout;
-
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -29,7 +25,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 
-
 import gui.Calendario;
 import gui.InicioSesion;
 import gui.PanelActividad;
@@ -37,8 +32,6 @@ import gui.PanelUsuario;
 import persistence.GestorBD;
 
 @SuppressWarnings("static-access")
-
-
 public class VentanaPrincipal extends JFrame {
     private static final long serialVersionUID = 1L;
     private JPanel principal;
@@ -47,7 +40,7 @@ public class VentanaPrincipal extends JFrame {
     public ArrayList<Usuario> listaUsuarios;
     public static String[] nombreClases = {"Andar", "Core", "Core Avanzado", "Equilibrio", "Gimnasia", "HIIT", "Yoga"};
 
-	public void setUsuario(Usuario u) {
+    public void setUsuario(Usuario u) {
         this.usuario = u;
         this.ActualizarVentana();
     }
@@ -57,15 +50,15 @@ public class VentanaPrincipal extends JFrame {
     }
     
     public List<Actividad> getActividades(){
-    	return listaActividades;
+        return listaActividades;
     }
     
     public void setUsuarios(ArrayList<Usuario> usuarios) {
-    	this.listaUsuarios = usuarios;
+        this.listaUsuarios = usuarios;
     }
     
     public Usuario getUsuario() {
-    	return usuario;
+        return usuario;
     }
 
     public VentanaPrincipal() {
@@ -124,15 +117,15 @@ public class VentanaPrincipal extends JFrame {
             String[] clasesText = {"ACTIVIDADES", "SALUD", "USUARIO", "MENU" };
 
             for (String text : clasesText) {
-            	
-            	ImageIcon iconoBtn = new ImageIcon("Images/"+text+".png");
-            	if (text.equals("MENU")) {
-            		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(45, 45, Image.SCALE_DEFAULT));
-            	} else if(text.equals("ACTIVIDADES")){
-            		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(52, 52, Image.SCALE_DEFAULT));
-            	} else {
-            		iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT));
-            	}
+                
+                ImageIcon iconoBtn = new ImageIcon("Images/"+text+".png");
+                if (text.equals("MENU")) {
+                    iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(45, 45, Image.SCALE_DEFAULT));
+                } else if(text.equals("ACTIVIDADES")){
+                    iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(52, 52, Image.SCALE_DEFAULT));
+                } else {
+                    iconoBtn = new ImageIcon(iconoBtn.getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT));
+                }
                 JButton boton = new JButton(text);
                 boton.setHorizontalTextPosition(SwingConstants.CENTER);
                 boton.setVerticalTextPosition(SwingConstants.BOTTOM);
@@ -144,9 +137,9 @@ public class VentanaPrincipal extends JFrame {
                     principal.removeAll();
                     principal.add(sidebar, BorderLayout.WEST);
                     switch (text) {
-                    	case "MENU":
-                    		principal.add(new Menu(listaActividades,usuario), BorderLayout.CENTER);
-                    		break;
+                        case "MENU":
+                            principal.add(new Menu(listaActividades,usuario), BorderLayout.CENTER);
+                            break;
                         case "ACTIVIDADES":
                             principal.add(new PanelActividad(listaActividades), BorderLayout.CENTER);
                             break;
@@ -154,7 +147,7 @@ public class VentanaPrincipal extends JFrame {
                             principal.add(new Salud(), BorderLayout.CENTER);
                             break;
                         case "USUARIO":
-                        	default:
+                            default:
                             principal.add(new PanelUsuario(usuario), BorderLayout.CENTER);
                             break;
                     }
@@ -187,9 +180,8 @@ public class VentanaPrincipal extends JFrame {
         );
 
         if (opcion == JOptionPane.YES_OPTION) {
-        	GestorBD gestor = new GestorBD();
-        	gestor.limpiarTablas();
-        	try {
+            GestorBD gestor = new GestorBD();
+            try {
                  // Ejemplo: Actualizar actividades
                  for (Actividad actividad : listaActividades) {
                      gestor.insertarActividades(actividad);
@@ -209,29 +201,28 @@ public class VentanaPrincipal extends JFrame {
                          JOptionPane.ERROR_MESSAGE
                  );
              }
-            dispose();
+            dispose(); // Cerrar la ventana
         }
     }
 
     public static void main(String[] args) {
-    	GestorBD gestorBD = new GestorBD();
-    	VentanaPrincipal ventana = new VentanaPrincipal();
+        GestorBD gestorBD = new GestorBD();
+
         // Create tables if they do not exist
   
-    	//gestorBD.crearTablaUsuarios();
-    	//gestorBD.eliminarTablaActividad();
-        //gestorBD.crearTablaActividades();
+        gestorBD.crearTablaUsuarios();
+        gestorBD.crearTablaActividades();
         
         // Load users and activities from the database
-        ArrayList<Usuario> usuarios = (ArrayList<Usuario>) gestorBD.obtenerTodosLosUsuarios();
-        //List<Actividad> actividades = gestorBD.obtenerTodasLasActividades();
+        List<Usuario> usuarios = gestorBD.obtenerTodosLosUsuarios();
+        List<Actividad> actividades = gestorBD.obtenerTodasLasActividades();
         
-       
+        VentanaPrincipal ventana = new VentanaPrincipal();
         ventana.setUsuarios(new ArrayList<>(usuarios));
-        //ventana.listaActividades = new ArrayList<>(actividades);
-    	
+        ventana.listaActividades = new ArrayList<>(actividades);
+        
         ArrayList<Actividad> listaActividades = new ArrayList<>();
-        ArrayList<Usuario> listaUsuarios = usuarios;
+        ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 
         
         
@@ -254,18 +245,16 @@ public class VentanaPrincipal extends JFrame {
             }
         } 
         
-        
         ventana.setVisible(true);
 
         ventana.listaActividades = listaActividades;
         ventana.listaUsuarios = listaUsuarios;
-        
-        
     }
+
     public static List<Usuario> initUsuarios() {
-		List<Usuario> listaUsuarios = new ArrayList<>();		
-		
-		Usuario usuario1 = new Usuario("Aitor", "Garcia", "", 659921098, 21, Usuario.Sexo.HOMBRE, "");
+        List<Usuario> listaUsuarios = new ArrayList<>();		
+        
+        Usuario usuario1 = new Usuario("Aitor", "Garcia", "", 659921098, 21, Usuario.Sexo.HOMBRE, "");
         Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, "");
         Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, "");
         Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER, "");
@@ -285,7 +274,7 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario8);
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
-		
+        
         try (BufferedReader in = new BufferedReader(new FileReader("resources/data/usuarios.csv"))) {
             String linea;
             String[] campos;
@@ -306,14 +295,13 @@ public class VentanaPrincipal extends JFrame {
 
                     listaUsuarios.add(new Usuario(campo0, campo1, campo2, campo3, campo4, campo5, campo6));
                 } catch(Exception ex) {
-        			System.err.format("- Error leyecto CSV: %s", ex.getMessage());
-        		}
+                    System.err.format("- Error leyecto CSV: %s", ex.getMessage());
+                }
             }
         } catch (Exception ex) {
             System.err.format("- Error leyendo CSV: %s%n", ex.getMessage());
         }
 
         return listaUsuarios;
-
-	}
+    }
 }
