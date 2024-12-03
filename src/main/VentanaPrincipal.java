@@ -10,6 +10,8 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalDateTime;
@@ -22,6 +24,7 @@ import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -166,6 +169,48 @@ public class VentanaPrincipal extends JFrame {
         add(principal);
         revalidate();
         repaint();
+        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        
+        addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                onWindowClosing();
+            }
+        });
+    }
+    
+    private void onWindowClosing() {
+        int opcion = JOptionPane.showConfirmDialog(
+                this,
+                "¿Estás seguro de que deseas salir? Los datos se guardarán en la base de datos.",
+                "Confirmar salida",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        if (opcion == JOptionPane.YES_OPTION) {
+        	GestorBD gestor = new GestorBD();
+        	try {
+                 // Ejemplo: Actualizar actividades
+                 for (Actividad actividad : listaActividades) {
+                     gestor.insertarActividades(actividad);
+                 }
+
+                 // Ejemplo: Actualizar usuarios
+                 for (Usuario usuario : listaUsuarios) {
+                     gestor.insertarUsuarios(usuario);
+                 }
+
+                 System.out.println("Todos los cambios se han guardado correctamente en la base de datos.");
+             } catch (Exception e) {
+                 JOptionPane.showMessageDialog(
+                         this,
+                         "Ocurrió un error al guardar los datos: " + e.getMessage(),
+                         "Error",
+                         JOptionPane.ERROR_MESSAGE
+                 );
+             }
+            dispose(); // Cerrar la ventana
+        }
     }
 
     public static void main(String[] args) {
