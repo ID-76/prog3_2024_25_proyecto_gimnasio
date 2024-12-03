@@ -607,6 +607,25 @@ public class GestorBD {
 
         return participaciones;
     }
+    
+    public void limpiarTablas() {
+        String sqlUsuario = "DELETE FROM usuario";
+        String sqlActividades = "DELETE FROM actividades";
+
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement()) {
+        	
+            stmt.executeUpdate(sqlUsuario);
+            System.out.println("Tabla 'usuario' limpiada correctamente.");
+
+            stmt.executeUpdate(sqlActividades);
+            System.out.println("Tabla 'actividades' limpiada correctamente.");
+
+        } catch (SQLException ex) {
+            System.err.format("Error al limpiar tablas: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
     
 	/*public List<Participacion> obtenerTodasLasParticipaciones() {
