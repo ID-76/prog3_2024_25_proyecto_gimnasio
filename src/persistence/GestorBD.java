@@ -581,7 +581,7 @@ public class GestorBD {
             }
         } catch (Exception ex) {
             System.err.format("\n* Error al obtener actividades por usuario: %s", ex.getMessage());
-            ex.printStackTrace();
+            ex.printStackTrace()
         }
 
         return actividades;
