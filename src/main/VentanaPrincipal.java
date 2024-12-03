@@ -341,7 +341,7 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario9);
         listaUsuarios.add(usuario10);
 		
-        try (BufferedReader in = new BufferedReader(new FileReader("data/usuarios.csv"))) {
+        try (BufferedReader in = new BufferedReader(new FileReader("resources/data/usuarios.csv"))) {
             String linea;
             String[] campos;
 

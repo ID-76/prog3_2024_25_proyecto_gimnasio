@@ -28,7 +28,7 @@ public class GestorBD {
     	try {
 			//Se crea el Properties y se actualizan los 3 parámetros
 			Properties connectionProperties = new Properties();
-			connectionProperties.load(new FileReader("src/data/parametros.properties"));
+			connectionProperties.load(new FileReader("resources/parametros.properties"));
 			
 			DRIVER_NAME = connectionProperties.getProperty("DRIVER_NAME");
 			DATABASE_FILE = connectionProperties.getProperty("DATABASE_FILE");
@@ -581,7 +581,7 @@ public class GestorBD {
             }
         } catch (Exception ex) {
             System.err.format("\n* Error al obtener actividades por usuario: %s", ex.getMessage());
-            ex.printStackTrace()
+            ex.printStackTrace();
         }
 
         return actividades;
