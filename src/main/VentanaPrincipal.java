@@ -4,6 +4,7 @@ package main;
 
 
 import java.awt.BorderLayout;
+
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -33,7 +34,7 @@ import gui.PanelActividad;
 import gui.PanelUsuario;
 import main.Usuario.Sexo;
 import persistence.GestorBD;
-import prog3_2024_25_proyecto_gimnasio.Menu;
+import gui.Menu;
 
 @SuppressWarnings("static-access")
 
