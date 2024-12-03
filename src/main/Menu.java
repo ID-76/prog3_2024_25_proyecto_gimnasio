@@ -1,4 +1,4 @@
-package gui;
+package main;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -12,8 +12,6 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
-import main.Actividad;
-import main.Usuario;
 
 //import prog3_2024_25_proyecto_gimnasio.Actividad;
 //import prog3_2024_25_proyecto_gimnasio.Usuario;

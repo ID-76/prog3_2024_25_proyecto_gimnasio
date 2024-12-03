@@ -34,7 +34,6 @@ import gui.PanelActividad;
 import gui.PanelUsuario;
 import main.Usuario.Sexo;
 import persistence.GestorBD;
-import gui.Menu;
 
 @SuppressWarnings("static-access")
 
