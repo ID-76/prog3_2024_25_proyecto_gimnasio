@@ -197,22 +197,22 @@ public class VentanaPrincipal extends JFrame {
         listaUsuarios.add(usuario10);
         **/
         
-        GestorBD gestorBD = new GestorBD();		
+        //GestorBD gestorBD = new GestorBD();		
 		
 		//CREATE DATABASE: Se crea la BBDD
-		gestorBD.crearTablaUsuarios();
+		//gestorBD.crearTablaUsuarios();
 		
 		//INSERT: Insertar datos en la BBDD		
-		List<Usuario> usuarios = initUsuarios();
+		//List<Usuario> usuarios = initUsuarios();
 		
-		gestorBD.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
+		//gestorBD.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
 		// Contar usuarios masculinos
-	    int hombres = gestorBD.contarUsuariosPorSexo(Sexo.HOMBRE);
-	    System.out.println("Total de hombres: " + hombres);
+	    //int hombres = gestorBD.contarUsuariosPorSexo(Sexo.HOMBRE);
+	    //System.out.println("Total de hombres: " + hombres);
 
 	    // Contar usuarios femeninos
-	    int mujeres = gestorBD.contarUsuariosPorSexo(Sexo.MUJER);
-	    System.out.println("Total de mujeres: " + mujeres);
+	    //int mujeres = gestorBD.contarUsuariosPorSexo(Sexo.MUJER);
+	    //System.out.println("Total de mujeres: " + mujeres);
 		
 		//SELECT: Se obtienen datos de la BBDD
 		//clientes = gestorBD.obtenerDatos();
