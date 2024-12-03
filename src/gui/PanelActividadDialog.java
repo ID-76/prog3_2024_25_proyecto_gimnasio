@@ -1,23 +1,9 @@
 package gui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.Insets;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JDialog;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
-
+import javax.swing.*;
 import main.Actividad;
 import main.VentanaPrincipal;
 
@@ -33,6 +19,10 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
     private JButton apuntarse;
     private JButton desapuntarse;
     private Actividad actividad;
+
+    private ImageIcon imagen1;
+    private ImageIcon imagen2;
+    private Animador animador;
 
     public PanelActividadDialog(Actividad actividad) {
         super();
@@ -98,7 +88,7 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
 
         gbc.insets = new Insets(15, 5, 15, 5);
 
-        // Logo
+        // Logo animado
         icono = new JLabel();
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -106,13 +96,13 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         gbc.gridheight = 2;
         gbc.fill = GridBagConstraints.BOTH;
         icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
-        if (actividad != null) {
-            ImageIcon logo = actividad.getLogo();
-            logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
-            icono.setIcon(logo);
-        }
-        icono.setHorizontalAlignment((int) CENTER_ALIGNMENT);
         reserva.add(icono, gbc);
+
+        // Cargar imágenes para la animación
+        imagen1 = new ImageIcon("Images\\Andar.png");
+        imagen2 = new ImageIcon("Images\\Core.png");
+        imagen1 = escalarImagen(imagen1, 70, 70);
+        imagen2 = escalarImagen(imagen2, 70, 70);
 
         sitiosDisp = new JLabel();
         gbc.gridx = 0;
@@ -157,6 +147,34 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         setSize(600, 300);
         setTitle("Clase de " + actividad.getNombre());
         add(principal);
+
+        // Iniciar animación
+        animador = new Animador();
+        animador.start();
+    }
+
+    private class Animador extends Thread {
+        @Override
+        public void run() {
+            boolean mostrarImagen1 = true;
+
+            while (!isInterrupted()) {
+                try {
+                    ImageIcon imagenActual = mostrarImagen1 ? imagen1 : imagen2;
+                    SwingUtilities.invokeLater(() -> icono.setIcon(imagenActual));
+                    mostrarImagen1 = !mostrarImagen1;
+                    Thread.sleep(300);
+                } catch (InterruptedException e) {
+                    interrupt();
+                }
+            }
+        }
+    }
+
+    private ImageIcon escalarImagen(ImageIcon icon, int ancho, int alto) {
+        Image img = icon.getImage();
+        Image imgEscalada = img.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
+        return new ImageIcon(imgEscalada);
     }
 
     @Override
@@ -186,10 +204,6 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         sitiosDisp.setText("Hay " + (actividad.getCapacidad() - actividad.getOcupacion()) + " sitios disponibles");
         disponibilidadPbar.setValue(actividad.getCapacidad() - actividad.getOcupacion());
         disponibilidadPbar.setForeground(actividad.getCapacidad() - actividad.getOcupacion() < 1 ? Color.RED : Color.GREEN);
-
-        ImageIcon logo = actividad.getLogo();
-        logo = new ImageIcon(logo.getImage().getScaledInstance(70, 70, Image.SCALE_DEFAULT));
-        icono.setIcon(logo);
     }
 
     private void updateButtonState() {
@@ -199,5 +213,13 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
 
         apuntarse.setEnabled(!isUserEnrolled && ocupacion < capacidad);
         desapuntarse.setEnabled(isUserEnrolled);
+    }
+
+    @Override
+    public void dispose() {
+        if (animador != null && animador.isAlive()) {
+            animador.interrupt();
+        }
+        super.dispose();
     }
 }
