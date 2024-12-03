@@ -1,5 +1,7 @@
 package persistence;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,109 +9,112 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 
 import javax.swing.ImageIcon;
+
 
 import main.Actividad;
 import main.Actividad.Tipo;
 import main.Usuario;
 import main.Usuario.Sexo;
 
+
+
 public class GestorBD {
 
-	//Se elimina el final de los atributos para poder actualizar los valores.
-	protected static String DRIVER_NAME;
-	protected static String DATABASE_FILE;
-	protected static String CONNECTION_STRING;
-	protected static Connection connection;
+    private static final String PROPERTIES_FILE = "resources/config/parametros.properties";
+    private static final String CONNECTION_STRING = "jdbc:sqlite:resources/data/database.db";
+    private static final String LOG_FOLDER = "resources/log";
 
-    // Constructor: Establece la conexión con la base de datos
+    private Properties properties;
+    private String driverName;
+    private String databaseFile;
+
+    private static final Logger logger = Logger.getLogger(GestorBD.class.getName());
+
+    // Constructor: Inicializa el gestor de la base de datos
     public GestorBD() {
-    	try {
-			//Se crea el Properties y se actualizan los 3 parámetros
-			Properties connectionProperties = new Properties();
-			connectionProperties.load(new FileReader("resources/parametros.properties"));
-			
-			DRIVER_NAME = connectionProperties.getProperty("DRIVER_NAME");
-			DATABASE_FILE = connectionProperties.getProperty("DATABASE_FILE");
-			CONNECTION_STRING = connectionProperties.getProperty("CONNECTION_STRING") + DATABASE_FILE;
-			
-			//Cargar el diver SQLite
-			Class.forName(DRIVER_NAME);
-		} catch (Exception ex) {
-			System.err.format("\n* Error al cargar el driver de BBDD: %s", ex.getMessage());
-			ex.printStackTrace();
-		}
-	}
-    
-    
-    // Crear tabla Usuarios si no existe
+        try (FileInputStream fis = new FileInputStream("resources/config/logger.properties")) {
+            // Inicialización del Logger
+            LogManager.getLogManager().readConfiguration(fis);
+
+            // Lectura del fichero de propiedades
+            properties = new Properties();
+            properties.load(new FileReader(PROPERTIES_FILE));
+
+            driverName = properties.getProperty("driver");
+            databaseFile = properties.getProperty("file");
+
+            // Crear carpetas de log si no existen
+            File dir = new File(LOG_FOLDER);
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // Crear carpeta para la base de datos si no existe
+            dir = new File(databaseFile.substring(0, databaseFile.lastIndexOf("/")));
+            if (!dir.exists()) {
+                dir.mkdirs();
+            }
+
+            // Cargar el driver SQLite
+            Class.forName(driverName);
+        } catch (Exception ex) {
+            logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
+        }
+    }
+
+    // Crear tabla Usuarios
     public void crearTablaUsuarios() {
-    	//Se abre la conexión y se obtiene el Statement
-    	//Al abrir la conexión, si no existía el fichero, se crea la base de datos
-    	try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {	
-	    	String sql = """
-	            CREATE TABLE IF NOT EXISTS usuario (
-	                id INTEGER PRIMARY KEY AUTOINCREMENT,
-	                nombre TEXT NOT NULL,
-	                apellido TEXT NOT NULL,
-	                dni TEXT NOT NULL UNIQUE,
-	                telefono INTEGER NOT NULL,
-	                edad INTEGER NOT NULL,
-	                sexo TEXT NOT NULL,
-	                contraseña TEXT NOT NULL
-	            )
-	        """;
-	    	 PreparedStatement pstmt = con.prepareStatement(sql);
-
-	    	 if (!pstmt.execute()) {
-		        	System.out.println("\n- Se ha creado la tabla Usuario");
-		        }
-		        
-		        //Es necesario cerrar el PreparedStatement
-		        pstmt.close();		
-			} catch (Exception ex) {
-				System.err.format("\n* Error al crear la BBDD: %s", ex.getMessage());
-				ex.printStackTrace();			
-			}
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement()) {
+            String sql = """
+                CREATE TABLE IF NOT EXISTS usuario (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    nombre TEXT NOT NULL,
+                    apellido TEXT NOT NULL,
+                    dni TEXT NOT NULL UNIQUE,
+                    telefono INTEGER NOT NULL,
+                    edad INTEGER NOT NULL,
+                    sexo TEXT NOT NULL,
+                    contraseña TEXT NOT NULL
+                )
+            """;
+            stmt.execute(sql);
+            System.out.println("Tabla 'usuario' creada o ya existía.");
+        } catch (SQLException ex) {
+            System.err.format("Error al crear la tabla 'usuario': %s", ex.getMessage());
+        }
     }
 
-    // Método para insertar un usuario en la base de datos
+    // Insertar usuarios
     public void insertarUsuarios(Usuario... usuarios) {
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
-          //Se define la plantilla de la sentencia SQL
-            String sql = "INSERT INTO usuarios (nombre, apellido, dni, telefono, edad, sexo, contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";			
-			PreparedStatement pstmt = con.prepareStatement(sql);
-			
-			System.out.println("- Insertando usuarios...");
-			
-			//Se recorren los clientes y se insertan uno a uno
-			for (Usuario u : usuarios) {				
-				pstmt.setString(1, u.getNombre());
-				pstmt.setString(2, u.getApellido());
-				pstmt.setString(3, u.getDni());
-				pstmt.setInt(4, u.getTelefono());
-				pstmt.setInt(5, u.getEdad());
-				pstmt.setString(6, u.getSexo().toString());
-				pstmt.setString(7, u.getContraseña());
-				
-				if (1 == pstmt.executeUpdate()) {					
-					System.out.format("\n - Cliente insertado: %s", u.toString());
-				} else {
-					System.out.format("\n - No se ha insertado el cliente: %s", u.toString());
-				}
-			}			
-		} catch (Exception ex) {
-			System.err.format("\n* Error al insertar datos de la BBDD: %s", ex.getMessage());
-			ex.printStackTrace();						
-		}	
+        String sql = "INSERT INTO usuario (nombre, apellido, dni, telefono, edad, sexo, contraseña) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            for (Usuario u : usuarios) {
+                pstmt.setString(1, u.getNombre());
+                pstmt.setString(2, u.getApellido());
+                pstmt.setString(3, u.getDni());
+                pstmt.setInt(4, u.getTelefono());
+                pstmt.setInt(5, u.getEdad());
+                pstmt.setString(6, u.getSexo().toString());
+                pstmt.setString(7, u.getContraseña());
+                pstmt.executeUpdate();
+            }
+            System.out.println("Usuarios insertados correctamente.");
+        } catch (SQLException ex) {
+            System.err.format("Error al insertar usuarios: %s", ex.getMessage());
+        }
     }
 
-    // Método para actualizar un usuario en la base de datos
+    // Actualizar un usuario
     public boolean actualizarUsuario(Usuario usuario) {
-        String sql = "UPDATE usuarios SET nombre = ?, apellido = ?, telefono = ?, edad = ?, sexo = ?, contraseña = ? WHERE dni = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "UPDATE usuario SET nombre = ?, apellido = ?, telefono = ?, edad = ?, sexo = ?, contraseña = ? WHERE dni = ?";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, usuario.getNombre());
             stmt.setString(2, usuario.getApellido());
             stmt.setInt(3, usuario.getTelefono());
@@ -117,44 +122,44 @@ public class GestorBD {
             stmt.setString(5, usuario.getSexo().toString());
             stmt.setString(6, usuario.getContraseña());
             stmt.setString(7, usuario.getDni());
-            stmt.executeUpdate();
-            return true;
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
         } catch (SQLException e) {
             System.err.println("Error al actualizar usuario: " + e.getMessage());
             return false;
         }
     }
 
-    // Método para eliminar un usuario por su DNI
+    // Eliminar un usuario por DNI
     public boolean eliminarUsuario(String dni) {
-        String sql = "DELETE FROM usuarios WHERE dni = ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "DELETE FROM usuario WHERE dni = ?";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, dni);
-            stmt.executeUpdate();
-            return true;
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
         } catch (SQLException e) {
             System.err.println("Error al eliminar usuario: " + e.getMessage());
             return false;
         }
     }
 
-    // Método para obtener todos los usuarios
+    // Obtener todos los usuarios
     public List<Usuario> obtenerTodosLosUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios";
-
-        try (Statement stmt = connection.createStatement();
+        String sql = "SELECT * FROM usuario";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
                 Usuario usuario = new Usuario(
-                    rs.getString("nombre"),
-                    rs.getString("apellido"),
-                    rs.getString("dni"),
-                    rs.getInt("telefono"),
-                    rs.getInt("edad"),
-                    Sexo.valueOf(rs.getString("sexo")),
-                    rs.getString("contraseña")
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("dni"),
+                        rs.getInt("telefono"),
+                        rs.getInt("edad"),
+                        Sexo.valueOf(rs.getString("sexo")),
+                        rs.getString("contraseña")
                 );
                 usuarios.add(usuario);
             }
@@ -163,92 +168,61 @@ public class GestorBD {
         }
         return usuarios;
     }
-    
- // Método para obtener usuarios dentro de un rango de edad
+
+    // Obtener usuarios por rango de edad
     public List<Usuario> obtenerUsuariosPorRangoDeEdad(int edadMinima, int edadMaxima) {
         List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios WHERE edad BETWEEN ? AND ?";
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "SELECT * FROM usuario WHERE edad BETWEEN ? AND ?";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setInt(1, edadMinima);
             stmt.setInt(2, edadMaxima);
-            ResultSet rs = stmt.executeQuery();
-
-            while (rs.next()) {
-                Usuario usuario = new Usuario(
-                    rs.getString("nombre"),
-                    rs.getString("apellido"),
-                    rs.getString("dni"),
-                    rs.getInt("telefono"),
-                    rs.getInt("edad"),
-                    Sexo.valueOf(rs.getString("sexo")),
-                    rs.getString("contraseña")
-                );
-                usuarios.add(usuario);
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Usuario usuario = new Usuario(
+                            rs.getString("nombre"),
+                            rs.getString("apellido"),
+                            rs.getString("dni"),
+                            rs.getInt("telefono"),
+                            rs.getInt("edad"),
+                            Sexo.valueOf(rs.getString("sexo")),
+                            rs.getString("contraseña")
+                    );
+                    usuarios.add(usuario);
+                }
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener usuarios por rango de edad: " + e.getMessage());
         }
-
         return usuarios;
     }
-    
- // Método para contar usuarios por sexo
+
+    // Contar usuarios por sexo
     public int contarUsuariosPorSexo(Sexo sexo) {
-        String sql = "SELECT COUNT(*) AS total FROM usuarios WHERE sexo = ?";
-        int total = 0;
-
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        String sql = "SELECT COUNT(*) AS total FROM usuario WHERE sexo = ?";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, sexo.toString());
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                total = rs.getInt("total");
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("total");
+                }
             }
         } catch (SQLException e) {
             System.err.println("Error al contar usuarios por sexo: " + e.getMessage());
         }
-
-        return total;
+        return 0;
     }
 
-    
- // Método para obtener un desglose de usuarios por sexo
-    public Map<Sexo, Integer> desgloseUsuariosPorSexo() {
-        String sql = "SELECT sexo, COUNT(*) AS total FROM usuarios GROUP BY sexo";
-        Map<Sexo, Integer> conteoPorSexo = new HashMap<>();
-
-        try (Statement stmt = connection.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                Sexo sexo = Sexo.valueOf(rs.getString("sexo"));
-                int total = rs.getInt("total");
-                conteoPorSexo.put(sexo, total);
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener desglose de usuarios por sexo: " + e.getMessage());
-        }
-
-        return conteoPorSexo;
-    }
-
- // Método para actualizar la contraseña de un usuario
+    // Actualizar contraseña de un usuario
     public boolean actualizarContraseña(String dni, String nuevaContraseña) {
-        String sql = "UPDATE usuarios SET contraseña = ? WHERE dni = ?";
-
+        String sql = "UPDATE usuario SET contraseña = ? WHERE dni = ?";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, nuevaContraseña);
             stmt.setString(2, dni);
-
-            int filasActualizadas = stmt.executeUpdate();
-            if (filasActualizadas > 0) {
-                System.out.println("Contraseña actualizada correctamente para el DNI: " + dni);
-                return true;
-            } else {
-                System.out.println("No se encontró un usuario con el DNI: " + dni);
-                return false;
-            }
+            int filasAfectadas = stmt.executeUpdate();
+            return filasAfectadas > 0;
         } catch (SQLException e) {
             System.err.println("Error al actualizar la contraseña: " + e.getMessage());
             return false;
@@ -257,41 +231,51 @@ public class GestorBD {
 
 
 
-    // Método para obtener un usuario por su DNI
+
+
+ // Método para obtener un usuario por su DNI
     public Usuario obtenerUsuarioPorDni(String dni) {
-        String sql = "SELECT * FROM usuarios WHERE dni = ?";
+        String sql = "SELECT * FROM usuario WHERE dni = ?";
 
-        try (PreparedStatement stmt = connection.prepareStatement(sql)) {
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement stmt = con.prepareStatement(sql)) {
             stmt.setString(1, dni);
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return new Usuario(
-                    rs.getString("nombre"),
-                    rs.getString("apellido"),
-                    rs.getString("dni"),
-                    rs.getInt("telefono"),
-                    rs.getInt("edad"),
-                    Sexo.valueOf(rs.getString("sexo")),
-                    rs.getString("contraseña")
-                );
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    return new Usuario(
+                        rs.getString("nombre"),
+                        rs.getString("apellido"),
+                        rs.getString("dni"),
+                        rs.getInt("telefono"),
+                        rs.getInt("edad"),
+                        Sexo.valueOf(rs.getString("sexo")),
+                        rs.getString("contraseña")
+                    );
+                }
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener usuario por DNI: " + e.getMessage());
         }
-        return null;
+        return null; // Retorna null si no se encuentra el usuario
     }
 
-    // Cerrar la conexión con la base de datos
+
+ // Cerrar la conexión con la base de datos
+    private Connection connection;
+
     public void cerrarConexion() {
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
+                System.out.println("Conexión cerrada correctamente.");
             }
         } catch (SQLException e) {
             System.err.println("Error al cerrar la conexión: " + e.getMessage());
         }
     }
+
+    
+    
     
     
     
