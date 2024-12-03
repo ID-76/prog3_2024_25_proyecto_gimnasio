@@ -325,7 +325,7 @@ public class GestorBD {
                     intensidad TEXT NOT NULL,
                     descripcion TEXT,
                     duracion INTEGER NOT NULL,
-                    tipo TEXT NOT NULL CHECK (tipo IN ('Aeróbico', 'Fuerza', 'Flexibilidad', 'Mixto'))
+                    tipo TEXT NOT NULL CHECK (tipo IN ('ANDAR', 'CORE', 'CORE AVANZADO', 'EQUILIBRIO', 'GIMNASIA', 'HIIT', 'YOGA'))
                 )
             """;
 
@@ -339,6 +339,17 @@ public class GestorBD {
         } catch (Exception ex) {
             System.err.format("\n* Error al crear la tabla de actividades: %s", ex.getMessage());
             ex.printStackTrace();
+        }
+    }
+    
+    public void eliminarTablaActividad() {
+        String sql = "DROP TABLE IF EXISTS actividades"; // Sentencia SQL para eliminar la tabla
+
+        try (Statement stmt = DriverManager.getConnection(CONNECTION_STRING).createStatement()) {
+            stmt.executeUpdate(sql); // Ejecutar la sentencia de eliminación
+            System.out.println("Tabla 'actividad' eliminada correctamente.");
+        } catch (SQLException e) {
+            System.out.println("Error al eliminar la tabla 'actividad': " + e.getMessage());
         }
     }
     
@@ -377,7 +388,7 @@ public class GestorBD {
             
             pstmt.close();
         } catch (Exception ex) {
-            System.err.format("\n* Error al insertar actividades: %s", ex.getMessage());
+            System.err.format("\n* Error al insertar actividades: %s", ex.getCause());
             ex.printStackTrace();
         }
     }
