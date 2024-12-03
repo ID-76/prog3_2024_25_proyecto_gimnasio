@@ -386,6 +386,12 @@ public class GestorBD {
                     rs.getTimestamp("fecha").toLocalDateTime(),
                     rs.getInt("ocupacion"),
                     new ImageIcon(rs.getBytes("logo")),
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
                     rs.getInt("calorias"),
                     rs.getString("intensidad"),
                     rs.getString("descripcion"),
@@ -420,7 +426,14 @@ public class GestorBD {
                     rs.getString("nombre"),
                     rs.getInt("capacidad"),
                     rs.getTimestamp("fecha").toLocalDateTime(),
-                    rs.getInt("ocupacion"),
+                    rs.getInt("ocupacion"),                    
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
                     new ImageIcon(rs.getBytes("logo")),
                     rs.getInt("calorias"),
                     rs.getString("intensidad"),
@@ -551,6 +564,12 @@ public class GestorBD {
                     rs.getInt("capacidad"),
                     rs.getTimestamp("fecha").toLocalDateTime(),
                     rs.getInt("ocupacion"),
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
+                    // NO HAY QUE CARGAR EL LOGO NI LA INTENSIDAD NI LAS CALORIAS YA QUE ESO YA LO SACA EL CONSTRUCTOR
                     new ImageIcon(rs.getBytes("logo")),
                     rs.getInt("calorias"),
                     rs.getString("intensidad"),
@@ -562,7 +581,7 @@ public class GestorBD {
             }
         } catch (Exception ex) {
             System.err.format("\n* Error al obtener actividades por usuario: %s", ex.getMessage());
-            ex.printStackTrace();
+            ex.printStackTrace()
         }
 
         return actividades;
