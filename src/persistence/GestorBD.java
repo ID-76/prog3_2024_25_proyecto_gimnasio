@@ -75,6 +75,28 @@ public class GestorBD {
 		}
 	}
 
+	
+	
+	
+	
+	
+	
+	/** 
+	 * 
+	 * 
+	 * 
+	 * GESTION DE LA TABLA USUARIOS:
+	 * 
+	 * 
+	 * 
+	 * **/
+	
+	
+	
+	
+	
+	
+	
     // Crear tabla Usuarios
     public void crearTablaUsuarios() {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
@@ -178,78 +200,6 @@ public class GestorBD {
         return usuarios;
     }
 
-    // Obtener usuarios por rango de edad
-    public List<Usuario> obtenerUsuariosPorRangoDeEdad(int edadMinima, int edadMaxima) {
-        List<Usuario> usuarios = new ArrayList<>();
-        String sql = "SELECT * FROM usuario WHERE edad BETWEEN ? AND ?";
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setInt(1, edadMinima);
-            stmt.setInt(2, edadMaxima);
-            try (ResultSet rs = stmt.executeQuery()) {
-                while (rs.next()) {
-                    Usuario usuario = new Usuario(
-                            rs.getString("nombre"),
-                            rs.getString("apellido"),
-                            rs.getString("dni"),
-                            rs.getInt("telefono"),
-                            rs.getInt("edad"),
-                            Sexo.valueOf(rs.getString("sexo")),
-                            rs.getString("contraseña")
-                    );
-                    usuarios.add(usuario);
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener usuarios por rango de edad: " + e.getMessage());
-        }
-        return usuarios;
-    }
-
-    // Contar usuarios por sexo
-    public int contarUsuariosPorSexo(Sexo sexo) {
-        String sql = "SELECT COUNT(*) AS total FROM usuario WHERE sexo = ?";
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, sexo.toString());
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return rs.getInt("total");
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al contar usuarios por sexo: " + e.getMessage());
-        }
-        return 0;
-    }
-    
-    
- // Método para obtener un desglose de usuarios por sexo
-    public Map<Sexo, Integer> desgloseUsuariosPorSexo() {
-        String sql = "SELECT sexo, COUNT(*) AS total FROM usuario GROUP BY sexo";
-        Map<Sexo, Integer> conteoPorSexo = new HashMap<>();
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                try {
-                    Sexo sexo = Sexo.valueOf(rs.getString("sexo"));
-                    int total = rs.getInt("total");
-                    conteoPorSexo.put(sexo, total);
-                } catch (IllegalArgumentException | NullPointerException e) {
-                    System.err.println("Dato inválido encontrado en la columna 'sexo': " + rs.getString("sexo"));
-                }
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener desglose de usuarios por sexo: " + e.getMessage());
-        }
-
-        return conteoPorSexo;
-    }
-
 
     // Actualizar contraseña de un usuario
     public boolean actualizarContraseña(String dni, String nuevaContraseña) {
@@ -266,35 +216,6 @@ public class GestorBD {
         }
     }
 
-
-
- // Método para obtener un usuario por su DNI
-    public Usuario obtenerUsuarioPorDni(String dni) {
-        String sql = "SELECT * FROM usuario WHERE dni = ?";
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, dni);
-            try (ResultSet rs = stmt.executeQuery()) {
-                if (rs.next()) {
-                    return new Usuario(
-                        rs.getString("nombre"),
-                        rs.getString("apellido"),
-                        rs.getString("dni"),
-                        rs.getInt("telefono"),
-                        rs.getInt("edad"),
-                        Sexo.valueOf(rs.getString("sexo")),
-                        rs.getString("contraseña")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al obtener usuario por DNI: " + e.getMessage());
-        }
-        return null; // Retorna null si no se encuentra el usuario
-    }
-
-
  // Cerrar la conexión con la base de datos
     private Connection connection;
 
@@ -310,7 +231,15 @@ public class GestorBD {
     }
 
     
-
+    /** 
+	 * 
+	 * 
+	 * 
+	 * GESTION DE LA TABLA ACTIVIDADES:
+	 * 
+	 * 
+	 * 
+	 * **/
     
     
  // Crear tabla Actividades si no existe
@@ -427,39 +356,17 @@ public class GestorBD {
 
         return actividades;
     }
+
     
-    
-    // Método para obtener una actividad por su nombre
- // Método para obtener una actividad por su nombre
-    public Actividad obtenerActividadPorNombre(String nombre) {
-        String sql = "SELECT * FROM actividades WHERE nombre = ?";
-        Actividad actividad = null;
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setString(1, nombre);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                actividad = new Actividad(
-                    rs.getString("nombre"),
-                    rs.getInt("capacidad"),
-                    rs.getTimestamp("fecha").toLocalDateTime(),
-                    rs.getInt("ocupacion"),
-                    rs.getString("descripcion"),
-                    rs.getInt("duracion"),
-                    Tipo.valueOf(rs.getString("tipo"))
-                );
-            }
-        } catch (Exception ex) {
-            System.err.format("\n* Error al obtener actividad por nombre: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return actividad;
-    }
-
+    /** 
+	 * 
+	 * 
+	 * 
+	 * GESTION DE LA TABLA PARTICIPACIONES:
+	 * 
+	 * 
+	 * 
+	 * **/
     
     
     // Crear tabla Participaciones si no existe
@@ -516,80 +423,7 @@ public class GestorBD {
             ex.printStackTrace();
         }
     }
-    
-    // Consultar qué usuarios están inscritos en una actividad específica.
-    public List<Usuario> obtenerUsuariosPorActividad(int idActividad) {
-        List<Usuario> usuarios = new ArrayList<>();
-        String sql = """
-            SELECT u.* FROM usuarios u
-            INNER JOIN participaciones p ON u.id = p.id_usuario
-            WHERE p.id_actividad = ?
-        """;
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idActividad);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Usuario usuario = new Usuario(
-                    rs.getString("nombre"),
-                    rs.getString("apellido"),
-                    rs.getString("dni"),
-                    rs.getInt("telefono"),
-                    rs.getInt("edad"),
-                    Sexo.valueOf(rs.getString("sexo")),
-                    rs.getString("contraseña")
-                );
-                usuarios.add(usuario);
-            }
-        } catch (Exception ex) {
-            System.err.format("\n* Error al obtener usuarios por actividad: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return usuarios;
-    }
-    
-    // Consultar qué actividades está inscrito un usuario específico.
-    
-    public List<Actividad> obtenerActividadesPorUsuario(int idUsuario) {
-        List<Actividad> actividades = new ArrayList<>();
-        String sql = """
-            SELECT a.* FROM actividades a
-            INNER JOIN participaciones p ON a.id = p.id_actividad
-            WHERE p.id_usuario = ?
-        """;
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, idUsuario);
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                Actividad actividad = new Actividad(
-                    rs.getString("nombre"),
-                    rs.getInt("capacidad"),
-                    rs.getTimestamp("fecha").toLocalDateTime(),
-                    rs.getInt("ocupacion"),
-                    rs.getString("descripcion"),
-                    rs.getInt("duracion"),
-                    Tipo.valueOf(rs.getString("tipo"))
-                );
-                actividades.add(actividad);
-            }
-        } catch (Exception ex) {
-            System.err.format("\n* Error al obtener actividades por usuario: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return actividades;
-    }
-
-    
-    
+   
     // Método para obtener todas las participaciones
     public List<String> obtenerTodasLasParticipaciones() {
         List<String> participaciones = new ArrayList<>();
@@ -624,50 +458,7 @@ public class GestorBD {
         return participaciones;
     }
     
-    public void limpiarTablas() {
-        String sqlUsuario = "DELETE FROM usuario";
-        String sqlActividades = "DELETE FROM actividades";
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement()) {
-        	
-            stmt.executeUpdate(sqlUsuario);
-            System.out.println("Tabla 'usuario' limpiada correctamente.");
-
-            stmt.executeUpdate(sqlActividades);
-            System.out.println("Tabla 'actividades' limpiada correctamente.");
-
-        } catch (SQLException ex) {
-            System.err.format("Error al limpiar tablas: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-
-    
-	/*public List<Participacion> obtenerTodasLasParticipaciones() {
-		List<Participacion> participaciones = new ArrayList<>();
-		String sql = "SELECT * FROM participaciones";
-
-		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-				Statement stmt = con.createStatement();
-				ResultSet rs = stmt.executeQuery(sql)) {
-
-			while (rs.next()) {
-				Participacion participacion = new Participacion(rs.getInt("id_participacion"), rs.getInt("id_usuario"),
-						rs.getInt("id_actividad"), rs.getTimestamp("fecha_inscripcion").toLocalDateTime(),
-						rs.getString("estado"));
-				participaciones.add(participacion);
-			}
-		} catch (Exception ex) {
-			System.err.format("\n* Error al obtener participaciones: %s", ex.getMessage());
-			ex.printStackTrace();
-		}
-
-		return participaciones;
-	}*/
-    
-    
-    
+   
     // Método para obtener una participación por su ID
     public String obtenerParticipacionPorId(int id) {
         String participacion = null;
@@ -707,41 +498,23 @@ public class GestorBD {
         return participacion;
     }
 
-    public void verUsuarios() {
-        List<Usuario> usuarios = obtenerTodosLosUsuarios();
-        
-        // Imprimir encabezado de la tabla
-        System.out.printf("%-20s %-20s %-15s %-12s %-10s %-10s %-15s\n", 
-                "Nombre", "Apellido", "DNI", "Teléfono", "Edad", "Sexo", "Contraseña");
-        
-        // Imprimir cada usuario en una fila
-        for (Usuario usuario : usuarios) {
-            System.out.printf("%-20s %-20s %-15s %-12d %-10d %-10s %-15s\n", 
-                    usuario.getNombre(), 
-                    usuario.getApellido(), 
-                    usuario.getDni(), 
-                    usuario.getTelefono(), 
-                    usuario.getEdad(), 
-                    usuario.getSexo(), 
-                    usuario.getContraseña());
-        }
-    }
     
-    public void verActividades() {
-        List<Actividad> actividades = obtenerTodasLasActividades();
+    public void limpiarTablas() {
+        String sqlUsuario = "DELETE FROM usuario";
+        String sqlActividades = "DELETE FROM actividades";
 
-        System.out.printf("%-20s %-10s %-15s %-12s %-10s %-10s %-15s\n", 
-                "Nombre", "Capacidad", "Fecha", "Ocupación", "Calorías", "Duración", "Tipo");
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             Statement stmt = con.createStatement()) {
+        	
+            stmt.executeUpdate(sqlUsuario);
+            System.out.println("Tabla 'usuario' limpiada correctamente.");
 
-        for (Actividad actividad : actividades) {
-            System.out.printf("%-20s %-10d %-15s %-12d %-10d %-10d %-15s\n", 
-                    actividad.getNombre(),
-                    actividad.getCapacidad(),
-                    actividad.toString(),
-                    actividad.getOcupacion(),
-                    actividad.getCalorias(),
-                    actividad.getDuracion(),
-                    actividad.getTipo().toString());
+            stmt.executeUpdate(sqlActividades);
+            System.out.println("Tabla 'actividades' limpiada correctamente.");
+
+        } catch (SQLException ex) {
+            System.err.format("Error al limpiar tablas: %s", ex.getMessage());
+            ex.printStackTrace();
         }
     }
 }
