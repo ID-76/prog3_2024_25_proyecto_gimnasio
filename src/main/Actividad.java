@@ -57,8 +57,8 @@ public class Actividad {
 		// El resto de atributos se calculan a continuacion:
 		this.logo = new ImageIcon("Images/"+nombre+".png");
 		
-		this.ocupacion = capacidad ;
-				int hola= length(listaApuntados);
+		//this.ocupacion = capacidad ;
+				//int hola= length(listaApuntados);
 		
 		
 		if (nombre.contains("Core")|| nombre.contains("HIIT")){
