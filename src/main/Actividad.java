@@ -23,7 +23,131 @@ public class Actividad {
 	private String intensidad;
 	private String descripcion;
 	private int duracion;
+	private int idSesion;
 	private Tipo tipo;
+	
+	/* 
+	 * Este es el constructor que debe de usar la base de datos para crear las actividades
+	 * La base de datos coje los parametros desde las siguientes tablas: 
+	 *          Actividad: 
+	 *          	- nombre	
+	 *          	- duracion
+	 *          
+	 * 			Sesion:
+	 *              - capacidad
+	 *              - Fecha
+	 *              - ID sesion
+	 *              
+	 *          Participa:
+	 *              - lista Usuarios (Crea la lista leyendo el DNI de la tabla y
+	 *              				  añadiendo el usuario de la lista global de ventana principal
+	 *              				  -la cual se deberia de cargar antes para poder leerla- que coincida con el DNI)
+	 */
+	public Actividad(String nombre, int duracion, int capacidad, String fecha, int idSesion, ArrayList<Usuario> listaApuntados) {
+		this.nombre = nombre;
+		this.duracion = duracion;
+		this.capacidad = capacidad;
+		// Hay que cojer el string y formatearlo como fecha para no tener que hacerlo en el gestorDB
+		//this.fecha = null;
+		this.idSesion = idSesion;
+		this.listaUsuarios = listaApuntados;
+		
+		
+		
+		// El resto de atributos se calculan a continuacion:
+		this.logo = new ImageIcon("Images/"+nombre+".png");
+		
+		this.ocupacion = capacidad ;
+				int hola= length(listaApuntados);
+		
+		
+		if (nombre.contains("Core")|| nombre.contains("HIIT")){
+			this.intensidad = "Alta";
+		} else {
+			this.intensidad = "Normal";
+		}
+		
+		
+		if (nombre.contains("Yoga") || nombre.contains("Andar") || nombre.contains("Gimnasia")) {
+			if (intensidad.contains("Alta")) {
+				this.calorias = 350;
+			} else {
+				this.calorias = 200;
+			}
+		} else {
+			if (intensidad.contains("Alta")) {
+				this.calorias = 650;
+			} else {
+				this.calorias = 450;
+			}
+		}
+		
+		switch (nombre) {
+		case "Andar":
+			this.descripcion = "En esta clase andaremos en las cintas con un monitor";
+			break;
+			
+		case "Core":
+		case "Core Avanzado":
+			this.descripcion = "En esta clase haremos ejercicios para fortalecer los abdominales";
+			break;
+			
+		case "Equilibrio":
+			this.descripcion = "En esta clase entrenaremos el equilibrio y la flexibilidad";
+			break;
+			
+		case "Gimnasia":
+			this.descripcion = "En esta clase practicaremos varios ejercicios gimnasticos";
+			break;
+			
+		case "HIIT":
+			this.descripcion = "En esta clase haremos ejercicios en intervalos de alta intensidad";
+			break;
+		
+		case "Yoga":
+			this.descripcion = "En esta clase haremos ejercicios de yoga y meditacion";
+			break;
+		default:
+			this.descripcion = "No hay descripcion para esta actividad";
+			break;
+		}
+	
+		switch (nombre) {
+		case "Andar":
+			this.tipo = Tipo.ANDAR;
+			break;
+			
+		case "Core":
+			this.tipo = Tipo.CORE;
+			break;
+			
+		case "Core Avanzado":
+			this.tipo = Tipo.CORE_AVANZADO;
+			break;
+			
+		case "Equilibrio":
+			this.tipo = Tipo.EQUILIBRIO;
+			break;
+			
+		case "Gimnasia":
+			this.tipo = Tipo.GIMNASIA;
+			break;
+			
+		case "HIIT":
+			this.tipo = Tipo.HIIT;
+			break;
+		
+		case "Yoga":
+			this.tipo = Tipo.YOGA;
+			break;
+
+		default:
+			this.tipo = null;
+			break;
+		}
+		
+	}
+	
 	
 	
 	public Actividad(String nombre, int capacidad, LocalDateTime fecha, int ocupacion,
