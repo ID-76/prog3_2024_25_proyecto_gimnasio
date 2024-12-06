@@ -32,6 +32,9 @@ public class Actividad {
 	 *          Actividad: 
 	 *          	- nombre	
 	 *          	- duracion
+	 *          	- Intensidad
+	 *              - Calorias
+	 *              - Descripcion
 	 *          
 	 * 			Sesion:
 	 *              - capacidad
@@ -43,15 +46,17 @@ public class Actividad {
 	 *              				  añadiendo el usuario de la lista global de ventana principal
 	 *              				  -la cual se deberia de cargar antes para poder leerla- que coincida con el DNI)
 	 */
-	public Actividad(String nombre, int duracion, int capacidad, String fecha, int idSesion, ArrayList<Usuario> listaApuntados) {
+	public Actividad(String nombre, int duracion, String intensidad, int calorias, String descripcion, int capacidad, String fecha, int idSesion, ArrayList<Usuario> listaApuntados) {
 		this.nombre = nombre;
 		this.duracion = duracion;
 		this.capacidad = capacidad;
+		this.intensidad = intensidad;
+		this.calorias = calorias;
+		this.descripcion = descripcion;
 		// Hay que cojer el string y formatearlo como fecha para no tener que hacerlo en el gestorDB
 		//this.fecha = null;
 		this.idSesion = idSesion;
 		this.listaUsuarios = listaApuntados;
-		
 		
 		
 		// El resto de atributos se calculan a continuacion:
@@ -59,58 +64,6 @@ public class Actividad {
 		
 		//this.ocupacion = capacidad ;
 				//int hola= length(listaApuntados);
-		
-		
-		if (nombre.contains("Core")|| nombre.contains("HIIT")){
-			this.intensidad = "Alta";
-		} else {
-			this.intensidad = "Normal";
-		}
-		
-		
-		if (nombre.contains("Yoga") || nombre.contains("Andar") || nombre.contains("Gimnasia")) {
-			if (intensidad.contains("Alta")) {
-				this.calorias = 350;
-			} else {
-				this.calorias = 200;
-			}
-		} else {
-			if (intensidad.contains("Alta")) {
-				this.calorias = 650;
-			} else {
-				this.calorias = 450;
-			}
-		}
-		
-		switch (nombre) {
-		case "Andar":
-			this.descripcion = "En esta clase andaremos en las cintas con un monitor";
-			break;
-			
-		case "Core":
-		case "Core Avanzado":
-			this.descripcion = "En esta clase haremos ejercicios para fortalecer los abdominales";
-			break;
-			
-		case "Equilibrio":
-			this.descripcion = "En esta clase entrenaremos el equilibrio y la flexibilidad";
-			break;
-			
-		case "Gimnasia":
-			this.descripcion = "En esta clase practicaremos varios ejercicios gimnasticos";
-			break;
-			
-		case "HIIT":
-			this.descripcion = "En esta clase haremos ejercicios en intervalos de alta intensidad";
-			break;
-		
-		case "Yoga":
-			this.descripcion = "En esta clase haremos ejercicios de yoga y meditacion";
-			break;
-		default:
-			this.descripcion = "No hay descripcion para esta actividad";
-			break;
-		}
 	
 		switch (nombre) {
 		case "Andar":
