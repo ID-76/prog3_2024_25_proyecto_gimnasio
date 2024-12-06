@@ -4,22 +4,15 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
 import java.sql.*;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Properties;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
-import javax.swing.ImageIcon;
 
 
 import main.Actividad;
-import main.Actividad.Tipo;
 import main.Usuario;
 import main.Usuario.Sexo;
 
@@ -247,9 +240,12 @@ public class GestorBD {
     public void crearTablaActividades() {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
-                CREATE TABLE IF NOT EXISTS actividades (
+                CREATE TABLE IF NOT EXISTS actividad (
                     NOMBRE_ACTIVIDAD VARCHAR(30) NOT NULL,
             		DURACION_ACTIVIDAD INT NOT NULL,
+            		INTENSIDAD_ACTIVDAD VARCHAR(10) NOT NULL,
+            		CALORIAS_ACTIVIDAD INT NOT NULL,
+            		DESCRIPCION VARCHAR(1000) NOT NULL,  
             		PRIMARY KEY(NOMBRE_ACTIVIDAD),
             		CHECK(DURACION_ACTIVIDAD > 0));
                 )
@@ -258,18 +254,18 @@ public class GestorBD {
             PreparedStatement pstmt = con.prepareStatement(sql);
 
             if (!pstmt.execute()) {
-                System.out.println("\n- Se ha creado la tabla Actividades");
+                System.out.println("\n- Se ha creado la tabla actividad");
             }
             
             pstmt.close();
         } catch (Exception ex) {
-            System.err.format("\n* Error al crear la tabla de actividades: %s", ex.getMessage());
+            System.err.format("\n* Error al crear la tabla de actividad: %s", ex.getMessage());
             ex.printStackTrace();
         }
     }
     
     public void eliminarTablaActividad() {
-        String sql = "DROP TABLE IF EXISTS actividades"; 
+        String sql = "DROP TABLE IF EXISTS actividad"; 
 
         try (Statement stmt = DriverManager.getConnection(CONNECTION_STRING).createStatement()) {
             stmt.executeUpdate(sql);
@@ -277,31 +273,32 @@ public class GestorBD {
         } catch (SQLException e) {
             System.out.println("Error al eliminar la tabla 'actividad': " + e.getMessage());
         }
-    }
-    
+    }    
     
     // Método para insertar actividades en la base de datos
     
-    public void insertarActividades(Actividad... actividades) {
+    public void insertarActividades(String nombre, int duracion, String intensidad, int calorias, String descripcion) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
-                INSERT INTO actividades (nombre_actividad, duracion_actividad) 
-                VALUES (?, ?)
+                INSERT INTO actividades (nombre_actividad, duracion_actividad, intensidad_actividad, calorias_actividad, descripcion) 
+                VALUES (?, ?, ?, ?, ?)
             """;
 
             PreparedStatement pstmt = con.prepareStatement(sql);
             
             System.out.println("- Insertando actividades...");
 
-            for (Actividad actividad : actividades) {
-                pstmt.setString(1, actividad.getNombre());
-                pstmt.setInt(2, actividad.getDuracion());
+           
+            pstmt.setString(1, nombre);
+            pstmt.setInt(2, duracion);
+            pstmt.setString(3, intensidad);
+            pstmt.setInt(4, calorias);
+            pstmt.setString(5, descripcion);
 
-                if (1 == pstmt.executeUpdate()) {
-                    System.out.format("\n - Actividad insertada: %s", actividad.getNombre());
-                } else {
-                    System.out.format("\n - No se ha insertado la actividad: %s", actividad.getNombre());
-                }
+            if (1 == pstmt.executeUpdate()) {
+                System.out.format("\n - Actividad insertada: %s", nombre);
+            } else {
+                System.out.format("\n - No se ha insertado la actividad: %s", nombre);
             }
             
             pstmt.close();
@@ -309,38 +306,6 @@ public class GestorBD {
             System.err.format("\n* Error al insertar actividades: %s", ex.getCause());
             ex.printStackTrace();
         }
-    }
-    
-    
-    // Método para obtener todas las actividades
-    public List<Actividad> obtenerTodasLasActividades() {
-        List<Actividad> actividades = new ArrayList<>();
-        String sql = "SELECT * FROM actividades";
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-            	DateTimeFormatter formateador = new DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")).toFormatter();
-            	LocalDateTime fecha = LocalDateTime.parse(rs.getString("fecha"), formateador);
-                Actividad actividad = new Actividad(
-                    rs.getString("nombre"),
-                    rs.getInt("capacidad"),
-                    fecha,
-                    rs.getInt("ocupacion"),
-                    rs.getString("descripcion"),
-                    rs.getInt("duracion"),
-                    Tipo.valueOf(rs.getString("tipo"))
-                );
-                actividades.add(actividad);
-            }
-        } catch (Exception ex) {
-            System.err.format("\n* Error al obtener actividades: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return actividades;
     }
 
     
@@ -392,28 +357,30 @@ public class GestorBD {
         }
     }
 
-    public List<Usuario> obtenerTodosLasSesiones() {
-        List<Usuario> usuarios = new ArrayList<>();
+    public List<Actividad> obtenerTodosLasSesiones() {
+        List<Actividad> actividades = new ArrayList<>();
         String sql = "SELECT * FROM usuario u LEFT JOIN actividad a on u.nombre_actividad = a.nombre_actividad";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             while (rs.next()) {
-                /**Actividad actividad = new Actividad(
+                Actividad actividad = new Actividad(
+                		rs.getString("nombre_actividad"),
+                		rs.getInt("duracion_actividad"),
+                		rs.getString("intensidad_actividad"),
+                		rs.getInt("calorias_actividad"),
+                		rs.getString("descripcion"),
                         rs.getInt("capacidad_sesion"),
                         rs.getString("fecha_sesion"),
                         rs.getInt("id_sesion"),
-                        rs.getInt("nombre_actividad"),
-                        rs.getInt("edad_usuario"),
-                        Sexo.valueOf(rs.getString("sexo_usuario")),
-                        rs.getString("contraseña_usuario")
-                );**/
-                usuarios.add(usuario);
+                        new ArrayList<Usuario>()
+                );
+                actividades.add(actividad);
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener usuarios: " + e.getMessage());
         }
-        return usuarios;
+        return actividades;
     }
  
     
