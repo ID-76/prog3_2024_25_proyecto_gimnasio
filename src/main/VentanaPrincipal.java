@@ -192,7 +192,7 @@ public class VentanaPrincipal extends JFrame {
 
         if (opcion == JOptionPane.YES_OPTION) {
         	GestorBD gestor = new GestorBD();
-        	gestor.limpiarTablas();
+        	/**gestor.limpiarTablas();
         	try {
                  // Ejemplo: Actualizar actividades
                  for (Actividad actividad : listaActividades) {
@@ -213,7 +213,7 @@ public class VentanaPrincipal extends JFrame {
                          JOptionPane.ERROR_MESSAGE
                  );
              }
-        	gestor.verUsuarios();
+        	gestor.verUsuarios();**/
             //gestor.verActividades();
             dispose();
         }
@@ -221,22 +221,24 @@ public class VentanaPrincipal extends JFrame {
 
     public static void main(String[] args) {
     	GestorBD gestorBD = new GestorBD();
+    	
+    	gestorBD.crearBBDD();
+    	
+    	gestorBD.initilizeFromCSV();
+    	
     	VentanaPrincipal ventana = new VentanaPrincipal();
-        // Create tables if they do not exist
   
-    	//gestorBD.crearTablaUsuarios();
-    	//gestorBD.eliminarTablaActividad();
-        //gestorBD.crearTablaActividades();
+    	
         
         // Load users and activities from the database
         ArrayList<Usuario> usuarios = (ArrayList<Usuario>) gestorBD.obtenerTodosLosUsuarios();
-        List<Actividad> actividades = gestorBD.obtenerTodasLasActividades();
-        System.out.println(actividades);
+        List<Actividad> actividades = gestorBD.obtenerTodosLasSesiones();
+        //System.out.println(actividades);
        
         ventana.setUsuarios(usuarios);
-        //ventana.setActividades((ArrayList<Actividad>) actividades);
+        ventana.setActividades((ArrayList<Actividad>) actividades);
     	
-        ArrayList<Actividad> listaActividades = new ArrayList<>();
+        /**ArrayList<Actividad> listaActividades = new ArrayList<>();
         ArrayList<Usuario> listaUsuarios = usuarios;
 
         
@@ -259,7 +261,7 @@ public class VentanaPrincipal extends JFrame {
                 fecha1 = fecha1.plusDays(1);
             }
         }
-        ventana.setActividades(listaActividades);
+        ventana.setActividades(listaActividades);**/
         ventana.setVisible(true);
     }
     public static List<Usuario> initUsuarios() {

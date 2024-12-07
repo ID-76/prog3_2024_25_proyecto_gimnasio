@@ -1,6 +1,8 @@
 package main;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -18,7 +20,7 @@ public class Actividad {
 	private LocalDateTime fecha;
 	private int ocupacion;
 	private ImageIcon logo;
-	protected ArrayList<Usuario> listaUsuarios;
+	protected ArrayList<Usuario> listaUsuarios = new ArrayList<>();
 	private int calorias;
 	private String intensidad;
 	private String descripcion;
@@ -53,10 +55,15 @@ public class Actividad {
 		this.intensidad = intensidad;
 		this.calorias = calorias;
 		this.descripcion = descripcion;
+		if (fecha != null) {
+			DateTimeFormatter formateador = new DateTimeFormatterBuilder().parseCaseInsensitive().append(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm")).toFormatter();
+			LocalDateTime fechaThis = LocalDateTime.parse(fecha, formateador);
+			this.fecha = fechaThis;
+		}
 		// Hay que cojer el string y formatearlo como fecha para no tener que hacerlo en el gestorDB
 		//this.fecha = null;
 		this.idSesion = idSesion;
-		this.listaUsuarios = listaApuntados;
+		this.listaUsuarios = new ArrayList<>();
 		
 		
 		// El resto de atributos se calculan a continuacion:
@@ -304,6 +311,10 @@ public class Actividad {
 	public int getDuracion() {
 		return duracion;
 	}
+	
+	public int getIdSesion() {
+		return idSesion;
+	}
 
 
 	public ArrayList<Usuario> getListaUsuarios() {
@@ -315,6 +326,9 @@ public class Actividad {
 		this.listaUsuarios = listaUsuarios;
 	}
 
+	public void setIdSesion(int id) {
+		this.idSesion = id;
+	}
 
 	public String getNombre() {
 		return nombre;

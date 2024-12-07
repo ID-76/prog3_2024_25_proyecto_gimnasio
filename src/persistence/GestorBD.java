@@ -1,16 +1,19 @@
 package persistence;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 import java.util.logging.LogManager;
 import java.util.logging.Logger;
-
-
 
 import main.Actividad;
 import main.Usuario;
@@ -21,8 +24,11 @@ import main.Usuario.Sexo;
 public class GestorBD {
 
     private static final String PROPERTIES_FILE = "config/parametros.properties";
-    private static final String CONNECTION_STRING = "jdbc:sqlite:resources/data/database.db";
+    private static final String CONNECTION_STRING = "jdbc:sqlite:resources/db/database.db";
     private static final String LOG_FOLDER = "log";
+    private final String CSV_USUARIOS = "resources/data/usuarios.csv";
+    private final String CSV_SESIONES = "resources/data/Sesiones.csv";
+    private final String CSV_ACTIVIDADES = "resources/data/actividades.csv";
 
     private Properties properties;
     private String driverName;
@@ -30,7 +36,6 @@ public class GestorBD {
 
     private static final Logger logger = Logger.getLogger(GestorBD.class.getName());
 
-    // Constructor: Inicializa el gestor de la base de datos
 
 	public GestorBD() {
 		try (FileInputStream fis = new FileInputStream("config/logger.properties")) {
@@ -58,20 +63,169 @@ public class GestorBD {
 
 			// Cargar el driver SQLite
 			Class.forName(driverName);
-
-			// Crear tablas
-			//crearTablaUsuarios();
-			//crearTablaActividades();
-			//crearTablaParticipaciones();
 		} catch (Exception ex) {
 			logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
 		}
 	}
 
+	public void initilizeFromCSV() {
+		if (properties.get("loadCSV").equals("true")) {
+			this.borrarDatos();
+			
+			List<Usuario> usuarios = this.loadCSVUsuarios();
+
+			this.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
+			
+			List<Actividad> actividades = this.loadCSVActividades();
+			for (Actividad a:actividades) {
+				this.insertarActividades(a.getNombre(),a.getDuracion(),a.getIntensidad(),a.getCalorias(),a.getDescripcion());	
+			}
+			
+			List<Actividad> sesiones = this.LoadCSVSesiones();
+			for (Actividad s:sesiones) {
+				this.asignarUsuariosAleatorios(s, usuarios);
+			}
+			
+			this.insertarSesiones(sesiones.toArray(new Actividad[sesiones.size()]));
+		}
+	}
 	
+	public void asignarUsuariosAleatorios(Actividad a, List<Usuario> usuarios) {
+		for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
+		    if (!usuarios.isEmpty()) {
+		        Usuario usuarioSeleccionado = usuarios.get((new Random()).nextInt(usuarios.size()));
+
+		        if (!a.getListaUsuarios().contains(usuarioSeleccionado)) {
+		            a.addUsuario(usuarioSeleccionado);
+		            l = l-1;
+		        } else {
+		            System.out.println("El usuario ya está en la actividad. No se agregará nuevamente.");
+		        }
+		    } else {
+		        System.err.println("La lista de usuarios está vacía. No se pueden agregar usuarios a la actividad.");
+		    }
+		}
+	}
 	
+	public void crearBBDD() {
+		if (properties.get("createBBDD").equals("true")) {
+			String sql1 = """
+                CREATE TABLE IF NOT EXISTS usuario (
+					nombre_usuario TEXT NOT NULL,
+					apellido_usuario TEXT NOT NULL, 
+					dni_usuario TEXT NOT NULL,
+					telefono_usuario TEXT NOT NULL,
+					edad_usuario INTEGER NOT NULL,
+					sexo_usuario TEXT NOT NULL,
+					contrasena_usuario TEXT NOT NULL,
+					PRIMARY KEY (dni_usuario),
+					CHECK (edad_usuario > 0)
+					);
+            """;
 	
+			String sql2 = """
+                CREATE TABLE IF NOT EXISTS actividad (
+					nombre_actividad TEXT NOT NULL,
+					duracion_actividad INTEGER NOT NULL,
+					intensidad_actividad TEXT NOT NULL,
+					calorias_actividad INTEGER NOT NULL,
+					descripcion TEXT NOT NULL,
+					PRIMARY KEY (nombre_actividad),
+					CHECK (duracion_actividad > 0)
+					);
+            """;
 	
+			String sql3 = """
+               CREATE TABLE IF NOT EXISTS sesion (
+					capacidad_sesion INTEGER NOT NULL CHECK (capacidad_sesion > 0),
+					fecha_sesion TEXT NOT NULL,
+					id_sesion INTEGER PRIMARY KEY AUTOINCREMENT,
+					nombre_actividad TEXT NOT NULL,
+					FOREIGN KEY (nombre_actividad) REFERENCES actividad (nombre_actividad) ON DELETE CASCADE
+					);
+            """;
+			
+			String sql4 = """
+                CREATE TABLE IF NOT EXISTS participa (
+					dni_usuario TEXT NOT NULL,
+					id_sesion INTEGER NOT NULL,
+					PRIMARY KEY (dni_usuario, id_sesion),
+					FOREIGN KEY (dni_usuario) REFERENCES usuario (dni_usuario) ON DELETE CASCADE,
+					FOREIGN KEY (id_sesion) REFERENCES sesion (id_sesion) ON DELETE CASCADE
+					);
+            """;
+			
+	        //Se abre la conexión y se crea un PreparedStatement para crer cada tabla
+			//Al abrir la conexión, si no existía el fichero por defecto, se crea.
+			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
+				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
+				 PreparedStatement pStmt3 = con.prepareStatement(sql3);
+				 PreparedStatement pStmt4 = con.prepareStatement(sql4)) {
+				
+				//Se ejecutan las sentencias de creación de las tablas
+		        if (!pStmt1.execute() && !pStmt2.execute() && !pStmt3.execute() && !pStmt4.execute()) {
+		        	logger.info("Se han creado las tablas");
+		        }
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al crear las tablas: %s", ex.getMessage()));
+			}
+		}
+	}
+	
+	public void borrarBBDD() {
+		//Sólo se borra la BBDD si la propiedad deleteBBDD es true
+		if (properties.get("deleteBBDD").equals("true")) {	
+			String sql1 = "DROP TABLE IF EXISTS usuario;";
+			String sql2 = "DROP TABLE IF EXISTS actividad";
+			String sql3 = "DROP TABLE IF EXISTS sesion;";
+			String sql4 = "DROP TABLE IF EXISTS participa;";
+			
+	        //Se abre la conexión y se crea un PreparedStatement para borrar cada tabla
+			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
+				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
+				 PreparedStatement pStmt3 = con.prepareStatement(sql3);
+				 PreparedStatement pStmt4 = con.prepareStatement(sql4)) {
+				
+				//Se ejecutan las sentencias de borrado de las tablas
+		        if (!pStmt1.execute() && !pStmt2.execute() && !pStmt3.execute() && !pStmt4.execute()) {
+		        	logger.info("Se han borrado las tablas");
+		        }
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al borrar las tablas: %s", ex.getMessage()));
+			}
+			
+			try {
+				Files.delete(Paths.get(databaseFile));
+				logger.info("Se ha borrado el fichero de la BBDD");
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al borrar el fichero de la BBDD: %s", ex.getMessage()));
+			}
+		}
+	}
+	
+	public void borrarDatos() {
+		if (properties.get("cleanBBDD").equals("true")) {	
+			String sql1 = "DELETE FROM usuario;";
+			String sql2 = "DELETE FROM actividad;";
+			String sql3 = "DELETE FROM sesion;";
+			String sql4 = "DELETE FROM participa;";
+			
+			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
+				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
+				 PreparedStatement pStmt3 = con.prepareStatement(sql3);
+				 PreparedStatement pStmt4 = con.prepareStatement(sql4)) {
+				
+		        if (!pStmt1.execute() && !pStmt2.execute() && !pStmt3.execute() && !pStmt4.execute()) {
+		        	logger.info("Se han borrado los datos");
+		        }
+			} catch (Exception ex) {
+				logger.warning(String.format("Error al borrar los datos: %s", ex.getMessage()));
+			}
+		}
+	}
 	
 	
 	/** 
@@ -85,38 +239,9 @@ public class GestorBD {
 	 * **/
 	
 	
-	
-	
-	
-	
-	
-    // Crear tabla Usuarios
-    public void crearTablaUsuarios() {
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement()) {
-            String sql = """
-                CREATE TABLE IF NOT EXISTS usuario (
-                    NOMBRE_USUARIO VARCHAR(20) NOT NULL,
-            		APELLIDO_USUARIO VARCHAR(30) NOT NULL, 
-            		DNI_USUARIO CHAR(9) NOT NULL,
-            		TELEFONO_USUARIO VARCHAR(15) NOT NULL,
-            		EDAD_USUARIO INT NOT NULL,
-            		SEXO_USUARIO CHAR(1) NOT NULL,
-            		CONTRASENA_USUARIO VARCHAR(50) NOT NULL,
-            		PRIMARY KEY(DNI_USUARIO),
-            		CHECK(EDAD_USUARIO > 0));
-                )
-            """;
-            stmt.execute(sql);
-            System.out.println("Tabla 'usuario' creada o ya existía.");
-        } catch (SQLException ex) {
-            System.err.format("Error al crear la tabla 'usuario': %s", ex.getMessage());
-        }
-    }
-
     // Insertar usuarios
     public void insertarUsuarios(Usuario... usuarios) {
-        String sql = "INSERT INTO usuario (nombre_usuario, apellido_usuario, dni_usuario, telefono_usuario, edad_usuario, sexo_usuario, contraseña_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO usuario (nombre_usuario, apellido_usuario, dni_usuario, telefono_usuario, edad_usuario, sexo_usuario, contrasena_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              PreparedStatement pstmt = con.prepareStatement(sql)) {
             for (Usuario u : usuarios) {
@@ -168,6 +293,41 @@ public class GestorBD {
             return false;
         }
     }
+    
+    public List<Usuario> loadCSVUsuarios(){
+    	List<Usuario> usuarios = new ArrayList<>();
+		
+		try (BufferedReader in = new BufferedReader(new FileReader(CSV_USUARIOS))) {
+			String linea = null;
+			Usuario u = null;
+			in.readLine();		
+			
+			while ((linea = in.readLine()) != null) {
+				String[] campos = linea.split(";");
+				try {
+				    u = new Usuario(
+				        campos[0], campos[1], campos[2],
+				        Integer.parseInt(campos[3]),
+				        Integer.parseInt(campos[4]),
+				        Sexo.valueOf(campos[5].toUpperCase()),
+				        campos[6]
+				    );
+				} catch (IllegalArgumentException | NullPointerException e) {
+				    logger.warning(String.format("Dato inválido en línea: %s. Error: %s", linea, e.getMessage()));
+				    continue; 
+				}
+				
+				if (u != null) {
+					usuarios.add(u);
+				}
+			}			
+			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error leyendo usuarios del CSV: %s", ex.getMessage()));
+		}
+		
+		return usuarios;
+    }
 
     // Obtener todos los usuarios
     public List<Usuario> obtenerTodosLosUsuarios() {
@@ -184,7 +344,7 @@ public class GestorBD {
                         rs.getInt("telefono_usuario"),
                         rs.getInt("edad_usuario"),
                         Sexo.valueOf(rs.getString("sexo_usuario")),
-                        rs.getString("contraseña_usuario")
+                        rs.getString("contrasena_usuario")
                 );
                 usuarios.add(usuario);
             }
@@ -236,51 +396,13 @@ public class GestorBD {
 	 * **/
     
     
- // Crear tabla Actividades si no existe
-    public void crearTablaActividades() {
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
-            String sql = """
-                CREATE TABLE IF NOT EXISTS actividad (
-                    NOMBRE_ACTIVIDAD VARCHAR(30) NOT NULL,
-            		DURACION_ACTIVIDAD INT NOT NULL,
-            		INTENSIDAD_ACTIVDAD VARCHAR(10) NOT NULL,
-            		CALORIAS_ACTIVIDAD INT NOT NULL,
-            		DESCRIPCION VARCHAR(1000) NOT NULL,  
-            		PRIMARY KEY(NOMBRE_ACTIVIDAD),
-            		CHECK(DURACION_ACTIVIDAD > 0));
-                )
-            """;
-
-            PreparedStatement pstmt = con.prepareStatement(sql);
-
-            if (!pstmt.execute()) {
-                System.out.println("\n- Se ha creado la tabla actividad");
-            }
-            
-            pstmt.close();
-        } catch (Exception ex) {
-            System.err.format("\n* Error al crear la tabla de actividad: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
-    
-    public void eliminarTablaActividad() {
-        String sql = "DROP TABLE IF EXISTS actividad"; 
-
-        try (Statement stmt = DriverManager.getConnection(CONNECTION_STRING).createStatement()) {
-            stmt.executeUpdate(sql);
-            System.out.println("Tabla 'actividad' eliminada correctamente.");
-        } catch (SQLException e) {
-            System.out.println("Error al eliminar la tabla 'actividad': " + e.getMessage());
-        }
-    }    
     
     // Método para insertar actividades en la base de datos
     
     public void insertarActividades(String nombre, int duracion, String intensidad, int calorias, String descripcion) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
-                INSERT INTO actividades (nombre_actividad, duracion_actividad, intensidad_actividad, calorias_actividad, descripcion) 
+                INSERT INTO actividad (nombre_actividad, duracion_actividad, intensidad_actividad, calorias_actividad, descripcion) 
                 VALUES (?, ?, ?, ?, ?)
             """;
 
@@ -308,6 +430,29 @@ public class GestorBD {
         }
     }
 
+    public List<Actividad> loadCSVActividades(){
+    	List<Actividad> actividades = new ArrayList<>();
+		
+		try (BufferedReader in = new BufferedReader(new FileReader(CSV_ACTIVIDADES))) {
+			String linea = null;
+			Actividad a = null;
+			//Omitir la cabecera
+			in.readLine();		
+			while ((linea = in.readLine()) != null) {
+				System.out.println(linea);
+				String[] campos = linea.split(";");
+				a = new Actividad(campos[0],(int) Integer.valueOf(campos[1]),campos[2],(int) Integer.valueOf(campos[3]),campos[4],0,null,0,null);
+				
+				if (a!= null) {
+					actividades.add(a);
+				}
+			}			
+			
+		} catch (Exception ex) {
+			logger.warning(ex.getMessage());
+		}
+		return actividades;
+    }
     
     /** 
    	 * 
@@ -319,27 +464,6 @@ public class GestorBD {
    	 * 
    	 * **/
     
-    
-    public void crearTablaSesion() {
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement()) {
-            String sql = """
-                CREATE TABLE IF NOT EXISTS sesion (
-                    CAPACIDAD_SESION INT NOT NULL,
-            		FECHA_SESION CHAR(16) NOT NULL,
-            		ID_SESION INT NOT NULL AUTO_INCREMENT,
-            		NOMBRE_ACTIVIDAD VARCHAR(30) NOT NULL, 
-            		PRIMARY KEY(ID_SESION),
-            		FOREIGN KEY(NOMBRE_ACTIVIDAD) REFERENCES ACTIVIDAD (NOMBRE_ACTIVIDAD) ON DELETE CASCADE,
-            		CHECK(CAPACIDAD_SESION > 0));
-                )
-            """;
-            stmt.execute(sql);
-            System.out.println("Tabla 'sesion' creada o ya existía.");
-        } catch (SQLException ex) {
-            System.err.format("Error al crear la tabla 'sesion': %s", ex.getMessage());
-        }
-    }
 
     public void insertarSesiones(Actividad... actividades) {
         String sql = "INSERT INTO sesion (capacidad_sesion, fecha_sesion, nombre_actividad) VALUES (?, ?, ?)";
@@ -350,6 +474,18 @@ public class GestorBD {
                 pstmt.setString(2, a.getFecha().toString());
                 pstmt.setString(3, a.getNombre());
                 pstmt.executeUpdate();
+                if (pstmt.executeUpdate() != 1) {					
+					System.out.println(String.format("No se ha insertado la Sesion: %s", a.getNombre()));
+				} else {
+					a = this.getIdPorSesion(a);					
+					
+					//Se guarda la relación entre personajes y comics en la BBDD.
+					for (Usuario u : a.getListaUsuarios()) {
+						this.insertarParticipacion(u.getDni(),a.getIdSesion());
+					}
+					
+					logger.info(String.format("Se ha insertado la Sesion: %s", a.getNombre()));
+            }
             }
             System.out.println("Usuarios insertados correctamente.");
         } catch (SQLException ex) {
@@ -359,7 +495,7 @@ public class GestorBD {
 
     public List<Actividad> obtenerTodosLasSesiones() {
         List<Actividad> actividades = new ArrayList<>();
-        String sql = "SELECT * FROM usuario u LEFT JOIN actividad a on u.nombre_actividad = a.nombre_actividad";
+        String sql = "SELECT * FROM sesion s LEFT JOIN actividad a on s.nombre_actividad = a.nombre_actividad";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              Statement stmt = con.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -378,12 +514,64 @@ public class GestorBD {
                 actividades.add(actividad);
             }
         } catch (SQLException e) {
-            System.err.println("Error al obtener usuarios: " + e.getMessage());
+            System.err.println("Error al obtener sesiones: " + e.getMessage());
         }
         return actividades;
     }
  
+    public List<Actividad> LoadCSVSesiones(){
+    	List<Actividad> sesiones = new ArrayList<>();
+		
+		try (BufferedReader in = new BufferedReader(new FileReader(CSV_SESIONES))) {
+			String linea = null;
+			Actividad s = null;
+			in.readLine();		
+			
+			while ((linea = in.readLine()) != null) {
+				String[] campos = linea.split(";");
+				s = new Actividad(campos[0],0,null,0,null,Integer.parseInt(campos[2]),campos[1],0,null);
+				
+				if (s!= null) {
+					sesiones.add(s);
+				}
+			}			
+			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error leyendo sesiones del CSV: %s", ex.getMessage()));
+		}
+		
+		return sesiones;
+    }
     
+    public Actividad getIdPorSesion(Actividad a) {
+		String sql = "SELECT * FROM sesion WHERE nombre_actividad = ? and fecha_sesion = ? LIMIT 1";
+		
+		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
+		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+		     PreparedStatement pStmt = con.prepareStatement(sql)) {			
+			
+			//Se definen los parámetros de la sentencia SQL
+			pStmt.setString(1, a.getNombre());
+			pStmt.setString(2, a.getFecha().toString());
+			
+			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
+			ResultSet rs = pStmt.executeQuery();			
+
+			//Se procesa el único resultado
+			if (rs.next()) {
+				a.setIdSesion(rs.getInt("id_sesion"));
+			}
+			
+			//Se cierra el ResultSet
+			rs.close();
+			
+			logger.info(String.format("Se ha recuperado la sesion %s", a.getNombre()));			
+		} catch (Exception ex) {
+			logger.warning(String.format("Error recuperar la sesion con nombre %s: %s", a.getNombre(), ex.getMessage()));						
+		}		
+		
+		return a;
+	}
     /** 
 	 * 
 	 * 
@@ -395,35 +583,10 @@ public class GestorBD {
 	 * **/
     
     
-    // Crear tabla Participaciones si no existe
-    private void crearTablaParticipaciones() {
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
-            String sql = """
-                CREATE TABLE IF NOT EXISTS participa (
-                    DNI_USUARIO CHAR(9) NOT NULL,
-            		ID_SESION INT NOT NULL,
-            		PRIMARY KEY(DNI_USUARIO, ID_SESION),
-            		FOREIGN KEY(DNI_USUARIO) REFERENCES USUARIO (DNI_USUARIO) ON DELETE CASCADE,
-            		FOREIGN KEY(ID_SESION) REFERENCES SESION (ID_SESION) ON DELETE CASCADE);
-                )
-            """;
-
-            PreparedStatement pstmt = con.prepareStatement(sql);
-
-            if (!pstmt.execute()) {
-                System.out.println("\n- Se ha creado la tabla Participaciones");
-            }
-
-            pstmt.close();
-        } catch (Exception ex) {
-            System.err.format("\n* Error al crear la tabla de participaciones: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
     
     // Método para insertar participaciones en la base de datos
     
-    public void insertarParticipacion(int idUsuario, int idActividad) {
+    public void insertarParticipacion(String dniUsuario, int idActividad) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
                 INSERT INTO participa (dni_usuario, id_sesion) 
@@ -431,11 +594,11 @@ public class GestorBD {
             """;
 
             PreparedStatement pstmt = con.prepareStatement(sql);
-            pstmt.setInt(1, idUsuario);
+            pstmt.setString(1, dniUsuario);
             pstmt.setInt(2, idActividad);
 
             if (1 == pstmt.executeUpdate()) {
-                System.out.format("\n - Usuario %d inscrito a la actividad %d", idUsuario, idActividad);
+                System.out.format("\n - Usuario %s inscrito a la actividad %d", dniUsuario, idActividad);
             } else {
                 System.out.println("\n - No se pudo inscribir al usuario.");
             }
@@ -514,28 +677,5 @@ public class GestorBD {
         return participacion;
     }
 
-    
-    public void limpiarTablas() {
-        String sqlUsuario = "DELETE FROM usuario";
-        String sqlActividades = "DELETE FROM actividades";
-        String sqlParticipa = "DELETE FROM participo";
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             Statement stmt = con.createStatement()) {
-        	
-            stmt.executeUpdate(sqlUsuario);
-            System.out.println("Tabla 'usuario' limpiada correctamente.");
-
-            stmt.executeUpdate(sqlActividades);
-            System.out.println("Tabla 'actividades' limpiada correctamente.");
-            
-            stmt.executeUpdate(sqlParticipa);
-            System.out.println("Tabla 'participa' limpiada correctamente.");
-
-        } catch (SQLException ex) {
-            System.err.format("Error al limpiar tablas: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-    }
 }
 
