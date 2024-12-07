@@ -72,11 +72,13 @@ public class VentanaPrincipal extends JFrame {
     	return usuario;
     }
 
-    public VentanaPrincipal() {
+    public VentanaPrincipal(GestorBD gestor) {
         this.usuario = null;
-        this.listaUsuarios = new ArrayList<>();
-        this.listaActividades = new ArrayList<>(); // Initialize listaActividades
-
+        this.listaUsuarios = (ArrayList<Usuario>) gestor.obtenerTodosLosUsuarios();
+        this.listaActividades = (ArrayList<Actividad>) gestor.obtenerTodosLasSesiones();
+        for (Actividad a:listaActividades) {
+        	System.out.println(a.getListaUsuarios());
+        }
         this.principal = new InicioSesion(this);
 
         // COMPORATMIENTO VENTANA PRINCIPAL
@@ -94,12 +96,12 @@ public class VentanaPrincipal extends JFrame {
         addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
-                // Detectar Ctrl + E
                 if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_E) {
                     abrirVentanaSecundaria();
                 }
             }
         });
+        setVisible(true);
         
     }
     private void abrirVentanaSecundaria() {
@@ -226,96 +228,6 @@ public class VentanaPrincipal extends JFrame {
     	
     	gestorBD.initilizeFromCSV();
     	
-    	VentanaPrincipal ventana = new VentanaPrincipal();
-  
-    	
-        
-        // Load users and activities from the database
-        ArrayList<Usuario> usuarios = (ArrayList<Usuario>) gestorBD.obtenerTodosLosUsuarios();
-        List<Actividad> actividades = gestorBD.obtenerTodosLasSesiones();
-        //System.out.println(actividades);
-       
-        ventana.setUsuarios(usuarios);
-        ventana.setActividades((ArrayList<Actividad>) actividades);
-    	
-        /**ArrayList<Actividad> listaActividades = new ArrayList<>();
-        ArrayList<Usuario> listaUsuarios = usuarios;
-
-        
-        
-        for (String nombreClase : nombreClases) {
-            LocalDateTime fecha1 = LocalDateTime.of(2024, 11, 1, 9, 00);
-            for (int i = 0; i < 5; i++) {
-                for (int j = 0; j < 3; j++) {
-                    Actividad actividad = new Actividad(nombreClase, fecha1);
-                    for (int l = 0; l < (2 + (new Random()).nextInt(6)); l++) {
-                        if (!listaUsuarios.isEmpty()) {
-                            actividad.addUsuario(listaUsuarios.get((new Random()).nextInt(listaUsuarios.size())));
-                        } else {
-                            System.err.println("La lista de usuarios está vacía. No se pueden agregar usuarios a la actividad.");
-                        }
-                    }
-                    listaActividades.add(actividad);
-                    fecha1 = fecha1.plusHours(8);
-                }
-                fecha1 = fecha1.plusDays(1);
-            }
-        }
-        ventana.setActividades(listaActividades);**/
-        ventana.setVisible(true);
+    	SwingUtilities.invokeLater(() -> new VentanaPrincipal(gestorBD));
     }
-    public static List<Usuario> initUsuarios() {
-		List<Usuario> listaUsuarios = new ArrayList<>();		
-		
-		Usuario usuario1 = new Usuario("Aitor", "Garcia", "", 659921098, 21, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario2 = new Usuario("Ander", "Serrano", "67812930T", 66129273, 25, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario3 = new Usuario("Ane", "Bilbao", "89326102A", 608338214, 54, Usuario.Sexo.MUJER, "");
-        Usuario usuario4 = new Usuario("Maider", "Sebastian", "03671284J", 633901881, 19, Usuario.Sexo.MUJER, "");
-        Usuario usuario5 = new Usuario("Jon", "Lopez", "12345678A", 600000000, 30, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario6 = new Usuario("Andoni", "Perez", "10293840A", 680123045, 42, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario7 = new Usuario("Mikel", "Garcia", "102846573F", 633901881, 19, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario8 = new Usuario("Julen", "Gonzalez", "28284938L", 659921098, 21, Usuario.Sexo.HOMBRE, "");
-        Usuario usuario9 = new Usuario("June", "Lopez", "16383020A", 66129273, 25, Usuario.Sexo.MUJER, "");
-        Usuario usuario10 = new Usuario("Malen", "Bikandi", "98126102A", 682012371, 44, Usuario.Sexo.MUJER, "");
-        listaUsuarios.add(usuario1);
-        listaUsuarios.add(usuario2);
-        listaUsuarios.add(usuario3);
-        listaUsuarios.add(usuario4);
-        listaUsuarios.add(usuario5);
-        listaUsuarios.add(usuario6);
-        listaUsuarios.add(usuario7);
-        listaUsuarios.add(usuario8);
-        listaUsuarios.add(usuario9);
-        listaUsuarios.add(usuario10);
-		
-        try (BufferedReader in = new BufferedReader(new FileReader("resources/data/usuarios.csv"))) {
-            String linea;
-            String[] campos;
-
-            in.readLine(); // Leer y descartar la primera línea (cabecera)
-
-            while ((linea = in.readLine()) != null) {
-                campos = linea.split(";");
-                
-                try {
-                    String campo0 = campos[0]; // Supongamos que es String
-                    String campo1 = campos[1]; // Supongamos que es String
-                    String campo2 = campos[2]; // Supongamos que es String
-                    int campo3 = Integer.parseInt(campos[3]); // Convertir a int
-                    int campo4 = Integer.parseInt(campos[4]); // Convertir a int
-                    Usuario.Sexo campo5 = Usuario.Sexo.valueOf(campos[5]); // Convertir a ENUM
-                    String campo6 = campos[6]; // Supongamos que es String
-
-                    listaUsuarios.add(new Usuario(campo0, campo1, campo2, campo3, campo4, campo5, campo6));
-                } catch(Exception ex) {
-        			System.err.format("- Error leyecto CSV: %s", ex.getMessage());
-        		}
-            }
-        } catch (Exception ex) {
-            System.err.format("- Error leyendo CSV: %s%n", ex.getMessage());
-        }
-
-        return listaUsuarios;
-
-	}
 }
