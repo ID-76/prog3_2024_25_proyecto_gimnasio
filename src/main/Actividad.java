@@ -68,8 +68,6 @@ public class Actividad {
 		// El resto de atributos se calculan a continuacion:
 		this.logo = new ImageIcon("Images/"+nombre+".png");
 		
-		this.ocupacion = capacidad - si;
-				//int hola= length(listaApuntados);
 	
 		switch (nombre) {
 		case "Andar":
