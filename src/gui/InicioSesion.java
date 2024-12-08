@@ -26,8 +26,6 @@ import main.VentanaPrincipal;
 					ventana.setUsuario(usu);
 					ventana.getUsuarios().add(usu);
 				}
-				  
-				
 			});
 			JButton ini_ses = new JButton("Iniciar Sesion");
 			ini_ses.addActionListener(e -> {

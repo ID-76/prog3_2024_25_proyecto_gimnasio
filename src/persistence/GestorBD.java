@@ -594,6 +594,8 @@ public class GestorBD {
 		
 		return a;
 	}
+    
+    
     /** 
 	 * 
 	 * 

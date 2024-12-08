@@ -88,7 +88,7 @@ public class VentanaPrincipal extends JFrame {
 
         // COMPORATMIENTO VENTANA PRINCIPAL
         add(principal);
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setMinimumSize(new Dimension(850, 400));
         setResizable(false);
         setLocationRelativeTo(null);
@@ -179,52 +179,8 @@ public class VentanaPrincipal extends JFrame {
         add(principal);
         revalidate();
         repaint();
-        setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-        
-        addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowClosing(WindowEvent e) {
-                onWindowClosing();
-            }
-        });
     }
-    
-    private void onWindowClosing() {
-        int opcion = JOptionPane.showConfirmDialog(
-                this,
-                "¿Estás seguro de que deseas salir? Los datos se guardarán en la base de datos.",
-                "Confirmar salida",
-                JOptionPane.YES_NO_OPTION
-        );
-
-        if (opcion == JOptionPane.YES_OPTION) {
-        	GestorBD gestor = new GestorBD();
-        	/**gestor.limpiarTablas();
-        	try {
-                 // Ejemplo: Actualizar actividades
-                 for (Actividad actividad : listaActividades) {
-                     gestor.insertarActividades(actividad);
-                 }
-
-                 // Ejemplo: Actualizar usuarios
-                 for (Usuario usuario : listaUsuarios) {
-                     gestor.insertarUsuarios(usuario);
-                 }
-
-                 System.out.println("Todos los cambios se han guardado correctamente en la base de datos.");
-             } catch (Exception e) {
-                 JOptionPane.showMessageDialog(
-                         this,
-                         "Ocurrió un error al guardar los datos: " + e.getMessage(),
-                         "Error",
-                         JOptionPane.ERROR_MESSAGE
-                 );
-             }
-        	gestor.verUsuarios();**/
-            //gestor.verActividades();
-            dispose();
-        }
-    }
+ 
 
     public static void main(String[] args) {
     	GestorBD gestorBD = new GestorBD();
