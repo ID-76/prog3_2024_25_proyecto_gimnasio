@@ -60,8 +60,7 @@ public class Actividad {
 			LocalDateTime fechaThis = LocalDateTime.parse(fecha, formateador);
 			this.fecha = fechaThis;
 		}
-		// Hay que cojer el string y formatearlo como fecha para no tener que hacerlo en el gestorDB
-		//this.fecha = null;
+		
 		this.idSesion = idSesion;
 		this.listaUsuarios = new ArrayList<>();
 		
@@ -69,7 +68,7 @@ public class Actividad {
 		// El resto de atributos se calculan a continuacion:
 		this.logo = new ImageIcon("Images/"+nombre+".png");
 		
-		//this.ocupacion = capacidad ;
+		this.ocupacion = capacidad - si;
 				//int hola= length(listaApuntados);
 	
 		switch (nombre) {
