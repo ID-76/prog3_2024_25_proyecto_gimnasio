@@ -324,6 +324,8 @@ public class Actividad {
 
 	public void setListaUsuarios(ArrayList<Usuario> listaUsuarios) {
 		this.listaUsuarios = listaUsuarios;
+		ocupacion = listaUsuarios.size();
+		
 	}
 
 	public void setIdSesion(int id) {
@@ -389,7 +391,7 @@ public class Actividad {
 
 	@Override
 	public String toString() {
-		return "Actividad [nombre=" + nombre + ", capacidad=" + capacidad + ", fecha=" + fecha + ", ocupacion="
+		return "Actividad [nombre=" + nombre + ", id ="+idSesion+", capacidad=" + capacidad + ", fecha=" + fecha + ", ocupacion="
 				+ ocupacion + ", logo=" + logo + ", listaUsuarios=" + listaUsuarios + ", calorias=" + calorias
 				+ ", intensidad=" + intensidad + ", descripcion=" + descripcion + ", duracion=" + duracion + ", tipo="
 				+ tipo + "]";

@@ -77,8 +77,13 @@ public class VentanaPrincipal extends JFrame {
         this.listaUsuarios = (ArrayList<Usuario>) gestor.obtenerTodosLosUsuarios();
         this.listaActividades = (ArrayList<Actividad>) gestor.obtenerTodosLasSesiones();
         for (Actividad a:listaActividades) {
-        	System.out.println(a.getListaUsuarios());
+        	List<Usuario> usuariosActividad = gestor.obtenerUsuarioPorActividad(a);
+        	a.setListaUsuarios((ArrayList<Usuario>) usuariosActividad);
         }
+        /**for (Actividad a:listaActividades) {
+        	System.out.println(a.getListaUsuarios());
+        }**/
+        System.out.println(listaActividades.get(1).getListaUsuarios());
         this.principal = new InicioSesion(this);
 
         // COMPORATMIENTO VENTANA PRINCIPAL
@@ -223,6 +228,8 @@ public class VentanaPrincipal extends JFrame {
 
     public static void main(String[] args) {
     	GestorBD gestorBD = new GestorBD();
+    	
+    	gestorBD.borrarBBDD();
     	
     	gestorBD.crearBBDD();
     	

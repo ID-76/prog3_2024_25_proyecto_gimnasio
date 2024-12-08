@@ -97,9 +97,9 @@ public class GestorBD {
 
 		        if (!a.getListaUsuarios().contains(usuarioSeleccionado)) {
 		            a.addUsuario(usuarioSeleccionado);
-		            l = l-1;
 		        } else {
 		            System.out.println("El usuario ya está en la actividad. No se agregará nuevamente.");
+		            l = l-1;
 		        }
 		    } else {
 		        System.err.println("La lista de usuarios está vacía. No se pueden agregar usuarios a la actividad.");
@@ -354,7 +354,31 @@ public class GestorBD {
         return usuarios;
     }
 
-
+    public List<Usuario> obtenerUsuarioPorActividad(Actividad a){
+    	List<Usuario> usuarios = new ArrayList<>();
+        String sql = "SELECT * FROM participa p left join usuario u on p.dni_usuario = u.dni_usuario where p.id_sesion = ? ";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)){
+        	 pstmt.setInt(1,a.getIdSesion());
+             ResultSet rs = pstmt.executeQuery();
+             while (rs.next()) {
+                Usuario usuario = new Usuario(
+                        rs.getString("nombre_usuario"),
+                        rs.getString("apellido_usuario"),
+                        rs.getString("dni_usuario"),
+                        rs.getInt("telefono_usuario"),
+                        rs.getInt("edad_usuario"),
+                        Sexo.valueOf(rs.getString("sexo_usuario")),
+                        rs.getString("contrasena_usuario")
+                );
+                usuarios.add(usuario);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener usuarios: " + e.getMessage());
+        }
+        return usuarios;
+    }
+    
     // Actualizar contraseña de un usuario
     public boolean actualizarContraseña(String dni, String nuevaContraseña) {
         String sql = "UPDATE usuario SET contraseña = ? WHERE dni = ?";
@@ -473,13 +497,11 @@ public class GestorBD {
                 pstmt.setInt(1, a.getCapacidad());
                 pstmt.setString(2, a.getFecha().toString());
                 pstmt.setString(3, a.getNombre());
-                pstmt.executeUpdate();
                 if (pstmt.executeUpdate() != 1) {					
 					System.out.println(String.format("No se ha insertado la Sesion: %s", a.getNombre()));
 				} else {
 					a = this.getIdPorSesion(a);					
 					
-					//Se guarda la relación entre personajes y comics en la BBDD.
 					for (Usuario u : a.getListaUsuarios()) {
 						this.insertarParticipacion(u.getDni(),a.getIdSesion());
 					}
@@ -642,7 +664,7 @@ public class GestorBD {
     public String obtenerParticipacionPorId(int id) {
         String participacion = null;
         String sql = """
-            SELECT u.nombre AS nombre_usuario, u.apellido, a.nombre AS nombre_actividad, 
+            SELECT u.nombre_usuario, u.apellido, a.nombre_actividad, 
                    p.fecha_inscripcion, p.estado
             FROM participaciones p
             INNER JOIN usuarios u ON p.id_usuario = u.id
