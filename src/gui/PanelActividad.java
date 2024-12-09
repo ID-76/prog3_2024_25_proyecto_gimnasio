@@ -203,8 +203,9 @@ public class PanelActividad extends JPanel {
                 Actividad actividad = (Actividad) value;
                 button.setText(actividad.getNombre());
                 button.putClientProperty("actividad", actividad);
+                return button;
             }
-            return button;
+            return null;
         }
 
         @Override
