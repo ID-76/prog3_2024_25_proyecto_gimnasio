@@ -180,8 +180,8 @@ public class PanelActividad extends JPanel {
 
     // Hecho con ayuda de la IA
     class ButtonEditor extends AbstractCellEditor implements TableCellEditor {
-        private static final long serialVersionUID = 1L;
-        private JButton button;
+		private static final long serialVersionUID = 1L;
+		private JButton button;
 
         public ButtonEditor() {
             button = new JButton();
@@ -209,7 +209,7 @@ public class PanelActividad extends JPanel {
 
         @Override
         public Object getCellEditorValue() {
-            return null;
+            return button.getClientProperty("actividad");
         }
     }
 }
