@@ -5,7 +5,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import main.Actividad;
+import main.Usuario;
 import main.VentanaPrincipal;
+import persistence.GestorBD;
 
 public class PanelActividadDialog extends JDialog implements ActionListener {
 
@@ -120,6 +122,8 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         reserva.add(disponibilidadPbar, gbc);
 
+        
+        
         apuntarse = new JButton("Apuntarse");
         apuntarse.addActionListener(this);
         apuntarse.setBackground(Color.green);
@@ -136,21 +140,34 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         gbc.gridx = 1;
         gbc.gridy = 6;
         reserva.add(desapuntarse, gbc);
+       
 
-        if (actividad != null) {
-            updateActividadInfo();
-            updateButtonState();
-        }
+        
+        
+        
+		String dni = VentanaPrincipal.usuario.getDni();
+		int id = actividad.getIdSesion();
+		if(GestorBD.obtenerParticipacionExiste(dni, id)) {
+			apuntarse.setEnabled(false);
+			desapuntarse.setEnabled(true);
+		} else {
+			desapuntarse.setEnabled(false);
+		}
+			
+		updateActividadInfo();
 
+
+        
         setResizable(false);
         setLocationRelativeTo(null);
         setSize(600, 300);
         setTitle("Clase de " + actividad.getNombre());
         add(principal);
-
+        
         // Iniciar animación
         animador = new Animador();
         animador.start();
+        principal.repaint();
     }
 
     private class Animador extends Thread {

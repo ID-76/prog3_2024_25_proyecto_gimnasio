@@ -378,6 +378,7 @@ public class Actividad {
 	
 	public void removeUsuario(Usuario usuario) {
 		this.listaUsuarios.remove(usuario);
+		GestorBD.eliminarParticipacion(usuario.getDni(), this.getIdSesion());
 	}
 	
 	public void actualizarOcupacion(){

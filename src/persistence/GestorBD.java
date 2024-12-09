@@ -503,7 +503,7 @@ public class GestorBD {
 					a = this.getIdPorSesion(a);					
 					
 					for (Usuario u : a.getListaUsuarios()) {
-						this.insertarParticipacion(u.getDni(),a.getIdSesion());
+						GestorBD.insertarParticipacion(u.getDni(),a.getIdSesion());
 					}
 					
 					logger.info(String.format("Se ha insertado la Sesion: %s", a.getNombre()));
@@ -634,6 +634,57 @@ public class GestorBD {
         }
     }
    
+    
+    public static void eliminarParticipacion(String dniUsuario, int idActividad) {
+        String sql = "DELETE FROM participa WHERE dni_usuario = ? AND id_sesion = ?";
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+            pstmt.setString(1, dniUsuario);
+            pstmt.setInt(2, idActividad);            
+            
+            if (1 == pstmt.executeUpdate()) {
+                System.out.format("\n - Usuario %s eliminado de la actividad %d", dniUsuario, idActividad);
+            } else {
+                System.out.println("\n - No se pudo eliminar al usuario.");
+            }
+            
+            pstmt.close();
+        } catch (SQLException e) {
+            System.err.format("Error al eliminar usuario: " + e.getMessage());
+            e.printStackTrace();
+   
+        }
+    }
+    
+    public static Boolean obtenerParticipacionExiste(String dniUsuario, int idSesion) {
+        Boolean existe = false;
+        String sql = """
+        	SELECT count(*) FROM participa
+        	WHERE id_sesion = ? AND dni_usuario = ?;
+        """;
+        
+        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
+             PreparedStatement pstmt = con.prepareStatement(sql)) {
+
+            pstmt.setInt(1, idSesion);
+            pstmt.setString(2, dniUsuario);
+            ResultSet rs = pstmt.executeQuery();
+            System.out.println(rs);
+            if (rs.getInt(1) == 1) {
+            	existe = true;
+                System.out.println("Existe una participación con ese ID.");          
+            } else {
+                System.out.println("No se encontró ninguna participación con ese ID.");
+            }
+        } catch (Exception ex) {
+            System.err.format("\n* Error al obtener participación por ID: %s", ex.getMessage());
+            ex.printStackTrace();
+        }
+
+        return existe;
+    }
+
+    
     // Método para obtener todas las participaciones
     public List<String> obtenerTodasLasParticipaciones() {
         List<String> participaciones = new ArrayList<>();
