@@ -18,7 +18,7 @@ public class VentanaHilo extends JDialog{
 	public VentanaHilo(JFrame parent) {
 		super(parent, true);
 		setBounds(300, 200, 300, 100);
-		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
 		setLocationRelativeTo(parent);
 		vActual = this;
 		pb = new JProgressBar(0, 100);
