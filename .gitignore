@@ -1,3 +1,8 @@
 /bin/
 
 *.db
+<<<<<<< HEAD
+=======
+
+.DS_Store
+>>>>>>> origin/master
