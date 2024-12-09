@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -49,8 +50,12 @@ public class MatriculaDialog extends JDialog{
 		
 		JButton botonAceptar = new JButton("Aceptar");
 		botonAceptar.addActionListener(e -> {
-			aceptado = true;
-			setVisible(false);
+			if (txtDni.getText().length() != 9 || !txtDni.getText().substring(0, 8).matches("\\d{8}") || !txtDni.getText().substring(8).matches("[A-Z]")) {
+		        txtDni.setForeground(Color.RED);
+			}else {
+				aceptado = true;
+				setVisible(false);
+			}
 		});
 		
 		JButton botonCancelar = new JButton("Cancelar");
