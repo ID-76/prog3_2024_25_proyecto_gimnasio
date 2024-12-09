@@ -5,7 +5,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import main.Actividad;
-import main.Usuario;
 import main.VentanaPrincipal;
 import persistence.GestorBD;
 
@@ -24,6 +23,8 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
 
     private ImageIcon imagen1;
     private ImageIcon imagen2;
+    private ImageIcon imagen3;
+    private ImageIcon imagen4;
     private Animador animador;
 
     public PanelActividadDialog(Actividad actividad) {
@@ -33,7 +34,6 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
 
         JPanel principal = new JPanel(new BorderLayout(3, 3));
 
-        // Panel de información de actividad
         JPanel informacion = new JPanel();
         informacion.setLayout(new GridBagLayout());
         informacion.setBorder(BorderFactory.createEmptyBorder(5, 5, 10, 30));
@@ -83,14 +83,13 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         gbc.fill = GridBagConstraints.HORIZONTAL;
         informacion.add(lDescripcion, gbc);
 
-        // Panel de reserva de actividad
         JPanel reserva = new JPanel();
         reserva.setLayout(new GridBagLayout());
         add(reserva, BorderLayout.WEST);
 
         gbc.insets = new Insets(15, 5, 15, 5);
-
-        // Logo animado
+        
+        
         icono = new JLabel();
         gbc.gridx = 1;
         gbc.gridy = 0;
@@ -99,12 +98,15 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         gbc.fill = GridBagConstraints.BOTH;
         icono.setBorder(BorderFactory.createLineBorder(Color.black, 2, true));
         reserva.add(icono, gbc);
-
-        // Cargar imágenes para la animación
-        imagen1 = new ImageIcon("Images\\Andar.png");
-        imagen2 = new ImageIcon("Images\\Core.png");
-        imagen1 = escalarImagen(imagen1, 70, 70);
-        imagen2 = escalarImagen(imagen2, 70, 70);
+     
+        imagen1 = new ImageIcon("Images\\animaciones\\"+actividad.getNombre().replace(" ", "")+"\\"+actividad.getNombre().replace(" ", "")+"-1.png");
+        imagen2 = new ImageIcon("Images\\animaciones\\"+actividad.getNombre().replace(" ", "")+"\\"+actividad.getNombre().replace(" ", "")+"-2.png");
+        imagen3 = new ImageIcon("Images\\animaciones\\"+actividad.getNombre().replace(" ", "")+"\\"+actividad.getNombre().replace(" ", "")+"-3.png");
+        imagen4 = new ImageIcon("Images\\animaciones\\"+actividad.getNombre().replace(" ", "")+"\\"+actividad.getNombre().replace(" ", "")+"-4.png");
+        imagen1 = escalarImagen(imagen1, 90, 90);
+        imagen2 = escalarImagen(imagen2, 90, 90);
+        imagen3 = escalarImagen(imagen3, 90, 90);
+        imagen4 = escalarImagen(imagen4, 90, 90);
 
         sitiosDisp = new JLabel();
         gbc.gridx = 0;
@@ -172,13 +174,36 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
     private class Animador extends Thread {
         @Override
         public void run() {
-            boolean mostrarImagen1 = true;
+            int contador = 0;
 
             while (!isInterrupted()) {
                 try {
-                    ImageIcon imagenActual = mostrarImagen1 ? imagen1 : imagen2;
+                    ImageIcon imagenActual;
+                    switch (contador % 4) {
+                        case 0:
+                            imagenActual = imagen1;
+                            break;
+                        case 1:
+                            imagenActual = imagen2;
+                            break;
+                        case 2:
+                            imagenActual = imagen3;
+                            break;
+                        case 3:
+                        	if(imagen4.getIconWidth() == -1) {
+                        		imagenActual = imagen1;
+                        	}else {
+                        		imagenActual = imagen4;
+                        	}
+                        	break;
+                        default:
+                            imagenActual = imagen1;
+                    }
+
                     SwingUtilities.invokeLater(() -> icono.setIcon(imagenActual));
-                    mostrarImagen1 = !mostrarImagen1;
+
+                    contador++;
+
                     Thread.sleep(300);
                 } catch (InterruptedException e) {
                     interrupt();
