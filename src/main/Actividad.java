@@ -8,6 +8,8 @@ import java.util.Random;
 
 import javax.swing.ImageIcon;
 
+import persistence.GestorBD;
+
 public class Actividad {
 
 	public enum Tipo {
@@ -371,6 +373,7 @@ public class Actividad {
 
 	public void addUsuario(Usuario usuario) {
 		this.listaUsuarios.add(usuario);
+		GestorBD.insertarParticipacion(usuario.getDni(), this.idSesion);
 	}
 	
 	public void removeUsuario(Usuario usuario) {

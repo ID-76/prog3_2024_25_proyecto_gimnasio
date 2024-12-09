@@ -610,7 +610,7 @@ public class GestorBD {
     
     // Método para insertar participaciones en la base de datos
     
-    public void insertarParticipacion(String dniUsuario, int idActividad) {
+    public static void insertarParticipacion(String dniUsuario, int idActividad) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
             String sql = """
                 INSERT INTO participa (dni_usuario, id_sesion) 
