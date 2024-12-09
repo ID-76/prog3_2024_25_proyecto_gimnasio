@@ -187,7 +187,7 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         }
     }
 
-    private ImageIcon escalarImagen(ImageIcon icon, int ancho, int alto) {
+    public static ImageIcon escalarImagen(ImageIcon icon, int ancho, int alto) {
         Image img = icon.getImage();
         Image imgEscalada = img.getScaledInstance(ancho, alto, Image.SCALE_SMOOTH);
         return new ImageIcon(imgEscalada);

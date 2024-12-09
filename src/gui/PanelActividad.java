@@ -115,7 +115,7 @@ public class PanelActividad extends JPanel {
                                                            boolean hasFocus, int row, int column) {
                 if (value instanceof Actividad) {
                     Actividad actividad = (Actividad) value;
-                    JButton button = new JButton(actividad.getNombre());
+                    JButton button = new JButton(PanelActividadDialog.escalarImagen(actividad.getLogo(),55,55));
                     if (row == hoveredRow && column == hoveredColumn) {
                         button.setBackground(Color.LIGHT_GRAY);
                     } else {
