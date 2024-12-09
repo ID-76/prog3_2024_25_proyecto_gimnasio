@@ -167,7 +167,6 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         // Iniciar animación
         animador = new Animador();
         animador.start();
-        principal.repaint();
     }
 
     private class Animador extends Thread {

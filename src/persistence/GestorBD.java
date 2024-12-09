@@ -668,7 +668,6 @@ public class GestorBD {
             pstmt.setInt(1, idSesion);
             pstmt.setString(2, dniUsuario);
             ResultSet rs = pstmt.executeQuery();
-            System.out.println(rs);
             if (rs.getInt(1) == 1) {
             	existe = true;
                 System.out.println("Existe una participación con ese ID.");          
