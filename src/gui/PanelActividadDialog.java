@@ -171,6 +171,7 @@ public class PanelActividadDialog extends JDialog implements ActionListener {
         animador.start();
     }
 
+    //La parte del switch hecha con ayuda de IA
     private class Animador extends Thread {
         @Override
         public void run() {

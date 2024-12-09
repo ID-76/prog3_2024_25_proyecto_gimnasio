@@ -38,29 +38,24 @@ public class GestorBD {
 
 	public GestorBD() {
 		try (FileInputStream fis = new FileInputStream("config/logger.properties")) {
-			// Inicialización del Logger
 			LogManager.getLogManager().readConfiguration(fis);
 
-			// Lectura del fichero de propiedades
 			properties = new Properties();
 			properties.load(new FileReader(PROPERTIES_FILE));
 
 			driverName = properties.getProperty("driver");
 			databaseFile = properties.getProperty("file");
 
-			// Crear carpetas de log si no existen
 			File dir = new File(LOG_FOLDER);
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
 
-			// Crear carpeta para la base de datos si no existe
 			dir = new File(databaseFile.substring(0, databaseFile.lastIndexOf("/")));
 			if (!dir.exists()) {
 				dir.mkdirs();
 			}
 
-			// Cargar el driver SQLite
 			Class.forName(driverName);
 		} catch (Exception ex) {
 			logger.warning(String.format("Error al cargar el driver de la base de datos: %s", ex.getMessage()));
@@ -153,9 +148,7 @@ public class GestorBD {
 					FOREIGN KEY (id_sesion) REFERENCES sesion (id_sesion) ON DELETE CASCADE
 					);
             """;
-			
-	        //Se abre la conexión y se crea un PreparedStatement para crer cada tabla
-			//Al abrir la conexión, si no existía el fichero por defecto, se crea.
+
 			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
 			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
 				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
@@ -173,21 +166,18 @@ public class GestorBD {
 	}
 	
 	public void borrarBBDD() {
-		//Sólo se borra la BBDD si la propiedad deleteBBDD es true
 		if (properties.get("deleteBBDD").equals("true")) {	
 			String sql1 = "DROP TABLE IF EXISTS usuario;";
 			String sql2 = "DROP TABLE IF EXISTS actividad";
 			String sql3 = "DROP TABLE IF EXISTS sesion;";
 			String sql4 = "DROP TABLE IF EXISTS participa;";
 			
-	        //Se abre la conexión y se crea un PreparedStatement para borrar cada tabla
 			try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
 			     PreparedStatement pStmt1 = con.prepareStatement(sql1);
 				 PreparedStatement pStmt2 = con.prepareStatement(sql2);
 				 PreparedStatement pStmt3 = con.prepareStatement(sql3);
 				 PreparedStatement pStmt4 = con.prepareStatement(sql4)) {
 				
-				//Se ejecutan las sentencias de borrado de las tablas
 		        if (!pStmt1.execute() && !pStmt2.execute() && !pStmt3.execute() && !pStmt4.execute()) {
 		        	logger.info("Se han borrado las tablas");
 		        }
@@ -238,7 +228,6 @@ public class GestorBD {
 	 * **/
 	
 	
-    // Insertar usuarios
     public static void insertarUsuarios(Usuario... usuarios) {
         String sql = "INSERT INTO usuario (nombre_usuario, apellido_usuario, dni_usuario, telefono_usuario, edad_usuario, sexo_usuario, contrasena_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
@@ -259,27 +248,6 @@ public class GestorBD {
         }
     }
 
-    // Actualizar un usuario
-    public boolean actualizarUsuario(Usuario usuario) {
-        String sql = "UPDATE usuario SET nombre = ?, apellido = ?, telefono = ?, edad = ?, sexo = ?, contraseña = ? WHERE dni = ?";
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getApellido());
-            stmt.setInt(3, usuario.getTelefono());
-            stmt.setInt(4, usuario.getEdad());
-            stmt.setString(5, usuario.getSexo().toString());
-            stmt.setString(6, usuario.getContraseña());
-            stmt.setString(7, usuario.getDni());
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    // Eliminar un usuario por DNI
     public static boolean eliminarUsuario(String dni) {
         String sql = "DELETE FROM usuario WHERE dni_usuario = ?";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
@@ -328,7 +296,6 @@ public class GestorBD {
 		return usuarios;
     }
 
-    // Obtener todos los usuarios
     public List<Usuario> obtenerTodosLosUsuarios() {
         List<Usuario> usuarios = new ArrayList<>();
         String sql = "SELECT * FROM usuario";
@@ -378,22 +345,7 @@ public class GestorBD {
         return usuarios;
     }
     
-    // Actualizar contraseña de un usuario
-    public boolean actualizarContraseña(String dni, String nuevaContraseña) {
-        String sql = "UPDATE usuario SET contraseña = ? WHERE dni = ?";
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement stmt = con.prepareStatement(sql)) {
-            stmt.setString(1, nuevaContraseña);
-            stmt.setString(2, dni);
-            int filasAfectadas = stmt.executeUpdate();
-            return filasAfectadas > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al actualizar la contraseña: " + e.getMessage());
-            return false;
-        }
-    }
 
- // Cerrar la conexión con la base de datos
     private Connection connection;
 
     public void cerrarConexion() {
@@ -419,8 +371,6 @@ public class GestorBD {
 	 * **/
     
     
-    
-    // Método para insertar actividades en la base de datos
     
     public void insertarActividades(String nombre, int duracion, String intensidad, int calorias, String descripcion) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
@@ -459,7 +409,6 @@ public class GestorBD {
 		try (BufferedReader in = new BufferedReader(new FileReader(CSV_ACTIVIDADES))) {
 			String linea = null;
 			Actividad a = null;
-			//Omitir la cabecera
 			in.readLine();		
 			while ((linea = in.readLine()) != null) {
 				System.out.println(linea);
@@ -567,23 +516,18 @@ public class GestorBD {
     public Actividad getIdPorSesion(Actividad a) {
 		String sql = "SELECT * FROM sesion WHERE nombre_actividad = ? and fecha_sesion = ? LIMIT 1";
 		
-		//Se abre la conexión y se crea el PreparedStatement con la sentencia SQL
 		try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
 		     PreparedStatement pStmt = con.prepareStatement(sql)) {			
 			
-			//Se definen los parámetros de la sentencia SQL
 			pStmt.setString(1, a.getNombre());
 			pStmt.setString(2, a.getFecha().toString());
 			
-			//Se ejecuta la sentencia y se obtiene el ResultSet con los resutlados
 			ResultSet rs = pStmt.executeQuery();			
 
-			//Se procesa el único resultado
 			if (rs.next()) {
 				a.setIdSesion(rs.getInt("id_sesion"));
 			}
 			
-			//Se cierra el ResultSet
 			rs.close();
 			
 			logger.info(String.format("Se ha recuperado la sesion %s", a.getNombre()));			
@@ -606,8 +550,6 @@ public class GestorBD {
 	 * **/
     
     
-    
-    // Método para insertar participaciones en la base de datos
     
     public static void insertarParticipacion(String dniUsuario, int idActividad) {
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING)) {
@@ -683,7 +625,6 @@ public class GestorBD {
     }
 
     
-    // Método para obtener todas las participaciones
     public List<String> obtenerTodasLasParticipaciones() {
         List<String> participaciones = new ArrayList<>();
         String sql = """
@@ -710,45 +651,5 @@ public class GestorBD {
         return participaciones;
     }
     
-   
-    // Método para obtener una participación por su ID
-    public String obtenerParticipacionPorId(int id) {
-        String participacion = null;
-        String sql = """
-            SELECT u.nombre_usuario, u.apellido, a.nombre_actividad, 
-                   p.fecha_inscripcion, p.estado
-            FROM participaciones p
-            INNER JOIN usuarios u ON p.id_usuario = u.id
-            INNER JOIN actividades a ON p.id_actividad = a.id
-            WHERE p.id = ?
-        """;
-
-        try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
-             PreparedStatement pstmt = con.prepareStatement(sql)) {
-
-            pstmt.setInt(1, id);
-            ResultSet rs = pstmt.executeQuery();
-
-            if (rs.next()) {
-                participacion = String.format(
-                    "ID: %d, Usuario: %s %s, Actividad: %s, Fecha: %s, Estado: %s",
-                    id,
-                    rs.getString("nombre_usuario"),
-                    rs.getString("apellido"),
-                    rs.getString("nombre_actividad"),
-                    rs.getString("fecha_inscripcion"),
-                    rs.getString("estado")
-                );
-            } else {
-                System.out.println("No se encontró ninguna participación con ese ID.");
-            }
-        } catch (Exception ex) {
-            System.err.format("\n* Error al obtener participación por ID: %s", ex.getMessage());
-            ex.printStackTrace();
-        }
-
-        return participacion;
-    }
-
 }
 
