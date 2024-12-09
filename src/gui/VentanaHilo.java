@@ -2,22 +2,24 @@ package gui;
 
 import java.awt.BorderLayout;
 
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-public class VentanaHilo extends JFrame{
+public class VentanaHilo extends JDialog{
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JProgressBar pb;
 	private JLabel label;
-	private JFrame vActual;
-	public VentanaHilo() {
-		super();
+	private JDialog vActual;
+	public VentanaHilo(JFrame parent) {
+		super(parent, true);
 		setBounds(300, 200, 300, 100);
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+		setLocationRelativeTo(parent);
 		vActual = this;
 		pb = new JProgressBar(0, 100);
 		label = new JLabel("Cargando...");
@@ -39,10 +41,6 @@ public class VentanaHilo extends JFrame{
 			}
 		}).start();
 		setVisible(true);
-	}
-	
-	public static void main(String[] args) {
-		new VentanaHilo();
 	}
 
 }

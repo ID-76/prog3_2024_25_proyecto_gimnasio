@@ -5,9 +5,11 @@ import java.awt.GridLayout;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 public class IniSesDialog extends JDialog{
 	private static final long serialVersionUID = 1L;
@@ -31,7 +33,8 @@ public class IniSesDialog extends JDialog{
 		JButton botonAceptar = new JButton("Aceptar");
 		botonAceptar.addActionListener(e -> {
 			aceptado = true;
-			new VentanaHilo();
+			JFrame ventanaPrincipal = (JFrame) SwingUtilities.getWindowAncestor(this.getParent());
+		    new VentanaHilo(ventanaPrincipal);
 			setVisible(false);
 		});
 		
