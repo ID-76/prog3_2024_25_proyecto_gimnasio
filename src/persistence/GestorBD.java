@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileReader;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.sql.*;
@@ -74,7 +73,7 @@ public class GestorBD {
 			
 			List<Usuario> usuarios = this.loadCSVUsuarios();
 
-			this.insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
+		    insertarUsuarios(usuarios.toArray(new Usuario[usuarios.size()]));
 			
 			List<Actividad> actividades = this.loadCSVActividades();
 			for (Actividad a:actividades) {
@@ -240,7 +239,7 @@ public class GestorBD {
 	
 	
     // Insertar usuarios
-    public void insertarUsuarios(Usuario... usuarios) {
+    public static void insertarUsuarios(Usuario... usuarios) {
         String sql = "INSERT INTO usuario (nombre_usuario, apellido_usuario, dni_usuario, telefono_usuario, edad_usuario, sexo_usuario, contrasena_usuario) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              PreparedStatement pstmt = con.prepareStatement(sql)) {
@@ -281,7 +280,7 @@ public class GestorBD {
     }
 
     // Eliminar un usuario por DNI
-    public boolean eliminarUsuario(String dni) {
+    public static boolean eliminarUsuario(String dni) {
         String sql = "DELETE FROM usuario WHERE dni_usuario = ?";
         try (Connection con = DriverManager.getConnection(CONNECTION_STRING);
              PreparedStatement stmt = con.prepareStatement(sql)) {
@@ -503,7 +502,7 @@ public class GestorBD {
 					a = this.getIdPorSesion(a);					
 					
 					for (Usuario u : a.getListaUsuarios()) {
-						this.insertarParticipacion(u.getDni(),a.getIdSesion());
+						GestorBD.insertarParticipacion(u.getDni(),a.getIdSesion());
 					}
 					
 					logger.info(String.format("Se ha insertado la Sesion: %s", a.getNombre()));

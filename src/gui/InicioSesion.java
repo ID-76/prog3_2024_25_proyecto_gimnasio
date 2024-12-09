@@ -10,6 +10,7 @@ import javax.swing.JPanel;
 
 import main.Usuario;
 import main.VentanaPrincipal;
+import persistence.GestorBD;
 	
 	public class InicioSesion extends JPanel {
 		private static final long serialVersionUID = 1L;
@@ -23,6 +24,7 @@ import main.VentanaPrincipal;
 				matDialog.setVisible(true);
 				if (matDialog.isAceptado()) {
 					this.usu = new Usuario(matDialog.getNombre(), matDialog.getApellido(), matDialog.getDni(), matDialog.getNumero(), matDialog.getEdad(), matDialog.getSexo(), matDialog.getCont());
+					GestorBD.insertarUsuarios(usu);
 					ventana.setUsuario(usu);
 					ventana.getUsuarios().add(usu);
 				}

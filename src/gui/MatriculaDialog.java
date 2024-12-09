@@ -8,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -52,6 +53,19 @@ public class MatriculaDialog extends JDialog{
 		botonAceptar.addActionListener(e -> {
 			if (txtDni.getText().length() != 9 || !txtDni.getText().substring(0, 8).matches("\\d{8}") || !txtDni.getText().substring(8).matches("[A-Z]")) {
 		        txtDni.setForeground(Color.RED);
+		        JOptionPane.showMessageDialog(
+			            null, 
+			            "El DNI debe tener 8 numeros y una letra.", 
+			            "Error", 
+			            JOptionPane.ERROR_MESSAGE
+			        );
+			}else if(txtCont.getText().length() == 0) {
+				JOptionPane.showMessageDialog(
+			            null, 
+			            "El apartado contraseña no puede estar vacio", 
+			            "Error", 
+			            JOptionPane.ERROR_MESSAGE
+			        );
 			}else {
 				aceptado = true;
 				setVisible(false);
