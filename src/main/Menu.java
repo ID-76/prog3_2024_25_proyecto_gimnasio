@@ -5,6 +5,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,10 +25,8 @@ public class Menu extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
-	private JButton btnUsuario, btnSalud, btnClases, btnMenu;
 	
-	private JPanel pNorte, pSur, pCentro, pEste, pOeste, pCentroArriba, pCentroAbajo;
+	private JPanel pNorte, pSur, pCentro, pEste, pOeste;
 	
 	private JLabel lbMensaje;
 	
@@ -46,8 +46,6 @@ public class Menu extends JPanel {
 		pEste = new JPanel();
 		pOeste = new JPanel();
 		pOeste.setLayout(new GridLayout(4, 1));
-		pCentroArriba = new JPanel();
-		pCentroAbajo = new JPanel();
 		
 		this.add(pNorte, BorderLayout.NORTH);
 		this.add(pSur, BorderLayout.SOUTH);
@@ -56,20 +54,9 @@ public class Menu extends JPanel {
 		this.add(pOeste, BorderLayout.WEST);
 		
 			
-		btnUsuario = new JButton("Usuario");
-		btnSalud = new JButton("Salud");
-		btnClases = new JButton("Clases");
-		btnMenu = new JButton("Menu");
-		
-		pOeste.add(btnUsuario);
-		pOeste.add(btnSalud);
-		pOeste.add(btnClases);
-		pOeste.add(btnMenu);
-		
-			
 		//lbMensaje = new JLabel("Hola " + VentanaPrincipal.usuario.getNombre()+ ". Estas son tus clases para hoy");
-		lbMensaje = new JLabel("Hola "+usuario.getNombre()+". Estas son tus clases para hoy: ");
-		lbMensaje.setFont(new Font("Arial", Font.BOLD, 20));
+		lbMensaje = new JLabel("Hola "+usuario.getNombre()+". Estos son tu porcentaje de clases hechas y de calorias esta semana: ");
+		lbMensaje.setFont(new Font("Arial", Font.BOLD, 16));
 		lbMensaje.setHorizontalAlignment(JLabel.CENTER);
 		pCentro.add(lbMensaje, BorderLayout.SOUTH);
 		
@@ -81,16 +68,11 @@ public class Menu extends JPanel {
         pCentro.add(progressBar, BorderLayout.CENTER);
         
         
-        
-        
-        
-        
-        
-        LocalDateTime fecha = LocalDateTime.of(2024, 11, 5, 10, 00);
-	    LocalDateTime haceUnaSemana = fecha.minusWeeks(1);
+        LocalDateTime fechaLoc = LocalDateTime.of(2024, 11, 5, 10, 00);
+	    LocalDateTime haceUnaSemana = fechaLoc.minusWeeks(1);
 	    List<Actividad> actividadesUltimaSemana = new ArrayList<Actividad>();
 	    for (Actividad actividad: listaActividades) {
-	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fecha)&& actividad.getListaUsuarios().contains(usuario)) {
+	    	if(actividad.getFecha().isAfter(haceUnaSemana) && actividad.getFecha().isBefore(fechaLoc) && listaDni(actividad.getListaUsuarios()).contains(usuario.getDni())) {
 	    		actividadesUltimaSemana.add(actividad);
 	    	}
 	    }
@@ -121,7 +103,7 @@ public class Menu extends JPanel {
 	private int contarActividadesporUsuario() {
 		int contador = 0;
 		for (Actividad actividad : listaActividades) {
-				if (actividad.getListaUsuarios().contains(usuario)) {
+				if (listaDni(actividad.getListaUsuarios()).contains(usuario.getDni())) {
 					contador++;
 				}
 		}
@@ -130,7 +112,7 @@ public class Menu extends JPanel {
 	
 	private int contarActividadesPasadas() {
 		int contador = 0;
-		LocalDateTime fActual = LocalDateTime.now();
+		LocalDateTime fActual = LocalDateTime.of(2024, 11, 2, 10, 00);
 		for(Actividad actividad: listaActividades) {
 			if(actividad.getFecha().isBefore(fActual)) {
 				contador++;
@@ -139,5 +121,12 @@ public class Menu extends JPanel {
 		return contador;
 	}
 	
+	private List<String> listaDni(List<Usuario> usuarios){
+		List<String> dnis = new ArrayList<String>();
+		for (Usuario u:usuarios) {
+			dnis.add(u.getDni());
+		}
+		return dnis;
+	}
 	
 }

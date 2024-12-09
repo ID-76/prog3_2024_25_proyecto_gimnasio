@@ -201,7 +201,7 @@ public class PanelActividad extends JPanel {
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             if (value instanceof Actividad) {
                 Actividad actividad = (Actividad) value;
-                button.setText(actividad.getNombre());
+                button.setIcon(PanelActividadDialog.escalarImagen(actividad.getLogo(),55,55));
                 button.putClientProperty("actividad", actividad);
                 return button;
             }
