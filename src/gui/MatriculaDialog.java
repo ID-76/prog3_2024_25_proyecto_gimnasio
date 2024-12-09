@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 
@@ -7,6 +8,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -49,8 +51,25 @@ public class MatriculaDialog extends JDialog{
 		
 		JButton botonAceptar = new JButton("Aceptar");
 		botonAceptar.addActionListener(e -> {
-			aceptado = true;
-			setVisible(false);
+			if (txtDni.getText().length() != 9 || !txtDni.getText().substring(0, 8).matches("\\d{8}") || !txtDni.getText().substring(8).matches("[A-Z]")) {
+		        txtDni.setForeground(Color.RED);
+		        JOptionPane.showMessageDialog(
+			            null, 
+			            "El DNI debe tener 8 numeros y una letra.", 
+			            "Error", 
+			            JOptionPane.ERROR_MESSAGE
+			        );
+			}else if(txtCont.getText().length() == 0) {
+				JOptionPane.showMessageDialog(
+			            null, 
+			            "El apartado contraseña no puede estar vacio", 
+			            "Error", 
+			            JOptionPane.ERROR_MESSAGE
+			        );
+			}else {
+				aceptado = true;
+				setVisible(false);
+			}
 		});
 		
 		JButton botonCancelar = new JButton("Cancelar");

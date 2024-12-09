@@ -13,6 +13,7 @@ import javax.swing.border.Border;
 
 import main.Usuario;
 import main.VentanaPrincipal;
+import persistence.GestorBD;
 
 public class PanelUsuario extends JPanel{
 	/**
@@ -95,6 +96,7 @@ public class PanelUsuario extends JPanel{
 		darseBaja.addActionListener(e -> {
 			VentanaPrincipal ventana = (VentanaPrincipal) SwingUtilities.getWindowAncestor(this);
 			ventana.getUsuarios().remove(usuario);
+			GestorBD.eliminarUsuario(usuario.getDni());
 			ventana.setUsuario(null);
 		});
 		add(darseBaja);
