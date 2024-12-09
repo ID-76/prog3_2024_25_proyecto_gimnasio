@@ -31,6 +31,7 @@ public class IniSesDialog extends JDialog{
 		JButton botonAceptar = new JButton("Aceptar");
 		botonAceptar.addActionListener(e -> {
 			aceptado = true;
+			new VentanaHilo();
 			setVisible(false);
 		});
 		
