@@ -18,6 +18,7 @@ import persistence.GestorBD;
 		private Usuario usu;
 		
 		public InicioSesion(VentanaPrincipal ventana){
+			//La idea de tener una variable "aceptado" me la dio chat gpt
 			JButton matricula = new JButton("Matricularse");
 			matricula.addActionListener(e -> {
 				MatriculaDialog matDialog = new MatriculaDialog();
